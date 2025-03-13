@@ -14,10 +14,10 @@
         "tab": "Guides",
         "groups": [
           {
-            "group": "Get Started",
+            "group": "Introduction",
             "pages": [
-              "introduction",
-              "quickstart",
+              "introductions/getting-started",
+              "introductions/platform-overview",
               "development"
             ]
           },
@@ -36,24 +36,7 @@
       },
       {
         "tab": "API Reference",
-        "openapi": "openapi-3.1.yml",
-        "groups": [
-          {
-            "group": "API Documentation",
-            "pages": [
-              "api-reference/introduction"
-            ]
-          },
-          {
-            "group": "Endpoint Examples",
-            "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
-            ]
-          }
-        ]
+        "openapi": "api-reference/openapi-3.1.yml"
       }
     ],
     "global": {
