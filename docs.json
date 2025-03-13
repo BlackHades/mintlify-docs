@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "Payfonte",
   "colors": {
     "primary": "#16A34A",
     "light": "#07C983",
@@ -11,14 +11,51 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Introduction",
         "groups": [
           {
             "group": "Get Started",
             "pages": [
-              "introduction",
-              "quickstart",
-              "development"
+              "guides/introductions/getting-started",
+              "guides/introductions/platform-overview",
+              "guides/introductions/authorization",
+              "guides/introductions/endpoint-specification",
+              "guides/introductions/environments",
+              "guides/introductions/wallets",
+              "guides/introductions/testing",
+              "guides/introductions/error-codes"
+            ]
+          },
+          {
+            "group": "Collect Payment",
+            "pages": [
+              "guides/collections/inline",
+              "guides/collections/standard",
+              {
+                "group": "Direct Charge API",
+                "pages": [
+                  "guides/collections/direct-charge-api",
+                  "guides/collections/direct-charge/supported-providers",
+                  "guides/collections/direct-charge/examples"
+                ]
+              },
+              "guides/collections/webhook",
+              {
+                "group": "Plugins And SDKs",
+                "pages": [
+                  "guides/collections/sdks/javascript",
+                  "guides/collections/sdks/wordpress-woocommerce",
+                  "guides/collections/sdks/shopify"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Disbursements",
+            "pages": [
+              "guides/disbursements/supported-providers",
+              "guides/disbursements/authorization-mode",
+              "guides/disbursements/examples"
             ]
           },
           {
@@ -58,6 +95,16 @@
     ],
     "global": {
       "anchors": [
+        {
+          "anchor": "Home",
+          "href": "https://payfonte.com",
+          "icon": "book-open-cover"
+        },
+        {
+          "anchor": "Supported Providers",
+          "href": "https://payfonte.com/integration",
+          "icon": "book-open-cover"
+        },
         {
           "anchor": "Documentation",
           "href": "https://mintlify.com/docs",
