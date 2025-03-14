@@ -3,7 +3,7 @@
 The Payfonte direct charge API allows you to call some providers API directly from your backend application without using a
 checkout session. Here is how it works:
 
-- `Optional` From your infrastructure/application, call our [Fetch Provider Payment Properties](https://docs.payfonte.com/api/#get-/payments/v1/payments/direct-charge/-properties-) to get the additional the for the API call.
+- `Optional` From your infrastructure/application, call our [Fetch Provider Payment Properties](https://docs.payfonte.com/api-reference/disbursements/fetch-provider-properties) to get the additional the for the API call.
 - Make a call to our direct charge API with the payment details
 - Once the transaction is complete, We will send a webhook response to your webhook URL.
 
@@ -12,7 +12,7 @@ checkout session. Here is how it works:
 if you are using a provider that expects some addition properties for a direct call, this API will return what you need
 to make that decision.
 Example is Orange Senegal, Pawapay. You can find a list of providers that you need to fetch properties for in
-the [Supported Providers](/collections/direct-charge/supported-providers.md) Section.
+the [Supported Providers](/guides/collections/direct-charge/supported-providers) Section.
 Find a Sample CURL Below to fetch provider properties:
 
 ```shell
@@ -53,13 +53,13 @@ First, you need to assemble the payment details. Here are the details you'll nee
 | `reference`     | String                 | A reference code you'll generate to identify this transaction. This must be unique for every transaction. If you don't pass one, we will generate one for you.           | False    |
 | `redirectURL`   | String                 | The URL to which the customer should be redirected after the payment is completed.                                                                                       | False    |
 | `webhook`       | String                 | This is a URL, if this is passed we will send the event webhook payload to this endpoint                                                                                 |          |
-| `customerInput` | Object                 | This is an object of inputs to be passed to the provider. This varies per provider. You can find more in the [Examples](/collections/direct-charge/examples.md) Section. | True     |
+| `customerInput` | Object                 | This is an object of inputs to be passed to the provider. This varies per provider. You can find more in the [Examples](/guides/collections/direct-charge/examples) Section. | True     |
 | `narration`     | String                 | This is the transaction description                                                                                                                                      | False    |
 
 ## 3. Call the endpoint to initialize the Direct Charge
 
 Next, in order to initiate the payment process, you will need to call
-our [Direct Charge API](https://docs.payfonte.com/api/#post-/payments/v1/payments/direct-charge) API and provide the
+our [Direct Charge API](https://docs.payfonte.com/api-reference/collections/direct-charge-api) API and provide the
 collected payment details. Please ensure that you authorize the API call using your client-id and client-secret. Below
 is an example in CURL:
 
@@ -102,7 +102,7 @@ After making the API call, you will receive a response similar to this:
 
 This following event will occur after a payment is completed
 1. If you have webhooks enabled, we will send you a notification via webhook once the payment is completed. To learn
-   more about webhooks and see examples, please visit the following link [Webhooks](/collections/webhook.md).
+   more about webhooks and see examples, please visit the following link [Webhooks](/guides/collections/webhook).
 
 [//]: # (## 5. When Payment Fails)
 

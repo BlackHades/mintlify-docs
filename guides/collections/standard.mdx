@@ -3,7 +3,7 @@
 The Payfonte checkout page is a page that allows customers to complete their purchases. Here is how it works:
 
 - From your infrastructure/application, call
-  our [Generate Checkout URL Endpoint](https://docs.payfonte.com/api/#post-/payments/v1/checkouts) with the payment
+  our [Generate Checkout URL Endpoint](https://docs.payfonte.com/api-reference/collections/generate-a-payment-checkout-url) with the payment
   details.
 - We will provide you with a link to a payment page, which you can then redirect your customer to in order to complete
   the payment process.
@@ -34,7 +34,7 @@ First, you need to assemble the payment details. Here are the details you'll nee
 ## 2. Call the endpoint to generate a checkout URL
 
 Next, in order to initiate the payment process, you will need to call
-our [Generate Checkout URL Endpoint](https://docs.payfonte.com/api/#post-/payments/v1/checkouts) API and provide the
+our [Generate Checkout URL Endpoint](https://docs.payfonte.com/api-reference/collections/generate-a-payment-checkout-url) API and provide the
 collected payment details. Please ensure that you authorize the API call using your client-id and client-secret. Below
 is an example in Node.js:
 
@@ -75,7 +75,7 @@ After making the API call, you will receive a response similar to this:
 Once you receive the response, simply redirect your customer to the link provided in `data.shortURL` or `data.url`. Our
 checkout modal will be displayed to your customer, allowing them to complete the payment process.
 
-![image Checkout Page](../_images/checkout.png)
+[//]: # (![image Checkout Page]&#40;../_images/checkout.png&#41;)
 
 ## 4\. After the payment
 
@@ -83,7 +83,7 @@ This following event will occur after a payment is completed
 
 1. The customer will be redirected to the URL specified in `redirectURL` with the `status` and `reference`.
 2. If you have webhooks enabled, we will send you a notification via webhook once the payment is completed. To learn
-   more about webhooks and see examples, please visit the following link [Webhooks](../collections/webhook.md).
+   more about webhooks and see examples, please visit the following link [Webhooks](/guides/collections/webhook).
 
 [//]: # (## 5\. When Payment Fails)
 
