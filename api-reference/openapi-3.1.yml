@@ -24,13 +24,13 @@ tags:
     externalDocs:
       description: Find out more
       url: https://docs.payfonte.com/#/collections/inline
-  - name: Payouts
+  - name: Disbursements
     description: |
-      Find full list of supported payout providers here [Supported Providers](https://docs.payfonte.com/#/payouts/supported-payouts)
-      There are 3 main process to carry out a payout on Payfonte
+      Find full list of supported Disbursement providers here [Supported Providers](https://docs.payfonte.com/#/Disbursements/supported-Disbursements)
+      There are 3 main process to carry out a Disbursement on Payfonte
       1. Validate A transfer Recipient
-      2. Initiate a Payout Request
-      3. Verify a Payout Request
+      2. Initiate a Disbursement Request
+      3. Verify a Disbursement Request
   - name: Wallets
     description: A Little bit about our [wallets here] (https://docs.payfonte.com/#/introductions/wallets)
 
@@ -59,6 +59,53 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/GenerateCheckoutURLResponse'
+    get:
+      tags:
+        - Collections
+      summary: Fetch All Collection Transactions
+      description: Retrieve a paginated list of all checkout transactions
+      operationId: getAllCheckouts
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: Page number for pagination
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 4
+          description: Number of records per page
+        - in: query
+          name: dateFrom
+          schema:
+            type: string
+            format: date
+            example: "2024-01-01"
+          description: Start date for filtering transactions (inclusive)
+          required: false
+        - in: query
+          name: dateTo
+          schema:
+            type: string
+            format: date
+            example: "2025-01-01"
+          description: End date for filtering transactions (inclusive)
+          required: false
+
+      responses:
+        '200':
+          description: Successfully retrieved transactions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAllCheckoutResponse'
+
   /payments/v1/payments/verify/{reference}:
     get:
       tags:
@@ -135,7 +182,7 @@ paths:
   /billing/v1/transfer-recipients/{provider}/properties:
     get:
       tags:
-        - Payouts
+        - Disbursements
       summary: Fetch Provider Properties
       description: This is the endpoint to Fetch properties for provider that needs them before a transfer recipient can be created. E.g Paystack (Bank Transfer)
       operationId: fetchTransferRecipientProviderProperties
@@ -145,7 +192,7 @@ paths:
           schema:
             type: string
           required: true
-          description: This is the provider slug. Find full list of providers here [Supported Providers](https://docs.payfonte.com/#/payouts/supported-payouts)
+          description: This is the provider slug. Find full list of providers here [Supported Providers](https://docs.payfonte.com/#/Disbursements/supported-Disbursements)
       responses:
         '200':
           description: ""
@@ -161,9 +208,9 @@ paths:
   /billing/v1/transfer-recipients/validate:
     post:
       tags:
-        - Payouts
+        - Disbursements
       summary: Validate A Transfer Recipient
-      description: Create and Validate a Transfer Recipient for Payouts
+      description: Create and Validate a Transfer Recipient for Disbursements
       operationId: validateTransferRecipient
       requestBody:
         description: Validate a Transfer Recipient
@@ -185,34 +232,80 @@ paths:
   /billing/v1/disbursements:
     post:
       tags:
-        - Payouts
-      summary: Request a Payout
-      description: Request a Payout to a Transfer Recipient
-      operationId: RequestAPayout
+        - Disbursements
+      summary: Request a Disbursement
+      description: Request a Disbursement to a Transfer Recipient
+      operationId: RequestADisbursement
       requestBody:
-        description: Request a Payout
+        description: Request a Disbursement
         content:
           application/json:
             schema:
-              $ref:  '#/components/schemas/RequestPayoutRequest'
+              $ref:  '#/components/schemas/RequestDisbursementRequest'
         required: true
       responses:
         '201':
-          description: "Request for Payout Successful"
+          description: "Request for Disbursement Successful"
           content:
             application/json:
               schema:
                 type: object
                 properties:
                   data:
-                    $ref: '#/components/schemas/RequestPayoutResponse'
+                    $ref: '#/components/schemas/RequestDisbursementResponse'
+    get:
+      tags:
+        - Disbursements
+      summary: Fetch All Disbursements Transaction
+      description: Retrieve a paginated list of all disbursement transactions
+      operationId: getAllDisbursements
+      parameters:
+        - in: query
+          name: dateFrom
+          schema:
+            type: string
+            format: date
+            example: "2025-01-01"
+          description: Start date for filtering transactions (inclusive)
+          required: false
+        - in: query
+          name: dateTo
+          schema:
+            type: string
+            format: date
+            example: "2025-03-31"
+          description: End date for filtering transactions (inclusive)
+          required: false
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: Page number for pagination
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 4
+          description: Number of records per page
+      responses:
+        '200':
+          description: Successfully retrieved disbursements
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAllDisbursements'
+
   /billing/v1/disbursements/verify/{reference}:
     get:
       tags:
-        - Payouts
-      summary: Verify a Payout
-      description: Verify a Payout
-      operationId: VerifyAPayout
+        - Disbursements
+      summary: Verify a Disbursement
+      description: Verify a Disbursement
+      operationId: VerifyADisbursement
       parameters:
         - in: path
           name: reference
@@ -229,8 +322,7 @@ paths:
                 type: object
                 properties:
                   data:
-                    $ref: '#/components/schemas/VerifyPayoutTransactionResponse'
-
+                    $ref: '#/components/schemas/VerifyDisbursementTransactionResponse'
   /billing/v1/wallets:
     get:
       tags:
@@ -260,6 +352,7 @@ paths:
                     items:
                       type: object
                       $ref: "#/components/schemas/WalletBalanceResponse"
+
 components:
   schemas:
     Amount:
@@ -292,7 +385,7 @@ components:
         - UK
     Provider:
       type: string
-      description: This is the provider we are validating the account against. Find full list of providers here [Supported Providers](https://docs.payfonte.com/#/payouts/supported-payouts)
+      description: This is the provider we are validating the account against. Find full list of providers here [Supported Providers](https://docs.payfonte.com/#/Disbursements/supported-Disbursements)
       examples:
         - provider-slug
     User:
@@ -629,7 +722,7 @@ components:
             - $ref: '#/components/schemas/MobileMoneyTransferRecipientAccount'
             - $ref: '#/components/schemas/PawapayMobileMoneyTransferRecipientAccount'
             - $ref: '#/components/schemas/BankAccountTransferRecipientAccount'
-    RequestPayoutRequest:
+    RequestDisbursementRequest:
       type: object
       required:
         - transferRecipientId
@@ -654,7 +747,7 @@ components:
         pin:
           type: string
           description: This is your disbursement pin. This is a form of disbursement authorization. Alternative is an Authorization URL
-    RequestPayoutResponse:
+    RequestDisbursementResponse:
       type: object
       properties:
         reference:
@@ -677,7 +770,7 @@ components:
             - processing
             - failed
             - success
-    VerifyPayoutTransactionResponse:
+    VerifyDisbursementTransactionResponse:
       type: object
       properties:
         status:
@@ -712,11 +805,11 @@ components:
           description: This is the type of wallet
           enum:
             - main
-            - payout
+            - Disbursement
             - deposit
           examples:
             - main
-            - payout
+            - Disbursement
             - deposit
         amount:
           $ref: "#/components/schemas/Amount"
@@ -730,9 +823,189 @@ components:
           enum:
             - active
             - post-no-debit
-
-
-
+    GetAllCheckoutResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 200
+        total:
+          type: integer
+          description: Total number of records
+          example: 1253
+        page:
+          type: integer
+          description: Current page number
+          example: 1
+        pages:
+          type: integer
+          description: Total number of pages
+          example: 314
+        limit:
+          type: integer
+          description: Number of records per page
+          example: 4
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              checkoutId:
+                type: string
+                example: "67ccca10721271b00713d4c3"
+              clientId:
+                type: string
+                example: "payfusion"
+              provider:
+                type: string
+                nullable: true
+                example: "MTN MoMo"
+              providerLogo:
+                type: string
+                nullable: true
+                example: "https://seeklogo.com/images/M/mtn-logo-40644FC8B0-seeklogo.com.png"
+              channel:
+                type: string
+                nullable: true
+                example: "mobile-money"
+              reference:
+                type: string
+                example: "D20250308225200TLWNG"
+              providersReference:
+                type: string
+                nullable: true
+                example: "1690402150"
+              currency:
+                type: string
+                example: "KES"
+              amount:
+                type: number
+                example: 281400
+              user:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    example: "katigbanoma ent"
+                  email:
+                    type: string
+                    example: "bidemi64@gmail.com"
+                  phoneNumber:
+                    type: string
+                    example: "+2348171633912"
+              merchantFee:
+                type: number
+                example: 0
+              customerFee:
+                type: number
+                example: 0
+              merchantFeeLabel:
+                type: string
+                example: "KES 0.00"
+              customerFeeLabel:
+                type: string
+                example: "KES 0.00"
+              charge:
+                type: number
+                nullable: true
+                example: 0
+              paidAt:
+                type: number
+                nullable: true
+                example: 1741188234
+              status:
+                type: string
+                example: "success"
+                enum: [ "success", "abandoned" ]
+              availableBalance:
+                type: number
+                example: 0
+              createdAt:
+                type: string
+                format: date-time
+                example: "2025-03-08T22:52:00.729Z"
+    GetAllDisbursements:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 200
+        total:
+          type: integer
+          description: Total number of records
+          example: 58
+        page:
+          type: integer
+          description: Current page number
+          example: 1
+        pages:
+          type: integer
+          description: Total number of pages
+          example: 29
+        limit:
+          type: integer
+          description: Number of records per page
+          example: 2
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              clientId:
+                type: string
+                example: "payfusion"
+              status:
+                type: string
+                example: "success"
+              statusDescription:
+                type: string
+                example: "success"
+              reference:
+                type: string
+                example: "D20250303232852ZSWSJ"
+              providersReference:
+                type: string
+                example: "pt-D20250303232852ZSWSJ"
+              externalReference:
+                type: string
+                example: "D20250303231740IWYKI"
+              currency:
+                type: string
+                example: "XOF"
+              country:
+                type: string
+                example: "CI"
+              transferRecipientId:
+                type: string
+                example: "677696a160f343c392c0449d"
+              transferRecipientLabel:
+                type: string
+                example: "Wave | +2250538102474"
+              charge:
+                type: integer
+                example: 11000
+              amount:
+                type: integer
+                example: 100000
+              provider:
+                type: string
+                example: "wave-ivory-coast"
+              providerLabel:
+                type: string
+                example: "Wave"
+              providerLogo:
+                type: string
+                format: uri
+                example: "https://docs.wave.com/images/business-penguin-a4539369.png"
+              channel:
+                type: string
+                example: "mobile-money"
+              integrationId:
+                type: string
+                example: "6762bcccdd35fc1c7cae5bd6"
+              id:
+                type: string
+                example: "67c69da4099fde3f44c85345"
 
   securitySchemes:
     clientId:
