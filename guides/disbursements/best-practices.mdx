@@ -1,0 +1,4 @@
+## Best Practices
+- We advise to deduct value from customers wallet before calling the disbursement API and only refund after double
+  verification of the transaction when it fails.
+- All Provider Error will be on the `statusDescription`field on the webhook call and verification call, This can give a better understanding of the transaction status.

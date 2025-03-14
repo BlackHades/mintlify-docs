@@ -1,0 +1,67 @@
+# Javascript SDK
+
+We have a javascript SDK to make your work seamless and run all necessary process on your website.
+
+CDN URL for Payfonte javascript SDK is **https://cdn.payfonte.com/payfonte.min.js**
+
+Check the code snippet below
+
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Payfonte SDK</title>
+</head>
+<body class="main-layout">
+<button onclick="showCheckout()">Pay 1000.00</button>
+<script src="https://cdn.payfonte.com/payfonte.min.js"></script>
+<script>
+  function showCheckout() {
+    const handler = new Payfonte({
+      environment: "sandbox|production", //can be sandbox or production
+      reference: "{{reference}}", //if you have your own transactionId you want to track this payment with
+      clientId: "{{client-id}}",  //required, Your client-id
+      base: {
+        currency: "NGN",
+        amount: 100000
+      },
+      shop: {
+        currency: "NGN",
+        amount: 100000
+      },
+      amount: 100000, //required Amount in the lowest denominator. If no lower denominator multiply by 100 e.g amount * 100
+      currency: "NGN",
+      country: "NG",
+      customer: {
+        name: "John Doe",
+        email: "johndoe@gmail.com",
+        phoneNumber: "23470xxxxxx"
+      },
+      metadata: { //other data you need to comeback with the webhook
+      }
+      callback: (data) => {
+        console.log("payfonte callback", data, data.reference);
+      },
+      onClose: () => {
+        console.log("Modal Close Event");
+      }
+    });
+
+    handler.setup();
+    handler.openIframe();
+  }
+</script>
+</body>
+</html>
+```
+
+[//]: # (<iframe height="1000" style="width: 100%;" scrolling="no" title="Payfonte SDK" src="https://codepen.io/blackhades/embed/QWRpEMg?default-tab=html%2Cresult&editable=true" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">)
+
+[//]: # (    See the Pen <a href="https://codepen.io/blackhades/pen/QWRpEMg">)
+
+[//]: # (    Payfonte SDK</a> by Micheal Akinwonmi &#40;<a href="https://codepen.io/blackhades">@blackhades</a>&#41;)
+
+[//]: # (    on <a href="https://codepen.io">CodePen</a>.)
+
+[//]: # (</iframe>)

@@ -1,0 +1,121 @@
+# Payfonte Direct Charge API
+
+The Payfonte direct charge API allows you to call some providers API directly from your backend application without using a
+checkout session. Here is how it works:
+
+- `Optional` From your infrastructure/application, call our [Fetch Provider Payment Properties](https://docs.payfonte.com/api/#get-/payments/v1/payments/direct-charge/-properties-) to get the additional the for the API call.
+- Make a call to our direct charge API with the payment details
+- Once the transaction is complete, We will send a webhook response to your webhook URL.
+
+## 1. Get Payment Provider Properties [Optional for Some providers]
+
+if you are using a provider that expects some addition properties for a direct call, this API will return what you need
+to make that decision.
+Example is Orange Senegal, Pawapay. You can find a list of providers that you need to fetch properties for in
+the [Supported Providers](/collections/direct-charge/supported-providers.md) Section.
+Find a Sample CURL Below to fetch provider properties:
+
+```shell
+curl --location 'https://sandbox-api.payfonte.com/payments/v1/payments/direct-charge/{{provider-slug}}/properties' \
+--header 'client-id: <client-id>' \
+--header 'client-secret: <client-secret>'
+```
+
+Here is a sample response for pawapay
+
+```json
+{
+  "data": {
+    "networks": [
+      {
+        "name": "Airtel",
+        "image": "https://pbs.twimg.com/profile_images/1422229945317744642/1f6bLEh__400x400.jpg",
+        "value": "airtel"
+      },
+      {
+        "name": "MTN MoMo",
+        "image": "https://seeklogo.com/images/M/mtn-logo-40644FC8B0-seeklogo.com.png",
+        "value": "mtn-momo"
+      }
+    ]
+  }
+}
+```
+
+## 2. Get all the payment details
+
+First, you need to assemble the payment details. Here are the details you'll need:
+
+| Field           | Type                   | Description                                                                                                                                                              | Required |
+|-----------------|------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|
+| `provider`      | String [Provider Slug] | This is the Provider we are routing the request to. e.g `mtn-momo-ivory-coast`                                                                                           | false    |
+| `amount`        | Number                 | This is the amount to charge the customer. This should be in the lowest currency denomination                                                                            | false    |
+| `reference`     | String                 | A reference code you'll generate to identify this transaction. This must be unique for every transaction. If you don't pass one, we will generate one for you.           | False    |
+| `redirectURL`   | String                 | The URL to which the customer should be redirected after the payment is completed.                                                                                       | False    |
+| `webhook`       | String                 | This is a URL, if this is passed we will send the event webhook payload to this endpoint                                                                                 |          |
+| `customerInput` | Object                 | This is an object of inputs to be passed to the provider. This varies per provider. You can find more in the [Examples](/collections/direct-charge/examples.md) Section. | True     |
+| `narration`     | String                 | This is the transaction description                                                                                                                                      | False    |
+
+## 3. Call the endpoint to initialize the Direct Charge
+
+Next, in order to initiate the payment process, you will need to call
+our [Direct Charge API](https://docs.payfonte.com/api/#post-/payments/v1/payments/direct-charge) API and provide the
+collected payment details. Please ensure that you authorize the API call using your client-id and client-secret. Below
+is an example in CURL:
+
+```shell
+curl --location 'https://sandbox-api.payfonte.com/payments/v1/payments/direct-charge' \
+--header 'client-id: <client-id>' \
+--header 'client-secret: <client-secret>' \
+--header 'Content-Type: application/json' \
+--data '{
+    "reference": "9617a32a-e936-48b4-99bd-f0fcd882561c",
+    "amount": 10000,
+    "provider": "mtn-momo-ivory-coast",
+    "webhook": "https://webhook.site/9e5c6a7c-3345-4e7a-8e05-f6c4cc61f4a0",
+    "narration": "Test payment from payfonte",
+    "customerInput": {
+        "phoneNumber": "8023456789"
+    }
+}'
+```
+
+After making the API call, you will receive a response similar to this:
+
+```json
+{
+  "data": {
+    "sessionId": "e0b04887-ee15-40ba-a3c0-5efc8b207292",
+    "provider": "mtn-momo-ivory-coast",
+    "reference": "D20240612202245CGOCK",
+    "amount": 10000,
+    "status": "initialized",
+    "statusDescription": "Awaiting Customer Input",
+    "amountLabel": "NGN 100.00",
+    "chargeLabel": "NGN 0.00"
+  },
+  "statusCode": 201
+}
+```
+
+## 4. After the payment
+
+This following event will occur after a payment is completed
+1. If you have webhooks enabled, we will send you a notification via webhook once the payment is completed. To learn
+   more about webhooks and see examples, please visit the following link [Webhooks](/collections/webhook.md).
+
+[//]: # (## 5. When Payment Fails)
+
+[//]: # ()
+[//]: # (In the event that a payment attempt fails, such as due to insufficient funds, there is no need for you to take any)
+
+[//]: # (action. The payment page will remain open so that the customer can try again with another provider until the payment is)
+
+[//]: # (successful or they choose to cancel.)
+
+[//]: # ()
+[//]: # (If you have webhooks enabled, we will send you a notification for each failed payment attempt. This can be useful if you)
+
+[//]: # (need to follow up with customers who had issues with payment at a later time. Please refer to)
+
+[//]: # (our  [Webhooks]&#40;/collections/webhook.md&#41; guide for an example of how this works.)

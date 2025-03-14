@@ -1,0 +1,99 @@
+# Payment Example Payload
+
+Payout has 2 crucial flow, which are:
+- Validate Transfer Recipient 
+- Request Payout
+## Validate Transfer Recipient (POST /billing/v1/transfer-recipients/validate)
+A Basic Validate Transfer Recipient for Mobile Money Payload will look like this (We will use MTN MoMo as a example):
+```json
+{
+      "provider": "mtn-momo-ivory-coast",
+      "channel": "mobile-money",
+      "currency": "XOF",
+      "country": "CI",
+      "account": {
+        "phoneNumber": "225XXXXXXXXXX"
+      }
+}
+```
+Sample Response: 
+```json
+{
+    "statusCode": 200,
+    "data": {
+        "provider": "mtn-momo-ivory-coast",
+        "providerLabel": "MTN MoMo",
+        "source": "disbursement",
+        "channel": "mobile-money",
+        "currency": "XOF",
+        "country": "CI",
+        "accountLabel": "MTN MoMo | 225XXXXXXXXXX",
+        "account": {
+            "network": "MTN",
+            "phoneNumber": "225XXXXXXXXXX",
+            "accountName": "John Doe"
+        },
+        "status": "active",
+        "createdAt": "2024-12-12T02:06:32.155Z",
+        "updatedAt": "2024-12-12T20:33:17.758Z",
+        "id": "675a4528d14b406a3d31e4a8"
+    }
+}
+```
+
+## Request Payout (POST /billing/v1/disbursements)
+A Basic Validate Transfer Recipient for Mobile Money Payload will look like this (We will use MTN MoMo as a example):
+```json lines
+{
+  "transferRecipientId": "675a4528d14b406a3d31e4a8", //ID from Validate Transfer Recipient
+  "amount": 3000, // Amount in lowest denomination (cents/kobo)
+  "narration": "payment 10.0",
+  "pin": "1111",
+}
+```
+Sample Response:
+```json
+{
+  "statusCode": 201,
+  "data": {
+    "reference": "D20241216141720XXXXX",
+    "amount": 3000,
+    "amountPayable": 3000,
+    "charge": 15,
+    "provider": "mtn-momo-ivory-coast",
+    "currency": "XOF",
+    "country": "CI",
+    "status": "processing"
+  }
+}
+```
+
+
+
+## Verify Payout (GET /billing/v1/disbursements/:reference)
+Sample Response:
+```json
+{
+  "data": {
+    "clientId": "payfusion",
+    "status": "success",
+    "statusDescription": "success",
+    "reference": "D20241223060657MOHAA",
+    "providersReference": "pt-D20241223060657MOHAA",
+    "externalReference": "D20241223060657MOHAA",
+    "currency": "XOF",
+    "country": "CI",
+    "transferRecipientId": "6768fdf84764676cde0b630e",
+    "transferRecipientLabel": "Wave | +2257038102474",
+    "charge": 0,
+    "amount": 3000,
+    "finalAmount": 3000,
+    "provider": "wave-ivory-coast",
+    "channel": "mobile-money",
+    "integrationId": "6762bcccdd35fc1c7cae5bd6",
+    "id": "6768fe014764676cde0b6313"
+  },
+  "statusCode": 200
+}
+```
+

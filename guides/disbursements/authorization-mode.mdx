@@ -1,0 +1,54 @@
+# Authorization Mode
+Payfonte supports 2 types of authorization for disbursement/payout processes to ensure secure transactions. This documentation provides detailed information on the implementation and usage of these authorization methods.
+
+## Authorization Methods
+
+- PIN Authorization
+- Authorization URL
+
+### 1. Pin Authorization
+
+In PIN authorization, the merchant sets a PIN and includes this PIN in every API request for disbursements. This method ensures that only authorized users can initiate transactions.
+
+#### Step 1: Set Up PIN
+
+Navigate to any page in the `Disbursements` section of the dashboard and you will get a prompt to set your pin
+
+PS: you can only do this once. you will have to reach out to support if you want to change this pin.
+
+![](https://files.readme.io/57b7fad-image.png)
+
+#### Step 2: API Request with PIN
+
+Every API request must have the PIN field.
+
+```jsx JSON
+{
+  ....
+  "pin":"XXXX",
+  ....
+}
+```
+
+<br />
+
+<br />
+
+<br />
+
+### 2. Authorization URL
+
+In the Authorization URL method, the merchant provides a URL endpoint that Payfonte will call on every disbursement request. The call includes a payload hash for verification. The disbursement will be processed if the endpoint returns a 200 HTTP response (This is strict).
+
+Navigate to the page in the `Disbursements -> Settings` section of the dashboard and you will get a prompt to set your authorization URL
+
+![](https://files.readme.io/99c8919-image.png)
+
+<br />
+
+### Best Practice
+We advise the following should be done when we call your endpoint
+
+- Validate the payload comes from us by calculating the hash and verifying it. Examples can be found [in the webhook page](/collections/webhook.md)
+- Validate the amount in the payload matches what you sent
+- Validate the customer has enough funds in their wallet with you to carry out the transaction if this is a B2C

@@ -1,0 +1,102 @@
+# Payfonte Standard
+
+The Payfonte checkout page is a page that allows customers to complete their purchases. Here is how it works:
+
+- From your infrastructure/application, call
+  our [Generate Checkout URL Endpoint](https://docs.payfonte.com/api/#post-/payments/v1/checkouts) with the payment
+  details.
+- We will provide you with a link to a payment page, which you can then redirect your customer to in order to complete
+  the payment process.
+- Once the transaction is complete, we will redirect the customer back to you.
+
+## 1. Get all the payment details
+
+First, you need to assemble the payment details. Here are the details you'll need:
+
+| Field              | Type   | Description                                                                                                                                                                                                                                                       | Required                           |
+|--------------------|--------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------|
+| `base.currency`    | String | This is the base curreny to be charged in.                                                                                                                                                                                                                        | false. Defaults to `currency`      |
+| `base.amount`      | Number | This is the amount to charge the customer                                                                                                                                                                                                                         | false Defaults to `amount`         |
+| `shop.currency`    | String | This is an alternate currency that you store might be operating in. e.g Your base currency on Payfonte might be XOF and your store runs on USD.                                                                                                                   | false. Defaults to `base.currency` |
+| `shop.amount`      | Number | This it amount on the alternate based on the store currency. When the base currency and shop currency are not the same, we convert the `shop.amount` to based on `shop.currency` to `base.currency` configuration set in the `Settings -> Checkout Configuration` | false. Default to `base.amount`    |
+| `amount`           | Number | This is the amount to charge the customer. This should be in the lowest currency denomination                                                                                                                                                                     | false                              |
+| `user`             | Object | This is an object containing the users `email`, `phoneNumber` and `name`                                                                                                                                                                                          | True                               |
+| `user.email`       | String | This is the user's email address.                                                                                                                                                                                                                                 | True                               |
+| `user.phoneNumber` | String | This is the user's phone number. This is required for mobile money providers.                                                                                                                                                                                     | False                              |
+| `user.name`        | String | This is the user's name                                                                                                                                                                                                                                           | False                              |
+| `narration`        | String | This is the transaction description                                                                                                                                                                                                                               | False                              |
+| `reference`        | String | A reference code you'll generate to identify this transaction. This must be unique for every transaction. If you don't pass one, we will generate one for you.                                                                                                    | False                              |
+| `currency`         | String | This specifies the currency in which you would like to charge. If you do not provide a value, we will assume "NGN".                                                                                                                                               | True                               |
+| `country`          | String | This is the 2 character country code for the country that owns the currency. Multiple countries can share same currency e.g XOF. this is enforced to all better seperation of value                                                                               | True                               |
+| `redirectURL`      | String | The URL to which the customer should be redirected after the payment is completed.                                                                                                                                                                                | False                              |
+| `webhook`          | String | This is a URL, if this is passed we will send the event webhook payload to this endpoint                                                                                                                                                                          |                                    |
+
+## 2. Call the endpoint to generate a checkout URL
+
+Next, in order to initiate the payment process, you will need to call
+our [Generate Checkout URL Endpoint](https://docs.payfonte.com/api/#post-/payments/v1/checkouts) API and provide the
+collected payment details. Please ensure that you authorize the API call using your client-id and client-secret. Below
+is an example in Node.js:
+
+```shell shell
+curl --location 'https://sandbox-api.payfonte.com/payments/v1/checkouts' \
+--header 'client-id: <client-id>' \
+--header 'client-secret: <client-secret>' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "reference": "0f0d9d90-9099-435e-9aa1-2c000ef8598b",
+    "amount": 50000,
+    "redirectURL": "https://payfonte.com",
+    "customerBearsCharge": false,
+    "webhook": "https://webhook.site/93745537-9d53-4aeb-b8ac-a489e0dd9967",
+    "user": {
+        "email": "dummy@dummy.com",
+        "phoneNumber": "07012345678"
+    }
+}'
+```
+
+After making the API call, you will receive a response similar to this:
+
+```json
+{
+  "data": {
+    "id": "644ebe614c2604002fac9d13",
+    "url": "https://checkout-staging.payfonte.com/payfusion/644ebe614c2604002fac9d13",
+    "shortURL": "https://l.6bd.co/m_DbfggPw",
+    "reference": "0ba83bfd-9bba-48d4-b182-57cb4d1442cb",
+    "amount": 50000
+  }
+}
+```
+
+## 3. Redirect the user to the generated payment link
+
+Once you receive the response, simply redirect your customer to the link provided in `data.shortURL` or `data.url`. Our
+checkout modal will be displayed to your customer, allowing them to complete the payment process.
+
+![image Checkout Page](../_images/checkout.png)
+
+## 4\. After the payment
+
+This following event will occur after a payment is completed
+
+1. The customer will be redirected to the URL specified in `redirectURL` with the `status` and `reference`.
+2. If you have webhooks enabled, we will send you a notification via webhook once the payment is completed. To learn
+   more about webhooks and see examples, please visit the following link [Webhooks](../collections/webhook.md).
+
+[//]: # (## 5\. When Payment Fails)
+
+[//]: # ()
+[//]: # (In the event that a payment attempt fails, such as due to insufficient funds, there is no need for you to take any)
+
+[//]: # (action. The payment page will remain open so that the customer can try again with another provider until the payment is)
+
+[//]: # (successful or they choose to cancel.)
+
+[//]: # ()
+[//]: # (If you have webhooks enabled, we will send you a notification for each failed payment attempt. This can be useful if you)
+
+[//]: # (need to follow up with customers who had issues with payment at a later time. Please refer to)
+
+[//]: # (our  [Webhooks]&#40;../collections/webhook.md&#41; guide for an example of how this works.)

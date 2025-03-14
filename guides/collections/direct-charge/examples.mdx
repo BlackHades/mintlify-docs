@@ -1,0 +1,55 @@
+# Direct Charge Example Payload
+
+A Basic Mobile Money Direct Charge Payload will look like this:
+```json
+{
+    "reference": "{{$guid}}",
+    "amount": 10000,
+    "provider": "<provider>",
+    "webhook": "https://webhook.site/9e5c6a7c-3345-4e7a-8e05-f6c4cc61f4a0",
+    "narration": "Test payment from payfonte",
+    "customerInput": {
+        "phoneNumber": "<phoneNumber>"
+    }
+}
+```
+
+<br/>
+
+Some Providers needs some extra data and we will list examples here:
+## Pawapay
+The `network` options can be gotten from the `Fetch Provider Properties` Endpoint
+```json
+{
+    "reference": "{{$guid}}",
+    "amount": 10000,
+    "provider": "pawapay-{{country}}",
+    "webhook": "https://webhook.site/9e5c6a7c-3345-4e7a-8e05-f6c4cc61f4a0",
+    "narration": "Test payment from payfonte",
+    "customerInput": {
+        "phoneNumber": "8023456789",
+        "network": "<network>"
+    }
+}
+```
+
+
+## Orange Senegal
+The Orange Provider for Senegal requires the customer to generate a code from their device by dialing `#144#391#` before calling our API.
+PS: on our sandbox, you can use any 6 digit random number.
+
+Here is a sample payload:
+
+```json
+{
+    "reference": "{{$guid}}",
+    "amount": 10000,
+    "provider": "orange-senegal",
+    "webhook": "https://webhook.site/8568b5e3-58e0-47c5-9e23-d9d4bff21a4f",
+    "narration": "Test payment from payfusion",
+    "customerInput": {
+        "phoneNumber": "786175702",
+        "customerCode": "<6 digit numeric code>"
+    }
+}
+```

@@ -1,0 +1,80 @@
+# Endpoint Specification
+This page describes the request and response format for API requests on the platform. Here at Payfonte we strictly adhere to conventional HTTP response codes.
+
+## HTTP Requests
+
+All standard HTTP Conventions are to be observed. You can read more about them on the following links:
+[API Design by Microsoft](https://docs.microsoft.com/en-us/azure/architecture/best-practices/api-design#:~:text=REST%20is%20independent%20of%20any,not%20necessarily%20tied%20to%20HTTP.&text=For%20REST%20APIs%20built%20on,use%20a%20stateless%20request%20model.)
+[API design best practices](https://florimond.dev/blog/articles/2018/08/restful-api-design-13-best-practices-to-make-your-users-happy/)
+
+> 📘 HTTP Status Codes
+>
+> HTTP Status codes are heavily used on the platform to denote the status of requests
+>
+> All HTTP requests are to be in JSON except in some cases of multi-part form data(Uploading files).
+
+## HTTP Responses
+
+Responses are required to have the same base structure across all services. HTTP status codes are to be used to determine if a request was successful or not. We have three basic response type: success, error and paginated responses. Examples of each are listed below:
+
+> 👍 Successful Responses (2XX)
+>
+> Success ResponseThe base structure should be the data layer, this should be consistent for all the 2xx response on the platform.
+
+```json
+{
+  "data": {} or []
+}
+```
+
+!> ❗️ Error Responses (4XX - 5XX)
+The base structure should be the error layer, this should be consistent for all the non-2xx responses on the platform. The error should be very much descriptive.
+
+```json
+{
+  "error": "You don't have permission to access this service. ",
+  "errorCode": "UnauthorizedAccess"
+}
+```
+
+> 📘 Paginated Response
+>
+> Paginated requests are to come with the page(current page the user wants to see) and the limit(maximum amount of data to return). The default page number should be 1 and the default limit should is 50. The paginated response contains 4 base properties
+>
+> - page: This is the current page the user is. default is 1
+> - pages: This is the total pages to be shown which are gotten from 'ceil(total count of data/limit)'
+> - total: total count of data. An example is the result of 'select count (\*) from \`tableName'
+> - data: this is the data gotten from the data source
+
+```json
+{
+  "total": 9737,
+  "limit": 50,
+  "page": 1,
+  "pages": 195,
+  "data": [{//array of object}]
+}
+```
+
+## Filtering
+
+All get request query params are to be used for filtering except for "page", "limit" (which are being used for pagination) and any fields that are not allowed to be used for filtering e.g "password" or "pin" field.
+
+```text
+//Example Get Request for filtering
+URL: baseURL/v1/users?age=10&network=mtn
+//Action:
+MYSQL: select * from users where `age`=10 and where `network`='mtn';
+MoongoDB: users.find({age: 10, network: 'mtn'});
+
+//Request with date filtering
+The keys dateTo and dateFrom are key to be processed seperately and date range queries defer from normal queries
+URL: ...?dateFrom=2020-01-01&dateTo=2020-02-02&age=10&network=mtn&page=1&limit=50
+
+//Request with Sorts
+The sort key is used to instruct the platform that the data to be returned should be sorted on the field "names" in "desc"ending order.
+Supported orders are
+- desc for descending
+- asc for ascending
+URL: ...?sort=names,desc
+```
