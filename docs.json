@@ -23,7 +23,8 @@
               "guides/introductions/environments",
               "guides/introductions/wallets",
               "guides/introductions/testing",
-              "guides/introductions/error-codes"
+              "guides/introductions/error-codes",
+              "guides/introductions/supported-providers"
             ]
           },
           {
