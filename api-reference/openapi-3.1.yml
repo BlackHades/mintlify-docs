@@ -747,7 +747,7 @@ components:
         pin:
           type: string
           description: This is your disbursement pin. This is a form of disbursement authorization. Alternative is an Authorization URL
-        webhookUrl:
+        webhookURL:
           type: string
           format: uri
           description: 'This is a URL, if this is passed we will send the event webhook payload to this endpoint. Use this to override the webhook url provided on the dashboard for this transaction. Read more on [Webhooks](https://docs.payfonte.com/#/collections/webhook)'
