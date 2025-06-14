@@ -56,7 +56,8 @@
             "pages": [
               "guides/disbursements/supported-providers",
               "guides/disbursements/authorization-mode",
-              "guides/disbursements/examples"
+              "guides/disbursements/examples",
+              "guides/disbursements/webhook"
             ]
           }
         ]
