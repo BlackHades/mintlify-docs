@@ -561,8 +561,8 @@ components:
           description: "Status of the transaction"
           enum:
             - success
-            - abandoned
-            - initialized
+            - failed
+            - pending
           examples:
             - "success"
         reference:
