@@ -41,7 +41,20 @@ Sample Response:
 }
 ```
 ## Validate Transfer Recipient - Bank Transfer (POST /billing/v1/transfer-recipients/validate)
-A Basic Validate Transfer Recipient for Bank Transfer Payload will look like this (We will use MTN MoMo as a example):
+A Basic Validate Transfer Recipient for Mobile Money Payload will look like this (We will use MTN MoMo as a example):
+```json
+{
+      "provider": "bank-transfer-nigeria",
+      "channel": "bank-transfer",
+      "currency": "NGN",
+      "country": "NG",
+      "account": {
+        "accountNumber": "0123456789",
+        "bankCode": "948"
+      }
+}
+```
+Sample Response:
 ```json
 {
     "statusCode": 200,
@@ -59,37 +72,12 @@ A Basic Validate Transfer Recipient for Bank Transfer Payload will look like thi
             "accountName": "AAA BBB XXX",
             "accountNumber": "2215381176",
             "bankCode": "948",
-            "bankName": "Momo Payment Service Bank",
-            "network": "opay"
+            "bankName": "Momo Payment Service Bank"
         },
         "status": "pending",
         "createdAt": "2025-05-26T12:58:04.476Z",
         "updatedAt": "2025-05-26T12:58:04.476Z",
         "id": "6834655cdc1370231451f2a5"
-    }
-}
-```
-Sample Response:
-```json
-{
-    "statusCode": 200,
-    "data": {
-        "provider": "mtn-momo-ivory-coast",
-        "providerLabel": "MTN MoMo",
-        "source": "disbursement",
-        "channel": "mobile-money",
-        "currency": "XOF",
-        "country": "CI",
-        "accountLabel": "MTN MoMo | 225XXXXXXXXXX",
-        "account": {
-            "network": "MTN",
-            "phoneNumber": "225XXXXXXXXXX",
-            "accountName": "John Doe"
-        },
-        "status": "active",
-        "createdAt": "2024-12-12T02:06:32.155Z",
-        "updatedAt": "2024-12-12T20:33:17.758Z",
-        "id": "675a4528d14b406a3d31e4a8"
     }
 }
 ```
