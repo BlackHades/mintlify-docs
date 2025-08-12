@@ -36,6 +36,7 @@
                 "group": "Direct Charge API",
                 "pages": [
                   "guides/collections/direct-charge-api",
+                  "guides/collections/direct-charge/mobile-money",
                   "guides/collections/direct-charge/examples"
                 ]
               },

@@ -1,0 +1,127 @@
+# Direct Charge Mobile Money Flows
+When using the  Direct Charge API for mobile money payments, there are three primary flow types that can occur based on the provider and region. Understanding these flows is crucial for implementing a seamless payment experience for your customers.
+## 1. Standard Flow (USSD Prompt)
+The standard flow is where the customer receives a USSD prompt on their mobile device to enter their PIN to authorize the payment.
+### How It Works:
+1. You initiate a direct charge request to our API
+2. The mobile network operator sends a USSD prompt to the customer's device
+3. The customer enters their PIN on their mobile device
+4. The transaction is processed without any further action required from the merchant
+
+### Identifying the Flow:
+In the API response, you'll receive `data.action` as `processing`, indicating that the customer needs to complete the action on their device.
+### Sample Response:
+``` json
+{
+    "data": {
+        "action": "processing",
+        "sessionId": "1031-4120-a98f-9357692945",
+        "provider": "safaricom-kenya",
+        "channel": "mobile-money",
+        "reference": "DDC20250812042317DIFMW",
+        "amount": 1000,
+        "status": "pending",
+        "charge": 5,
+        "statusDescription": "Awaiting Provider's Feedback"
+    },
+    "statusCode": 201
+}
+```
+### Common Providers:
+- Safaricom (M-Pesa) in Kenya
+- MTN MoMo in various countries
+- Most providers that support USSD authentication
+
+## 2. Redirection Flow
+This flow requires redirecting the customer to a payment page hosted by the provider where they can complete their payment.
+### How It Works:
+1. You initiate a direct charge request to our API
+2. We return a URL that you must redirect the customer to
+3. The customer completes the payment on the provider's page
+4. The customer is redirected back to your application (if you provided a redirect URL)
+
+### Identifying the Flow:
+In the API response, you'll receive `data.action` as `redirect`, along with a URL in the `data.data.link` field.
+### Sample Response:
+``` json
+{
+    "data": {
+        "action": "redirect",
+        "sessionId": "v1nadjww8lwfxxd7giumi3dyik7pzaxrxqmyvdeuunvixo25jhqf4o6wzuxhjdzg",
+        "provider": "orange-ivory-coast",
+        "channel": "mobile-money",
+        "reference": "DDC20250812042546ICXFC",
+        "amount": 10000,
+        "status": "pending",
+        "charge": 150,
+        "statusDescription": "Awaiting Provider's Feedback",
+        "data": {
+            "link": "https://mpayment.orange-money.com/sx/mpayment/abstract/v1nadjww8lwfxxd7giumi3dyik7pzaxrxqmyvdeuunvixo25jhqf4o6wzuxhjdzg",
+            "message": "Click on <a href=\"https://mpayment.orange-money.com/sx/mpayment/abstract/v1nadjww8lwfxxd7giumi3dyik7pzaxrxqmyvdeuunvixo25jhqf4o6wzuxhjdzg\">this link</a> to complete your payment",
+            "reference": "DDC20250812042546ICXFC"
+        }
+    },
+    "statusCode": 201
+}
+```
+### Implementation Requirements:
+- You must redirect the customer to the URL provided in `data.data.link`
+- For web applications, this can be done using standard redirect methods
+- For mobile applications, you may need to open the URL in an in-app browser or external browser
+
+### Common Providers:
+- Wave in various countries
+- Orange in several countries
+
+## 3. Pre-OTP Flow
+This flow requires the customer to generate a one-time password (OTP) on their device before the payment can be initiated.
+### How It Works:
+1. The customer dials a USSD code on their device to generate an OTP
+2. The customer provides you with this OTP
+3. You include this OTP as `customerInput.customerCode` in your direct charge request
+4. The transaction is processed without further customer action
+
+### USSD Codes by Provider/Country:
+- Orange Ivory Coast: `#144*82#`
+- Orange Senegal: `#144#391#`
+- Orange Burkina Faso: `*144*4*6*Amount*PIN#`
+- Orange Mali: `#144#37#`
+
+### Sample Request:
+``` json
+{
+    "clientId": "payfusion",
+    "reference": "{{$guid}}",
+    "amount": 50000,
+    "provider": "orange-senegal",
+    "webhook": "https://webhook.site/8568b5e3-58e0-47c5-9e23-d9d4bff21a4f",
+    "narration": "Test payment from payfusion",
+    "customerInput": {
+        "phoneNumber": "786175702",
+        "customerCode": "758610"
+    }
+}
+```
+### Sample Response:
+``` json
+{
+    "data": {
+        "action": "processing",
+        "provider": "orange-senegal",
+        "channel": "mobile-money",
+        "reference": "DDC20250812042840JXBUK",
+        "amount": 50000,
+        "status": "pending",
+        "charge": 0,
+        "statusDescription": "Awaiting Provider's Feedback"
+    },
+    "statusCode": 201
+}
+```
+### Implementation Requirements:
+- Instruct your customers to generate the OTP using the appropriate USSD code for their provider
+- Collect the OTP from the customer
+- Include the OTP in your direct charge request as `customerInput.customerCode`
+
+### Common Providers:
+- Orange in various countries (Senegal, Ivory Coast, Burkina Faso, Mali)
