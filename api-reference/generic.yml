@@ -1,0 +1,1029 @@
+openapi: 3.1.0
+info:
+  title: platform - OpenAPI 3.1
+  description: |-
+    This is the minimal API for platform collection and disbursements API. To view a more elaborate documentation see here.
+
+    Some useful links:
+    - [Home](https://platform.com)
+    - [platform Documentation](https://docs.platform.com)
+
+  termsOfService: https://www.platform.com/terms
+  contact:
+    email: tech@platform.com
+  version: 1.0.0
+servers:
+  - url: https://sandbox-api.platform.com
+    description: Sandbox API Base URL
+  - url: https://api.platform.com
+    description: Production API Base URL
+
+tags:
+  - name: Collections
+    description: Everything about your payment collection with platform
+    externalDocs:
+      description: Find out more
+      url: https://docs.platform.com/#/collections/inline
+  - name: Disbursements
+    description: |
+      Find full list of supported Disbursement providers here [Supported Providers](https://docs.platform.com/#/Disbursements/supported-Disbursements)
+      There are 3 main process to carry out a Disbursement on platform
+      1. Validate A transfer Recipient
+      2. Initiate a Disbursement Request
+      3. Verify a Disbursement Request
+  - name: Wallets
+    description: A Little bit about our [wallets here] (https://docs.platform.com/#/introductions/wallets)
+
+paths:
+  /payments/v1/checkouts:
+    post:
+      tags:
+        - Collections
+      summary: Generate A Payment Checkout URL
+      description: Generate a Payment Checkout URL for customers to make payment
+      operationId: generateCheckoutURL
+      requestBody:
+        description: Generate A Payment Checkout URL
+        content:
+          application/json:
+            schema:
+              $ref:  '#/components/schemas/GenerateCheckoutURLRequest'
+        required: true
+      responses:
+        '201':
+          description: "Checkout URL Successfully Generated"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/GenerateCheckoutURLResponse'
+    get:
+      tags:
+        - Collections
+      summary: Fetch All Collection Transactions
+      description: Retrieve a paginated list of all checkout transactions
+      operationId: getAllCheckouts
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: Page number for pagination
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 4
+          description: Number of records per page
+        - in: query
+          name: dateFrom
+          schema:
+            type: string
+            format: date
+            example: "2024-01-01"
+          description: Start date for filtering transactions (inclusive)
+          required: false
+        - in: query
+          name: dateTo
+          schema:
+            type: string
+            format: date
+            example: "2025-01-01"
+          description: End date for filtering transactions (inclusive)
+          required: false
+
+      responses:
+        '200':
+          description: Successfully retrieved transactions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAllCheckoutResponse'
+
+  /payments/v1/payments/verify/{reference}:
+    get:
+      tags:
+        - Collections
+      summary: Verify Transaction
+      description: This is the endpoint to verify a Transaction
+      operationId: verifyPaymentTransaction
+      parameters:
+        - in: path
+          name: reference
+          schema:
+            type: string
+          required: true
+          description: Reference of the transaction to verify
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/VerifyTransactionResponse'
+  /payments/v1/payments/direct-charge/{properties}:
+    get:
+      tags:
+        - Collections
+      summary: Fetch Provider Properties
+      description: This is the endpoint to Fetch properties for provider that needs them Direct charge API can be called. E.g Pawapay
+      operationId: fetchDirectChargeProviderProperties
+      parameters:
+        - in: path
+          name: provider
+          schema:
+            type: string
+          required: true
+          description: This is the provider slug. Find full list of providers here [Supported Providers](https://docs.platform.com/#/collections/direct-charge/supported-providers)
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    oneOf:
+                      - $ref: '#/components/schemas/DirectChargeProviderPawapayPropertiesResponse'
+  /payments/v1/payments/direct-charge:
+    post:
+      tags:
+        - Collections
+      summary: Direct Charge API
+      description: Direct Charge the Customer via API
+      operationId: DirectChargeAPI
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref:  '#/components/schemas/DirectChargeAPIRequest'
+        required: true
+      responses:
+        '201':
+          description: "Request Submitted Successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/DirectChargeAPIResponse'
+
+  /billing/v1/transfer-recipients/{provider}/properties:
+    get:
+      tags:
+        - Disbursements
+      summary: Fetch Provider Properties
+      description: This is the endpoint to Fetch properties for provider that needs them before a transfer recipient can be created. E.g Paystack (Bank Transfer)
+      operationId: fetchTransferRecipientProviderProperties
+      parameters:
+        - in: path
+          name: provider
+          schema:
+            type: string
+          required: true
+          description: This is the provider slug. Find full list of providers here [Supported Providers](https://docs.platform.com/#/Disbursements/supported-Disbursements)
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    oneOf:
+                      - $ref: '#/components/schemas/TransferRecipientProviderBankListResponse'
+                      - $ref: '#/components/schemas/TransferRecipientProviderPawapayPropertiesResponse'
+  /billing/v1/transfer-recipients/validate:
+    post:
+      tags:
+        - Disbursements
+      summary: Validate A Transfer Recipient
+      description: Create and Validate a Transfer Recipient for Disbursements
+      operationId: validateTransferRecipient
+      requestBody:
+        description: Validate a Transfer Recipient
+        content:
+          application/json:
+            schema:
+              $ref:  '#/components/schemas/ValidateTransferRecipientRequest'
+        required: true
+      responses:
+        '201':
+          description: "Transfer Recipient Successfully Validated"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ValidateTransferRecipientResponse'
+  /billing/v1/disbursements:
+    post:
+      tags:
+        - Disbursements
+      summary: Request a Disbursement
+      description: Request a Disbursement to a Transfer Recipient
+      operationId: RequestADisbursement
+      requestBody:
+        description: Request a Disbursement
+        content:
+          application/json:
+            schema:
+              $ref:  '#/components/schemas/RequestDisbursementRequest'
+        required: true
+      responses:
+        '201':
+          description: "Request for Disbursement Successful"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/RequestDisbursementResponse'
+    get:
+      tags:
+        - Disbursements
+      summary: Fetch All Disbursements Transaction
+      description: Retrieve a paginated list of all disbursement transactions
+      operationId: getAllDisbursements
+      parameters:
+        - in: query
+          name: dateFrom
+          schema:
+            type: string
+            format: date
+            example: "2025-01-01"
+          description: Start date for filtering transactions (inclusive)
+          required: false
+        - in: query
+          name: dateTo
+          schema:
+            type: string
+            format: date
+            example: "2025-03-31"
+          description: End date for filtering transactions (inclusive)
+          required: false
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: Page number for pagination
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 4
+          description: Number of records per page
+      responses:
+        '200':
+          description: Successfully retrieved disbursements
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAllDisbursements'
+
+  /billing/v1/disbursements/verify/{reference}:
+    get:
+      tags:
+        - Disbursements
+      summary: Verify a Disbursement
+      description: Verify a Disbursement
+      operationId: VerifyADisbursement
+      parameters:
+        - in: path
+          name: reference
+          schema:
+            type: string
+          required: true
+          description: Reference of the transaction to verify
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/VerifyDisbursementTransactionResponse'
+  /billing/v1/wallets:
+    get:
+      tags:
+        - Wallet
+      summary: Fetch Wallets
+      description: This is the endpoint to Fetch Wallet for a business
+      operationId: fetchWallets
+      parameters:
+        - in: query
+          name: country
+          schema:
+            $ref: "#/components/schemas/Country"
+        - in: query
+          name: currency
+          schema:
+            $ref: "#/components/schemas/Currency"
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      $ref: "#/components/schemas/WalletBalanceResponse"
+
+components:
+  schemas:
+    Amount:
+      type: integer
+      description: Amount should be in the subunit of the supported currency i.e value * 100
+      format: int64
+      example: 100000
+      examples:
+        - 100000
+
+    Currency:
+      type: string
+      description: 3 character currency code
+      example: USD, NGN, XOF, XAF
+      examples:
+        - NGN
+        - USD
+        - XOF
+        - XAF
+    Country:
+      type: string
+      description: 2 character country code
+      example: US, NG, CI, SN, CA, UK
+      examples:
+        - NG
+        - US
+        - CI
+        - SN
+        - CA
+        - UK
+    Provider:
+      type: string
+      description: This is the provider we are validating the account against. Find full list of providers here [Supported Providers](https://docs.platform.com/#/Disbursements/supported-Disbursements)
+      examples:
+        - provider-slug
+    User:
+      type: object
+      properties:
+        name:
+          type: string
+          description: customer's name
+          example: "Example User"
+          examples:
+            - "Example User"
+        email:
+          type: string
+          description: customer's email
+          example: "user@example.com"
+          format: email
+          examples:
+            - "user@example.com"
+        phoneNumber:
+          type: string
+          description: customer's phone number
+          example: "2347012345678"
+          examples:
+            - "2347012345678"
+
+    GenerateCheckoutURLRequest:
+      required:
+        - country
+        - currency
+        - user
+        - base
+      type: object
+      properties:
+        country:
+          $ref: '#/components/schemas/Country'
+          examples:
+            - NG
+        base:
+          required:
+            - amount
+            - currency
+          type: object
+          description: This is the base currency and amount the customer should be charged in
+          properties:
+            currency:
+              $ref: '#/components/schemas/Currency'
+              description: This is the base currency to be charged in.
+              examples:
+                - NGN
+            amount:
+              $ref: '#/components/schemas/Amount'
+              description: This is the amount to charge the customer
+              examples:
+                - 10000
+        shop:
+          type: object
+          properties:
+            currency:
+              $ref: '#/components/schemas/Currency'
+              description: This is an alternate currency that you store might be operating in. e.g Your base currency on platform might be XOF and your store runs on USD. Defaults to `base.currency`
+              examples:
+                - USD
+            amount:
+              $ref: '#/components/schemas/Amount'
+              description: This it amount on the alternate based on the store currency. When the base currency and shop currency are not the same, we convert the shop.amount to based on shop.currency to base.currency configuration set in the Settings -> Checkout Configuration. Defaults to `base.amount`
+              examples:
+                - 15
+        user:
+          $ref: '#/components/schemas/User'
+          required:
+            - phoneNumber
+        reference:
+          type: string
+          description: A reference code you'll generate to identify this transaction. This must be unique for every transaction. If you don't pass one, we will generate one for you.
+        redirectURL:
+          type: string
+          format: uri
+          description: "Fully qualified URL to which the customer should be redirected after the payment is completed"
+          example: 'https://example.com/redirect/success'
+          examples:
+            - 'https://example.com/redirect/success'
+        cancelURL:
+          type: string
+          format: uri
+          description: "Fully qualified URL to which the customer should be redirected if the cancel the payment session"
+          example: 'https://example.com/redirect/cancel'
+          examples:
+            - 'https://example.com/redirect/cancel'
+        webhook:
+          type: string
+          format: uri
+          description: 'This is a URL, if this is passed we will send the event webhook payload to this endpoint. Use this to override the webhook url provided on the dashboard for this transaction. Read more on [Webhooks](https://docs.platform.com/#/collections/webhook)'
+          example: 'https://example.com/webhook'
+          examples:
+            - 'https://example.com/webhook'
+    DirectChargeAPIRequest:
+      required:
+        - provider
+        - amount
+        - customerInput
+      type: object
+      properties:
+        provider:
+          $ref: '#/components/schemas/Provider'
+          description: This is the provider we are routing the request through. Find full list of providers here [Supported Providers](https://docs.platform.com/#/collections/direct-charge/supported-providers)
+          examples:
+            - airtel-smartcash-ng
+            - mtn-momo-ivory-coast
+        amount:
+          $ref: '#/components/schemas/Amount'
+        reference:
+          type: string
+          description: A reference code you'll generate to identify this transaction. This must be unique for every transaction. If you don't pass one, we will generate one for you.
+        customerInput:
+          type: object
+          properties:
+            phoneNumber:
+              type: string
+              description: customer's phone number
+              example: "2347012345678"
+              examples:
+                - "2347012345678"
+
+        webhook:
+          type: string
+          format: uri
+          description: 'This is a URL, if this is passed we will send the event webhook payload to this endpoint. Use this to override the webhook url provided on the dashboard for this transaction. Read more on [Webhooks](https://docs.platform.com/#/collections/webhook)'
+          example: 'https://example.com/webhook'
+          examples:
+            - 'https://example.com/webhook'
+
+    GenerateCheckoutURLResponse:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+          description: "This is the generated URL the customer should be redirected too for payment collection"
+          examples:
+            - "https://checkout-staging.platform.com/payfusion/66579afe04916ddcfcf73e7b"
+        shortURL:
+          type: string
+          format: uri
+          description: "This is a short version of the generated URL. PS: if you want to do a POST request redirection. Please use this"
+          examples:
+            - "https://l.6bd.co/XXXXX"
+        reference:
+          type: string
+          description: Transaction Reference
+        amount:
+          $ref: '#/components/schemas/Amount'
+        currency:
+          $ref: '#/components/schemas/Currency'
+    DirectChargeAPIResponse:
+      type: object
+      properties:
+        reference:
+          type: string
+          description: Transaction Reference
+        status:
+          type: string
+          description: Transaction Status
+        sessionId:
+          type: string
+          description: Transaction Session ID. This is from the provider.
+        amount:
+          $ref: '#/components/schemas/Amount'
+    VerifyTransactionResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          description: "Status of the transaction"
+          enum:
+            - success
+            - failed
+            - pending
+          examples:
+            - "success"
+        reference:
+          type: string
+          description: Transaction Reference
+        externalReference:
+          type: string
+          description: This is the reference sent to us by the merchant when the transaction was created
+        amount:
+          $ref: '#/components/schemas/Amount'
+        currency:
+          $ref: '#/components/schemas/Currency'
+        user:
+          $ref: '#/components/schemas/User'
+        paidAt:
+          type: integer
+          description: Unix timestamp value for when payment was verified from the provider
+          example: 1691265191
+          examples:
+            - 1691265191
+    DirectChargeProviderPawapayPropertiesResponse:
+      properties:
+        networks:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Name of the Network
+                example: Airtel
+                examples:
+                  - Airtel
+              value:
+                type: string
+                description: Value to be sent back when validating a recipient
+                example: "airtel"
+                examples:
+                  - "airtel"
+
+    TransferRecipientProviderBankListResponse:
+      properties:
+        banks:
+          type: array
+          items:
+            type: object
+            properties:
+              bankName:
+                type: string
+                description: Name of the bank
+                example: Access Bank
+                examples:
+                  - Access Bank
+              bankCode:
+                type: string
+                description: unique bank code
+                example: "044"
+                examples:
+                  - "044"
+    TransferRecipientProviderPawapayPropertiesResponse:
+      properties:
+        networks:
+          type: array
+          items:
+            type: object
+            properties:
+              label:
+                type: string
+                description: Name of the Network
+                example: Airtel
+                examples:
+                  - Airtel
+              value:
+                type: string
+                description: Value to be sent back when validating a recipient
+                example: "airtel"
+                examples:
+                  - "airtel"
+    MobileMoneyTransferRecipientAccount:
+      required:
+        - phoneNumber
+      properties:
+        phoneNumber:
+          type: string
+          description: customer's phone number
+          example: "2347012345678"
+          examples:
+            - "2347012345678"
+    PawapayMobileMoneyTransferRecipientAccount:
+      required:
+        - phoneNumber
+        - network
+      type: object
+      properties:
+        phoneNumber:
+          type: string
+          description: customer's phone number
+          example: "2347012345678"
+          examples:
+            - "2347012345678"
+        network:
+          type: string
+
+    BankAccountTransferRecipientAccount:
+      required:
+        - accountNumber
+        - bankCode
+      properties:
+        accountNumber:
+          type: string
+          description: customer's account number
+          example: "0123456789"
+          examples:
+            - "0123456789"
+        bankCode:
+          type: string
+          description: customer's bank code. This can be gotten from
+          example: "044"
+          examples:
+            - "044"
+    ValidateTransferRecipientRequest:
+      required:
+        - currency
+        - country
+        - provider
+        - account
+      type: object
+      properties:
+        currency:
+          $ref: '#/components/schemas/Currency'
+        country:
+          $ref: "#/components/schemas/Country"
+        provider:
+          $ref: "#/components/schemas/Provider"
+        account:
+          oneOf:
+            - $ref: '#/components/schemas/MobileMoneyTransferRecipientAccount'
+            - $ref: '#/components/schemas/PawapayMobileMoneyTransferRecipientAccount'
+            - $ref: '#/components/schemas/BankAccountTransferRecipientAccount'
+    ValidateTransferRecipientResponse:
+      type: object
+      properties:
+        currency:
+          $ref: '#/components/schemas/Currency'
+        country:
+          $ref: "#/components/schemas/Country"
+        provider:
+          $ref: "#/components/schemas/Provider"
+        accountLabel:
+          type: string
+          description: This is a short label describing the transfer recipient
+          example: "Bank Transfer | Zenith Bank | Dummy User | 0123456789"
+          examples:
+            - "Bank Transfer | Zenith Bank | Dummy User | 0123456789"
+        account:
+          anyOf:
+            - $ref: '#/components/schemas/MobileMoneyTransferRecipientAccount'
+            - $ref: '#/components/schemas/PawapayMobileMoneyTransferRecipientAccount'
+            - $ref: '#/components/schemas/BankAccountTransferRecipientAccount'
+    RequestDisbursementRequest:
+      type: object
+      required:
+        - transferRecipientId
+        - amount
+      properties:
+        reference:
+          type: string
+          description: A reference code you'll generate to identify this transaction. This must be unique for every transaction. If you don't pass one, we will generate one for you.
+        transferRecipientId:
+          type: string
+          description: 'id of a transfer recipient gotten from the response of TransferRecipient Call'
+          example: 6659692f019f6a143f7f90db
+          examples:
+            - 6659692f019f6a143f7f90db
+        amount:
+          $ref: "#/components/schemas/Amount"
+        narration:
+          type: string
+          example: "Transfer of 100"
+          examples:
+            - "Transfer of 100"
+        pin:
+          type: string
+          description: This is your disbursement pin. This is a form of disbursement authorization. Alternative is an Authorization URL
+        webhookURL:
+          type: string
+          format: uri
+          description: 'This is a URL, if this is passed we will send the event webhook payload to this endpoint. Use this to override the webhook url provided on the dashboard for this transaction. Read more on [Webhooks](https://docs.platform.com/#/collections/webhook)'
+          example: 'https://example.com/webhook'
+          examples:
+            - 'https://example.com/webhook'
+    RequestDisbursementResponse:
+      type: object
+      properties:
+        reference:
+          type: string
+          description: A reference code you'll generate to identify this transaction. This must be unique for every transaction. If you don't pass one, we will generate one for you.
+        amount:
+          $ref: "#/components/schemas/Amount"
+        amountPayable:
+          $ref: "#/components/schemas/Amount"
+          description: This signifies the actual amount sent to the recipient
+        provider:
+          $ref: "#/components/schemas/Provider"
+        currency:
+          $ref: "#/components/schemas/Currency"
+        country:
+          $ref: "#/components/schemas/Country"
+        status:
+          type: string
+          enum:
+            - processing
+            - failed
+            - success
+    VerifyDisbursementTransactionResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          description: "Status of the transaction"
+          enum:
+            - success
+            - failed
+            - processing
+          examples:
+            - "success"
+        reference:
+          type: string
+          description: Transaction Reference
+        externalReference:
+          type: string
+          description: This is the reference sent to us by the merchant when the transaction was created
+        amount:
+          $ref: '#/components/schemas/Amount'
+        currency:
+          $ref: '#/components/schemas/Currency'
+        user:
+          $ref: '#/components/schemas/User'
+        provider:
+          $ref: '#/components/schemas/Provider'
+
+    WalletBalanceResponse:
+      type: object
+      properties:
+        type:
+          type: string
+          description: This is the type of wallet
+          enum:
+            - main
+            - Disbursement
+            - deposit
+          examples:
+            - main
+            - Disbursement
+            - deposit
+        amount:
+          $ref: "#/components/schemas/Amount"
+          description: This signifies the actual amount in your wallet. This is in the lowest denomination
+        currency:
+          $ref: "#/components/schemas/Currency"
+        country:
+          $ref: "#/components/schemas/Country"
+        status:
+          type: string
+          enum:
+            - active
+            - post-no-debit
+    GetAllCheckoutResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 200
+        total:
+          type: integer
+          description: Total number of records
+          example: 1253
+        page:
+          type: integer
+          description: Current page number
+          example: 1
+        pages:
+          type: integer
+          description: Total number of pages
+          example: 314
+        limit:
+          type: integer
+          description: Number of records per page
+          example: 4
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              checkoutId:
+                type: string
+                example: "67ccca10721271b00713d4c3"
+              clientId:
+                type: string
+                example: "payfusion"
+              provider:
+                type: string
+                nullable: true
+                example: "MTN MoMo"
+              providerLogo:
+                type: string
+                nullable: true
+                example: "https://seeklogo.com/images/M/mtn-logo-40644FC8B0-seeklogo.com.png"
+              channel:
+                type: string
+                nullable: true
+                example: "mobile-money"
+              reference:
+                type: string
+                example: "D20250308225200TLWNG"
+              providersReference:
+                type: string
+                nullable: true
+                example: "1690402150"
+              currency:
+                type: string
+                example: "KES"
+              amount:
+                type: number
+                example: 281400
+              user:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    example: "katigbanoma ent"
+                  email:
+                    type: string
+                    example: "bidemi64@gmail.com"
+                  phoneNumber:
+                    type: string
+                    example: "+2348171633912"
+              merchantFee:
+                type: number
+                example: 0
+              customerFee:
+                type: number
+                example: 0
+              merchantFeeLabel:
+                type: string
+                example: "KES 0.00"
+              customerFeeLabel:
+                type: string
+                example: "KES 0.00"
+              charge:
+                type: number
+                nullable: true
+                example: 0
+              paidAt:
+                type: number
+                nullable: true
+                example: 1741188234
+              status:
+                type: string
+                example: "success"
+                enum: [ "success", "abandoned" ]
+              availableBalance:
+                type: number
+                example: 0
+              createdAt:
+                type: string
+                format: date-time
+                example: "2025-03-08T22:52:00.729Z"
+    GetAllDisbursements:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 200
+        total:
+          type: integer
+          description: Total number of records
+          example: 58
+        page:
+          type: integer
+          description: Current page number
+          example: 1
+        pages:
+          type: integer
+          description: Total number of pages
+          example: 29
+        limit:
+          type: integer
+          description: Number of records per page
+          example: 2
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              clientId:
+                type: string
+                example: "payfusion"
+              status:
+                type: string
+                example: "success"
+              statusDescription:
+                type: string
+                example: "success"
+              reference:
+                type: string
+                example: "D20250303232852ZSWSJ"
+              providersReference:
+                type: string
+                example: "pt-D20250303232852ZSWSJ"
+              externalReference:
+                type: string
+                example: "D20250303231740IWYKI"
+              currency:
+                type: string
+                example: "XOF"
+              country:
+                type: string
+                example: "CI"
+              transferRecipientId:
+                type: string
+                example: "677696a160f343c392c0449d"
+              transferRecipientLabel:
+                type: string
+                example: "Wave | +2250538102474"
+              charge:
+                type: integer
+                example: 11000
+              amount:
+                type: integer
+                example: 100000
+              provider:
+                type: string
+                example: "wave-ivory-coast"
+              providerLabel:
+                type: string
+                example: "Wave"
+              providerLogo:
+                type: string
+                format: uri
+                example: "https://docs.wave.com/images/business-penguin-a4539369.png"
+              channel:
+                type: string
+                example: "mobile-money"
+              integrationId:
+                type: string
+                example: "6762bcccdd35fc1c7cae5bd6"
+              id:
+                type: string
+                example: "67c69da4099fde3f44c85345"
+
+  securitySchemes:
+    clientId:
+      type: apiKey
+      name: "client-id"
+      in: header
+    clientSecret:
+      type: apiKey
+      name: "client-secret"
+      in: header
+
+security:
+  - clientId: []
+    clientSecret: []
