@@ -130,7 +130,7 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/VerifyTransactionResponse'
-  /payments/v1/payments/direct-charge/{properties}:
+  /payments/v1/payments/direct-charge/{provider}/properties:
     get:
       tags:
         - Collections
