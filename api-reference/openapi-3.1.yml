@@ -416,43 +416,23 @@ components:
         - country
         - currency
         - user
-        - base
+        - amount
       type: object
       properties:
         country:
           $ref: '#/components/schemas/Country'
           examples:
             - NG
-        base:
-          required:
-            - amount
-            - currency
-          type: object
-          description: This is the base currency and amount the customer should be charged in
-          properties:
-            currency:
-              $ref: '#/components/schemas/Currency'
-              description: This is the base currency to be charged in.
-              examples:
-                - NGN
-            amount:
-              $ref: '#/components/schemas/Amount'
-              description: This is the amount to charge the customer
-              examples:
-                - 10000
-        shop:
-          type: object
-          properties:
-            currency:
-              $ref: '#/components/schemas/Currency'
-              description: This is an alternate currency that you store might be operating in. e.g Your base currency on Payfonte might be XOF and your store runs on USD. Defaults to `base.currency`
-              examples:
-                - USD
-            amount:
-              $ref: '#/components/schemas/Amount'
-              description: This it amount on the alternate based on the store currency. When the base currency and shop currency are not the same, we convert the shop.amount to based on shop.currency to base.currency configuration set in the Settings -> Checkout Configuration. Defaults to `base.amount`
-              examples:
-                - 15
+        currency:
+          $ref: '#/components/schemas/Currency'
+          description: This is the base currency to be charged in.
+          examples:
+            - NGN
+        amount:
+          $ref: '#/components/schemas/Amount'
+          description: This is the amount to charge the customer. Amount should be sent in the lowest denomination e.g for 100 USD you should send 100 * 100 = 10000
+          examples:
+            - 10000
         user:
           $ref: '#/components/schemas/User'
           required:
