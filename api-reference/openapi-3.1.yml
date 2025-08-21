@@ -476,6 +476,7 @@ components:
             - mtn-momo-ivory-coast
         amount:
           $ref: '#/components/schemas/Amount'
+          description: Amount should be sent in the lowest denomination e.g for 100 USD you should send 100 * 100 = 10000
         reference:
           type: string
           description: A reference code you'll generate to identify this transaction. This must be unique for every transaction. If you don't pass one, we will generate one for you.
