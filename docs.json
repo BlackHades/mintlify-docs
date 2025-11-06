@@ -54,6 +54,7 @@
           {
             "group": "Disbursements",
             "pages": [
+              "guides/disbursements/process",
               "guides/disbursements/supported-providers",
               "guides/disbursements/authorization-mode",
               "guides/disbursements/examples",

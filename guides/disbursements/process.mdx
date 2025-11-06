@@ -1,0 +1,183 @@
+# Disbursement Process Flow
+
+This guide explains the complete disbursement flow using the Payfonte API, which involves three main steps: validating a transfer recipient, requesting a disbursement, and verifying the disbursement.
+
+## Overview
+
+The disbursement process enables you to send money to recipients through various providers including bank transfers and mobile money. The flow ensures security and accuracy by validating recipients before processing transfers.
+
+## Prerequisites
+
+- Valid API credentials (`client-id` and `client-secret`)
+- Sufficient wallet balance for the disbursement
+- Disbursement PIN (for authorization) or Authorization URL
+- Access to the Payfonte API (Sandbox or Production)
+
+## Step 1: Validate a Transfer Recipient
+
+Before initiating a disbursement, you must validate the transfer recipient to ensure the account details are correct.
+
+### 1.1 Fetch Provider Properties (Optional)
+
+Some providers require additional properties (e.g., bank codes, mobile network identifiers). Fetch these if needed:
+
+**Endpoint:** `GET /billing/v1/transfer-recipients/{provider}/properties`
+
+**Parameters:**
+- `provider` - The provider slug (e.g., `paystack-bank-transfer-ng`, `wave-ivory-coast`)
+
+**Response Examples:**
+
+For bank transfers:
+``` json
+{
+  "data": {
+    "banks": [
+      {
+        "bankName": "Access Bank",
+        "bankCode": "044"
+      }
+    ]
+  }
+}
+```
+
+### 1.2 Validate the Transfer Recipient
+
+Create and validate the transfer recipient account details.
+
+**Endpoint:** `POST /billing/v1/transfer-recipients/validate`
+
+**Request Body:**
+
+For Bank Transfer:
+```json
+{
+  "currency": "NGN",
+  "country": "NG",
+  "provider": "bank-transfer-nigeria",
+  "account": {
+    "accountNumber": "0123456789",
+    "bankCode": "044"
+  }
+}
+```
+For Mobile Money:
+
+``` json
+{
+  "currency": "XOF",
+  "country": "CI",
+  "provider": "wave-ivory-coast",
+  "account": {
+    "phoneNumber": "2250538102474"
+  }
+}
+```
+
+
+Response:
+``` json
+{
+  "data": {
+    "id":"recipient-id",
+    "currency": "NGN",
+    "country": "NG",
+    "provider": "bank-transfer-nigeria",
+    "accountLabel": "Bank Transfer | Zenith Bank | Dummy User | 0123456789",
+    "account": {
+      "accountNumber": "0123456789",
+      "bankCode": "044"
+    }
+  }
+}
+```
+
+**Important:** Save the `transferRecipientId` from this response (found in the database record). You'll need it for the next step.
+
+## Step 2: Request a Disbursement
+
+Once you have a validated transfer recipient, you can initiate the disbursement.
+
+**Endpoint:** `POST /billing/v1/disbursements`
+
+**Request Body:**
+
+``` json
+{
+  "transferRecipientId": "6659692f019f6a143f7f90db",
+  "amount": 100000,
+  "reference": "YOUR_UNIQUE_REFERENCE",
+  "narration": "Payment for services",
+  "pin": "YOUR_DISBURSEMENT_PIN",
+  "webhookURL": "https://example.com/webhook"
+}
+```
+
+**Parameters:**
+- `transferRecipientId` (required) - ID from the validation step
+- `amount` (required) - Amount in the lowest denomination (e.g., 100000 = 1,000.00)
+- `reference` (optional) - Your unique transaction reference. If not provided, one will be generated
+- `narration` (optional) - Description of the transfer
+- `pin` (required*) - Your disbursement PIN for authorization
+- `webhookURL` (optional) - Override webhook URL for this transaction
+
+**Response:**
+
+``` json
+{
+  "data": {
+    "reference": "PLATFORMS_REFERENCE",
+    "amount": 100000,
+    "amountPayable": 100000,
+    "provider": "paystack-bank-transfer-ng",
+    "currency": "NGN",
+    "country": "NG",
+    "status": "processing"
+  }
+}
+```
+
+**Status Values:**
+- `queued` - Disbursement is queued for processing
+- `rejected` - Disbursement was rejected by the platform
+- `processing` - Disbursement is being processed
+- `success` - Disbursement completed successfully
+- `failed` - Disbursement failed
+
+## Step 3: Verify the Disbursement
+
+After requesting a disbursement, verify its status to confirm successful completion.
+
+**Endpoint:** `GET /billing/v1/disbursements/verify/{reference}`
+
+**Parameters:**
+- `reference` - The transaction reference from Step 2
+
+**Response:**
+
+``` json
+{
+"data": {
+"status": "success",
+"reference": "YOUR_UNIQUE_REFERENCE",
+"externalReference": "YOUR_UNIQUE_REFERENCE",
+"amount": 100000,
+"currency": "NGN"}
+}
+```
+
+## Best Practices
+
+1. **Always validate recipients first** - This prevents failed transfers due to incorrect account details
+2. **Store transfer recipient IDs** - Reuse validated recipients for future disbursements
+3. **Use unique references** - Generate unique references for each transaction to avoid duplicates
+4. **Implement webhooks** - Set up webhook endpoints to receive real-time status updates
+5. **Verify disbursements** - Always verify the final status, especially for critical transactions
+6. **Handle errors gracefully** - Implement retry logic with exponential backoff for failed requests
+7. **Monitor wallet balance** - Ensure sufficient funds before initiating disbursements
+8. **Secure your PIN** - Never expose your disbursement PIN in client-side code
+
+## Supported Providers
+
+For a complete list of supported disbursement providers by country and currency, visit: [Supported Providers](https://docs.payfonte.com/guides/introductions/supported-providers)
