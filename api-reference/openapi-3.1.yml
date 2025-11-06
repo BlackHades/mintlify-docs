@@ -792,12 +792,10 @@ components:
           type: string
           description: This is the type of wallet
           enum:
-            - main
-            - Disbursement
+            - payout
             - deposit
           examples:
-            - main
-            - Disbursement
+            - payout
             - deposit
         amount:
           $ref: "#/components/schemas/Amount"
