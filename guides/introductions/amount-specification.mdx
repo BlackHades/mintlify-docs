@@ -1,0 +1,78 @@
+# Amount Specification
+This page explains how to represent monetary values when interacting with Payfonte APIs. To keep calculations precise and consistent across currencies and providers, **all amounts must be sent in the smallest (least) denomination** of the currency.
+
+For example, instead of sending `100.50` naira, you send `10050` kobo.
+
+## Why least denomination?
+
+- **Accuracy**
+  Working in the smallest unit avoids floating‑point rounding issues (e.g. `0.1 + 0.2 ≠ 0.3` in many languages).
+- **Consistency across endpoints**
+  All Payfonte endpoints that accept amounts (collections, disbursements, refunds, fees, etc.) expect the same format.
+- **Provider alignment**
+  Underlying payment processors, banks and wallets generally operate on integer minor units (kobo, cents, pesewas, etc.).
+
+## General rule
+
+Send **integer values only**, representing the amount in the currency’s smallest unit.
+
+- **NGN (Nigerian Naira)** → kobo
+- **GHS (Ghanaian Cedi)** → pesewas
+- **KES (Kenyan Shilling)** → cents
+
+```text
+major unit   → least denomination
+1 NGN        → 100 kobo
+1 GHS        → 100 pesewas
+1 KES        → 100 cents
+```
+
+## Example conversions
+
+```text
+100.00 NGN  → 10000  // kobo
+1,250.75 NGN → 125075 // kobo
+50.00 GHS   → 5000   // pesewas
+100.00 KES  → 10000  // cents
+```
+
+> 📘 Important
+> 
+> Always **convert on your side** before hitting our endpoints. The API does **not** accept decimal amounts.
+
+## Example: Collections request
+
+Below is an example request body for a collections endpoint where the customer is to be charged `1,250.75 NGN`.
+
+```json
+{
+  "customerId": "CUS_1234567890",
+  "currency": "NGN",
+  "amount": 125075,
+  "description": "Wallet funding via card"
+}
+```
+
+## Example: Disbursement request
+
+For a payout of `10,000.00 NGN` to a beneficiary account, the amount field becomes `1000000` (kobo):
+
+```json
+{
+  "beneficiaryId": "BEN_9876543210",
+  "currency": "NGN",
+  "amount": 1000000,
+  "narration": "Vendor settlement"
+}
+```
+
+## Common pitfalls
+
+- **Sending decimals**
+  - ❌ `"amount": 1250.75`
+  - ✅ `"amount": 125075`
+- **Mixing units**
+  - Don’t send some requests in naira and others in kobo.
+  - Always standardize to the smallest denomination in your integration layer.
+
+By always sending amounts in least denomination, your integrations with Payfonte collections and disbursement flows stay deterministic, predictable and aligned with our other endpoint specifications.
