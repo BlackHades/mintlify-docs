@@ -20,6 +20,7 @@
               "guides/introductions/platform-overview",
               "guides/introductions/authorization",
               "guides/introductions/endpoint-specification",
+              "guides/introductions/amount-specification",
               "guides/introductions/environments",
               "guides/introductions/wallets",
               "guides/introductions/testing",
