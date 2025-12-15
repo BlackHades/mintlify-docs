@@ -16,12 +16,14 @@ For example, instead of sending `100.50` naira, you send `10050` kobo.
 
 Send **integer values only**, representing the amount in the currency’s smallest unit.
 
+- **XOF (Ivorian Franc)** → centimes
 - **NGN (Nigerian Naira)** → kobo
 - **GHS (Ghanaian Cedi)** → pesewas
 - **KES (Kenyan Shilling)** → cents
 
 ```text
 major unit   → least denomination
+1 XOF        → 100 centimes
 1 NGN        → 100 kobo
 1 GHS        → 100 pesewas
 1 KES        → 100 cents
@@ -30,6 +32,7 @@ major unit   → least denomination
 ## Example conversions
 
 ```text
+10.00 XOF  → 1000  //centimes
 100.00 NGN  → 10000  // kobo
 1,250.75 NGN → 125075 // kobo
 50.00 GHS   → 5000   // pesewas
@@ -46,7 +49,6 @@ Below is an example request body for a collections endpoint where the customer i
 
 ```json
 {
-  "customerId": "CUS_1234567890",
   "currency": "NGN",
   "amount": 125075,
   "description": "Wallet funding via card"
@@ -59,7 +61,7 @@ For a payout of `10,000.00 NGN` to a beneficiary account, the amount field becom
 
 ```json
 {
-  "beneficiaryId": "BEN_9876543210",
+  "transferRecipientId": "BEN_9876543210",
   "currency": "NGN",
   "amount": 1000000,
   "narration": "Vendor settlement"
