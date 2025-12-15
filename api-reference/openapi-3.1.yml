@@ -357,7 +357,7 @@ components:
   schemas:
     Amount:
       type: integer
-      description: Amount should be in the subunit of the supported currency i.e value * 100
+      description: Amount should be in the subunit of the supported currency i.e value * 100 [Amount Specification](https://docs.payfonte.com/guides/introductions/amount-specification)
       format: int64
       example: 100000
       examples:
