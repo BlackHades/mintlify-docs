@@ -537,6 +537,9 @@ components:
     VerifyTransactionResponse:
       type: object
       properties:
+        clientId:
+          type: string
+          example: "6thbridge"
         status:
           type: string
           description: "Status of the transaction"
@@ -544,26 +547,61 @@ components:
             - success
             - failed
             - pending
-          examples:
-            - "success"
+          example: "success"
+        statusDescription:
+          type: string
+          example: "SUCCESSFUL"
         reference:
           type: string
           description: Transaction Reference
+          example: "DDC20260112090912SALGA"
         externalReference:
           type: string
           description: This is the reference sent to us by the merchant when the transaction was created
-        amount:
-          $ref: '#/components/schemas/Amount'
+          example: "DDC20260112090912SALGA"
+        providersReference:
+          type: string
+          example: "PIX_57688731248976662631"
         currency:
           $ref: '#/components/schemas/Currency'
+        charge:
+          type: integer
+          example: 5
+        totalAmount:
+          type: integer
+          example: 1005
+        amount:
+          $ref: '#/components/schemas/Amount'
+          example: 1000
         user:
-          $ref: '#/components/schemas/User'
+          type: object
+          properties:
+            phoneNumber:
+              type: string
+              example: "+221786836369"
+        checkoutId:
+          type: string
+          example: "69651ca8bf1ff6b132d93a47"
+        provider:
+          type: string
+          example: "wave-senegal"
+        providerLabel:
+          type: string
+          example: "Wave"
+        channel:
+          type: string
+          example: "mobile-money"
+        id:
+          type: string
+          example: "69651ca8bf1ff6b132d93a47"
+        paymentCard:
+          type: string
+          nullable: true
+          default: null
         paidAt:
           type: integer
           description: Unix timestamp value for when payment was verified from the provider
-          example: 1691265191
-          examples:
-            - 1691265191
+          example: 1768234193
     DirectChargeProviderPawapayPropertiesResponse:
       properties:
         networks:
