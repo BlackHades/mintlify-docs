@@ -5,7 +5,8 @@ lets define the fields
 
 | Field             | Description                                                                                                       |
 |:------------------|:------------------------------------------------------------------------------------------------------------------|
-| status            | This is the status of the disbursemet. this can be `success` or `failed` |
+| status            | This is the status of the disbursement. this can be `success` or `failed` |
+| statusDescription | This is the status description of the disbursement. this can be `success` or reason for failure |
 | clientId          | This is your clientId                                                                                             |
 | amount            | This is the amount of the transaction in kobo                                                                     |
 | charge            | This is the charge the customer was paid                                                                              |
@@ -21,7 +22,7 @@ lets define the fields
         "clientId": "payfusion",
         "type": "disbursement",
         "status": "success",
-        "statusDescription": "success",
+        "statusDescription": "Disbursement was successful",
         "reference": "L20250614142024AAAAA",
         "providersReference": "reference-from-mno",
         "externalReference": "merchant-reference",
