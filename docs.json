@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
+  "theme": "willow",
   "name": "Payfonte",
   "colors": {
     "primary": "#16A34A",
@@ -20,6 +20,7 @@
               "guides/introductions/platform-overview",
               "guides/introductions/authorization",
               "guides/introductions/endpoint-specification",
+              "guides/introductions/amount-specification",
               "guides/introductions/environments",
               "guides/introductions/wallets",
               "guides/introductions/testing",
@@ -36,7 +37,7 @@
                 "group": "Direct Charge API",
                 "pages": [
                   "guides/collections/direct-charge-api",
-                  "guides/collections/direct-charge/supported-providers",
+                  "guides/collections/direct-charge/mobile-money",
                   "guides/collections/direct-charge/examples"
                 ]
               },
@@ -54,6 +55,7 @@
           {
             "group": "Disbursements",
             "pages": [
+              "guides/disbursements/process",
               "guides/disbursements/supported-providers",
               "guides/disbursements/authorization-mode",
               "guides/disbursements/examples",
@@ -110,5 +112,17 @@
       "github": "https://github.com/mintlify",
       "linkedin": "https://linkedin.com/company/mintlify"
     }
+  },
+  "contextual": {
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
   }
 }

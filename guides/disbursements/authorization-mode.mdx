@@ -1,4 +1,7 @@
-# Authorization Mode
+---
+title: Authorization Mode
+---
+
 Payfonte supports 2 types of authorization for disbursement/payout processes to ensure secure transactions. This documentation provides detailed information on the implementation and usage of these authorization methods.
 
 ## Authorization Methods
@@ -22,11 +25,10 @@ PS: you can only do this once. you will have to reach out to support if you want
 
 Every API request must have the PIN field.
 
-```jsx JSON
+```jsonc
 {
-  ....
-  "pin":"XXXX",
-  ....
+  // ... other fields
+  "pin": "XXXX"
 }
 ```
 
@@ -49,6 +51,6 @@ Navigate to the page in the `Disbursements -> Settings` section of the dashboard
 ### Best Practice
 We advise the following should be done when we call your endpoint
 
-- Validate the payload comes from us by calculating the hash and verifying it. Examples can be found [in the webhook page](/guides/collections/webhook.md)
+- Validate the payload comes from us by calculating the hash and verifying it. Examples can be found [in the webhook page](/guides/collections/webhook)
 - Validate the amount in the payload matches what you sent
 - Validate the customer has enough funds in their wallet with you to carry out the transaction if this is a B2C

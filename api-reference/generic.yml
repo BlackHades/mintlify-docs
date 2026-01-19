@@ -1,38 +1,36 @@
 openapi: 3.1.0
 info:
-  title: Payfonte - OpenAPI 3.1
+  title: platform - OpenAPI 3.1
   description: |-
-    This is the minimal API for payfonte collection and disbursements API. To view a more elaborate documentation see here.
+    This is the minimal API for platform collection and disbursements API. To view a more elaborate documentation see here.
 
     Some useful links:
-    - [Home](https://payfonte.com)
-    - [Payfonte Documentation](https://docs.payfonte.com)
+    - [Home](https://platform.com)
+    - [platform Documentation](https://docs.platform.com)
 
-  termsOfService: https://www.payfonte.com/terms
+  termsOfService: https://www.platform.com/terms
   contact:
-    email: tech@payfonte.com
+    email: tech@platform.com
   version: 1.0.0
 servers:
-  - url: https://sandbox-api.payfonte.com
-    description: Sandbox API Base URL
-  - url: https://api.payfonte.com
+  - url: https://api.kespay.africa
     description: Production API Base URL
 
 tags:
   - name: Collections
-    description: Everything about your payment collection with payfonte
+    description: Everything about your payment collection with platform
     externalDocs:
       description: Find out more
-      url: https://docs.payfonte.com/#/collections/inline
+      url: https://docs.platform.com/#/collections/inline
   - name: Disbursements
     description: |
-      Find full list of supported Disbursement providers here [Supported Providers](https://docs.payfonte.com/#/Disbursements/supported-Disbursements)
-      There are 3 main process to carry out a Disbursement on Payfonte
+      Find full list of supported Disbursement providers here [Supported Providers](https://docs.platform.com/#/Disbursements/supported-Disbursements)
+      There are 3 main process to carry out a Disbursement on platform
       1. Validate A transfer Recipient
       2. Initiate a Disbursement Request
       3. Verify a Disbursement Request
   - name: Wallets
-    description: A Little bit about our [wallets here] (https://docs.payfonte.com/#/introductions/wallets)
+    description: A Little bit about our [wallets here] (https://docs.platform.com/#/introductions/wallets)
 
 paths:
   /payments/v1/checkouts:
@@ -143,7 +141,7 @@ paths:
           schema:
             type: string
           required: true
-          description: This is the provider slug. Find full list of providers here [Supported Providers](https://docs.payfonte.com/#/collections/direct-charge/supported-providers)
+          description: This is the provider slug. Find full list of providers here [Supported Providers](https://docs.platform.com/#/collections/direct-charge/supported-providers)
       responses:
         '200':
           description: ""
@@ -192,7 +190,7 @@ paths:
           schema:
             type: string
           required: true
-          description: This is the provider slug. Find full list of providers here [Supported Providers](https://docs.payfonte.com/#/Disbursements/supported-Disbursements)
+          description: This is the provider slug. Find full list of providers here [Supported Providers](https://docs.platform.com/#/Disbursements/supported-Disbursements)
       responses:
         '200':
           description: ""
@@ -357,7 +355,7 @@ components:
   schemas:
     Amount:
       type: integer
-      description: Amount should be in the subunit of the supported currency i.e value * 100 [Amount Specification](https://docs.payfonte.com/guides/introductions/amount-specification)
+      description: Amount should be in the subunit of the supported currency i.e value * 100
       format: int64
       example: 100000
       examples:
@@ -385,7 +383,7 @@ components:
         - UK
     Provider:
       type: string
-      description: This is the provider we are validating the account against. Find full list of providers here [Supported Providers](https://docs.payfonte.com/#/Disbursements/supported-Disbursements)
+      description: This is the provider we are validating the account against. Find full list of providers here [Supported Providers](https://docs.platform.com/#/Disbursements/supported-Disbursements)
       examples:
         - provider-slug
     User:
@@ -416,23 +414,43 @@ components:
         - country
         - currency
         - user
-        - amount
+        - base
       type: object
       properties:
         country:
           $ref: '#/components/schemas/Country'
           examples:
             - NG
-        currency:
-          $ref: '#/components/schemas/Currency'
-          description: This is the base currency to be charged in.
-          examples:
-            - NGN
-        amount:
-          $ref: '#/components/schemas/Amount'
-          description: This is the amount to charge the customer. Amount should be sent in the lowest denomination e.g for 100 USD you should send 100 * 100 = 10000
-          examples:
-            - 10000
+        base:
+          required:
+            - amount
+            - currency
+          type: object
+          description: This is the base currency and amount the customer should be charged in
+          properties:
+            currency:
+              $ref: '#/components/schemas/Currency'
+              description: This is the base currency to be charged in.
+              examples:
+                - NGN
+            amount:
+              $ref: '#/components/schemas/Amount'
+              description: This is the amount to charge the customer
+              examples:
+                - 10000
+        shop:
+          type: object
+          properties:
+            currency:
+              $ref: '#/components/schemas/Currency'
+              description: This is an alternate currency that you store might be operating in. e.g Your base currency on platform might be XOF and your store runs on USD. Defaults to `base.currency`
+              examples:
+                - USD
+            amount:
+              $ref: '#/components/schemas/Amount'
+              description: This it amount on the alternate based on the store currency. When the base currency and shop currency are not the same, we convert the shop.amount to based on shop.currency to base.currency configuration set in the Settings -> Checkout Configuration. Defaults to `base.amount`
+              examples:
+                - 15
         user:
           $ref: '#/components/schemas/User'
           required:
@@ -457,7 +475,7 @@ components:
         webhook:
           type: string
           format: uri
-          description: 'This is a URL, if this is passed we will send the event webhook payload to this endpoint. Use this to override the webhook url provided on the dashboard for this transaction. Read more on [Webhooks](https://docs.payfonte.com/#/collections/webhook)'
+          description: 'This is a URL, if this is passed we will send the event webhook payload to this endpoint. Use this to override the webhook url provided on the dashboard for this transaction. Read more on [Webhooks](https://docs.platform.com/#/collections/webhook)'
           example: 'https://example.com/webhook'
           examples:
             - 'https://example.com/webhook'
@@ -470,13 +488,12 @@ components:
       properties:
         provider:
           $ref: '#/components/schemas/Provider'
-          description: This is the provider we are routing the request through. Find full list of providers here [Supported Providers](https://docs.payfonte.com/#/collections/direct-charge/supported-providers)
+          description: This is the provider we are routing the request through. Find full list of providers here [Supported Providers](https://docs.platform.com/#/collections/direct-charge/supported-providers)
           examples:
             - airtel-smartcash-ng
             - mtn-momo-ivory-coast
         amount:
           $ref: '#/components/schemas/Amount'
-          description: Amount should be sent in the lowest denomination e.g for 100 USD you should send 100 * 100 = 10000
         reference:
           type: string
           description: A reference code you'll generate to identify this transaction. This must be unique for every transaction. If you don't pass one, we will generate one for you.
@@ -493,7 +510,7 @@ components:
         webhook:
           type: string
           format: uri
-          description: 'This is a URL, if this is passed we will send the event webhook payload to this endpoint. Use this to override the webhook url provided on the dashboard for this transaction. Read more on [Webhooks](https://docs.payfonte.com/#/collections/webhook)'
+          description: 'This is a URL, if this is passed we will send the event webhook payload to this endpoint. Use this to override the webhook url provided on the dashboard for this transaction. Read more on [Webhooks](https://docs.platform.com/#/collections/webhook)'
           example: 'https://example.com/webhook'
           examples:
             - 'https://example.com/webhook'
@@ -506,7 +523,7 @@ components:
           format: uri
           description: "This is the generated URL the customer should be redirected too for payment collection"
           examples:
-            - "https://checkout-staging.payfonte.com/payfusion/66579afe04916ddcfcf73e7b"
+            - "https://checkout-staging.platform.com/payfusion/66579afe04916ddcfcf73e7b"
         shortURL:
           type: string
           format: uri
@@ -537,9 +554,6 @@ components:
     VerifyTransactionResponse:
       type: object
       properties:
-        clientId:
-          type: string
-          example: "6thbridge"
         status:
           type: string
           description: "Status of the transaction"
@@ -547,61 +561,26 @@ components:
             - success
             - failed
             - pending
-          example: "success"
-        statusDescription:
-          type: string
-          example: "SUCCESSFUL"
+          examples:
+            - "success"
         reference:
           type: string
           description: Transaction Reference
-          example: "DDC20260112090912SALGA"
         externalReference:
           type: string
           description: This is the reference sent to us by the merchant when the transaction was created
-          example: "DDC20260112090912SALGA"
-        providersReference:
-          type: string
-          example: "PIX_57688731248976662631"
-        currency:
-          $ref: '#/components/schemas/Currency'
-        charge:
-          type: integer
-          example: 5
-        totalAmount:
-          type: integer
-          example: 1005
         amount:
           $ref: '#/components/schemas/Amount'
-          example: 1000
+        currency:
+          $ref: '#/components/schemas/Currency'
         user:
-          type: object
-          properties:
-            phoneNumber:
-              type: string
-              example: "+221786836369"
-        checkoutId:
-          type: string
-          example: "69651ca8bf1ff6b132d93a47"
-        provider:
-          type: string
-          example: "wave-senegal"
-        providerLabel:
-          type: string
-          example: "Wave"
-        channel:
-          type: string
-          example: "mobile-money"
-        id:
-          type: string
-          example: "69651ca8bf1ff6b132d93a47"
-        paymentCard:
-          type: string
-          nullable: true
-          default: null
+          $ref: '#/components/schemas/User'
         paidAt:
           type: integer
           description: Unix timestamp value for when payment was verified from the provider
-          example: 1768234193
+          example: 1691265191
+          examples:
+            - 1691265191
     DirectChargeProviderPawapayPropertiesResponse:
       properties:
         networks:
@@ -769,7 +748,7 @@ components:
         webhookURL:
           type: string
           format: uri
-          description: 'This is a URL, if this is passed we will send the event webhook payload to this endpoint. Use this to override the webhook url provided on the dashboard for this transaction. Read more on [Webhooks](https://docs.payfonte.com/#/collections/webhook)'
+          description: 'This is a URL, if this is passed we will send the event webhook payload to this endpoint. Use this to override the webhook url provided on the dashboard for this transaction. Read more on [Webhooks](https://docs.platform.com/#/collections/webhook)'
           example: 'https://example.com/webhook'
           examples:
             - 'https://example.com/webhook'
@@ -830,10 +809,12 @@ components:
           type: string
           description: This is the type of wallet
           enum:
-            - payout
+            - main
+            - Disbursement
             - deposit
           examples:
-            - payout
+            - main
+            - Disbursement
             - deposit
         amount:
           $ref: "#/components/schemas/Amount"

@@ -1,9 +1,9 @@
 # Payment Example Payload
 
 Payout has 2 crucial flow, which are:
-- Validate Transfer Recipient 
+- Validate Transfer Recipient
 - Request Payout
-## Validate Transfer Recipient (POST /billing/v1/transfer-recipients/validate)
+## Validate Transfer Recipient - Mobile Money (POST /billing/v1/transfer-recipients/validate)
 A Basic Validate Transfer Recipient for Mobile Money Payload will look like this (We will use MTN MoMo as a example):
 ```json
 {
@@ -16,7 +16,7 @@ A Basic Validate Transfer Recipient for Mobile Money Payload will look like this
       }
 }
 ```
-Sample Response: 
+Sample Response:
 ```json
 {
     "statusCode": 200,
@@ -40,7 +40,47 @@ Sample Response:
     }
 }
 ```
-
+## Validate Transfer Recipient - Bank Transfer (POST /billing/v1/transfer-recipients/validate)
+A Basic Validate Transfer Recipient for Mobile Money Payload will look like this:
+```json
+{
+      "provider": "bank-transfer-nigeria",
+      "channel": "bank-transfer",
+      "currency": "NGN",
+      "country": "NG",
+      "account": {
+        "accountNumber": "0123456789",
+        "bankCode": "948"
+      }
+}
+```
+Sample Response:
+```json
+{
+    "statusCode": 200,
+    "data": {
+        "provider": "bank-transfer-nigeria",
+        "providerLabel": "Bank Transfer",
+        "source": "disbursement",
+        "channel": "bank-transfer",
+        "currency": "NGN",
+        "country": "NG",
+        "tags": [],
+        "accountLabel": "Momo Payment Service Bank | AAA BBB XXX | 2215381176",
+        "account": {
+            "name": "AAA BBB XXX",
+            "accountName": "AAA BBB XXX",
+            "accountNumber": "2215381176",
+            "bankCode": "948",
+            "bankName": "Momo Payment Service Bank"
+        },
+        "status": "pending",
+        "createdAt": "2025-05-26T12:58:04.476Z",
+        "updatedAt": "2025-05-26T12:58:04.476Z",
+        "id": "6834655cdc1370231451f2a5"
+    }
+}
+```
 ## Request Payout (POST /billing/v1/disbursements)
 A Basic Validate Transfer Recipient for Mobile Money Payload will look like this (We will use MTN MoMo as a example):
 ```json lines
