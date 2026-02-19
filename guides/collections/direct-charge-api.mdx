@@ -96,24 +96,82 @@ After making the API call, you will receive a response similar to this:
 }
 ```
 
-## 4. After the payment
+## 4. Provider/MNO Response Shape
+
+```ts
+{
+  data: {
+    action: 'processing' | 'redirect' | 'bank-transfer';
+    sessionId: string; // currently payment.reference
+    provider: string;
+    channel: string;
+    reference: string;
+    amount: number;
+    totalAmount: number;
+    status: string;
+    charge: number;
+    statusDescription: string;
+    data?: {
+      // redirect fields
+      link?: string;
+      message?: string;
+      expiry?: string | number;
+      reference?: string;
+
+      // bank-transfer fields
+      bankName?: string;
+      accountNumber?: string;
+      accountName?: string;
+      amount?: number;
+      currency?: string;
+      accountExpiry?: { unit: string; value: number };
+      message?: string;
+    };
+  };
+  statusCode: 201;
+}
+```
+
+## 4.2 Action Types And Merchant Handling
+
+### 4.2.1. `processing`
+
+Meaning:
+Payment was initialized and is waiting for provider/customer completion.
+
+How merchant should handle:
+
+1. Show pending/processing state.
+2. Track transaction with `reference`.
+3. Wait for verification/webhook before marking final status.
+
+Response note:
+`data` is usually absent for this action in the normalized charge response.
+
+### 4.2.2. `redirect`
+
+Meaning:
+Customer must continue payment on a provider-hosted page.
+
+How merchant should handle:
+
+1. Redirect customer to `data.link`.
+2. After customer returns, verify server-side.
+3. Do not treat redirect return alone as success.
+
+### 4.2.3. `bank-transfer`
+
+Meaning:
+Provider returned account details for manual transfer.
+
+How merchant should handle:
+
+1. Display `data` account fields (bank, account number, account name, exact amount, currency, expiry).
+2. Instruct customer to transfer exact amount before expiry.
+3. Keep payment pending until webhook/verification confirms outcome.
+
+## 5. After the payment
 
 This following event will occur after a payment is completed
 1. If you have webhooks enabled, we will send you a notification via webhook once the payment is completed. To learn
    more about webhooks and see examples, please visit the following link [Webhooks](/guides/collections/webhook).
-
-[//]: # (## 5. When Payment Fails)
-
-[//]: # ()
-[//]: # (In the event that a payment attempt fails, such as due to insufficient funds, there is no need for you to take any)
-
-[//]: # (action. The payment page will remain open so that the customer can try again with another provider until the payment is)
-
-[//]: # (successful or they choose to cancel.)
-
-[//]: # ()
-[//]: # (If you have webhooks enabled, we will send you a notification for each failed payment attempt. This can be useful if you)
-
-[//]: # (need to follow up with customers who had issues with payment at a later time. Please refer to)
-
-[//]: # (our  [Webhooks]&#40;/collections/webhook.md&#41; guide for an example of how this works.)
