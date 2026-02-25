@@ -410,6 +410,19 @@ components:
           example: "2347012345678"
           examples:
             - "2347012345678"
+    Metadata:
+      type: object
+      properties:
+        merchantName:
+          type: string
+          example: "Karis Clothing"
+          examples:
+            - "Karis Clothing"
+        trafficType:
+          type: string
+          example: "ECOMMERCE"
+          examples:
+            - "ECOMMERCE"
 
     GenerateCheckoutURLRequest:
       required:
@@ -461,6 +474,8 @@ components:
           example: 'https://example.com/webhook'
           examples:
             - 'https://example.com/webhook'
+        metadata:
+          $ref: '#/components/schemas/Metadata'
     DirectChargeAPIRequest:
       required:
         - provider
@@ -497,6 +512,8 @@ components:
           example: 'https://example.com/webhook'
           examples:
             - 'https://example.com/webhook'
+        metadata:
+          $ref: '#/components/schemas/Metadata'
 
     GenerateCheckoutURLResponse:
       type: object
@@ -773,6 +790,8 @@ components:
           example: 'https://example.com/webhook'
           examples:
             - 'https://example.com/webhook'
+        metadata:
+          $ref: '#/components/schemas/Metadata'
     RequestDisbursementResponse:
       type: object
       properties:
