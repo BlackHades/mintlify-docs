@@ -35,11 +35,58 @@ tags:
     description: A Little bit about our [wallets here] (https://docs.payfonte.com/#/introductions/wallets)
 
 paths:
+  /payments/v1/payments/direct-charge:
+    post:
+      tags:
+        - Collections
+      summary: Collection API - Direct
+      description: Direct Charge the Customer via API
+      operationId: DirectChargeAPI
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref:  '#/components/schemas/DirectChargeAPIRequest'
+        required: true
+      responses:
+        '201':
+          description: "Request Submitted Successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/DirectChargeAPIResponse'
+  /payments/v1/payments/verify/{reference}:
+    get:
+      tags:
+        - Collections
+      summary: Verify Transaction
+      description: This is the endpoint to verify a Transaction
+      operationId: verifyPaymentTransaction
+      parameters:
+        - in: path
+          name: reference
+          schema:
+            type: string
+          required: true
+          description: Reference of the transaction to verify
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/VerifyTransactionResponse'
   /payments/v1/checkouts:
     post:
       tags:
         - Collections
-      summary: Generate A Payment Checkout URL
+      summary: Generate Checkout URL
       description: Generate a Payment Checkout URL for customers to make payment
       operationId: generateCheckoutURL
       requestBody:
@@ -105,31 +152,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetAllCheckoutResponse'
-
-  /payments/v1/payments/verify/{reference}:
-    get:
-      tags:
-        - Collections
-      summary: Verify Transaction
-      description: This is the endpoint to verify a Transaction
-      operationId: verifyPaymentTransaction
-      parameters:
-        - in: path
-          name: reference
-          schema:
-            type: string
-          required: true
-          description: Reference of the transaction to verify
-      responses:
-        '200':
-          description: ""
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    $ref: '#/components/schemas/VerifyTransactionResponse'
   /payments/v1/payments/direct-charge/{provider}/properties:
     get:
       tags:
@@ -155,29 +177,6 @@ paths:
                   data:
                     oneOf:
                       - $ref: '#/components/schemas/DirectChargeProviderPawapayPropertiesResponse'
-  /payments/v1/payments/direct-charge:
-    post:
-      tags:
-        - Collections
-      summary: Direct Charge API
-      description: Direct Charge the Customer via API
-      operationId: DirectChargeAPI
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref:  '#/components/schemas/DirectChargeAPIRequest'
-        required: true
-      responses:
-        '201':
-          description: "Request Submitted Successfully"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    $ref: '#/components/schemas/DirectChargeAPIResponse'
 
   /billing/v1/transfer-recipients/{provider}/properties:
     get:
