@@ -1,33 +1,97 @@
 ---
-title: 'Introduction'
-description: 'Example section for showcasing API endpoints'
+title: "API Introduction"
+description: "Overview of Payfonte API domains, authentication, base URLs, and endpoint workflows from the OpenAPI 3.1 specification."
 ---
 
-<Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the api-reference folder.
-</Note>
+## Overview
 
-## Welcome
+Payfonte provides APIs for three core capabilities:
 
-There are two ways to build API documentation: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). For the starter kit, we are using the following OpenAPI specification.
+- **Collections**: create payment checkouts, run direct charge, and verify transactions.
+- **Disbursements**: validate recipients, request transfers, list disbursements, and verify disbursement status.
+- **Wallets**: fetch wallet balances by `country` and `currency`.
 
-<Card
-  title="Plant Store Endpoints"
-  icon="leaf"
-  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
->
-  View the OpenAPI specification file
-</Card>
+The API spec defines **11 operations** across collection, disbursement, and wallet flows.
+
+## Base URLs
+
+Use the right server for your environment:
+
+| Environment | Base URL |
+| --- | --- |
+| Sandbox | `https://sandbox-api.payfonte.com` |
+| Production | `https://api.payfonte.com` |
 
 ## Authentication
 
-All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
+All endpoints require two API key headers (not Bearer token auth):
 
-```json
-"security": [
-  {
-    "bearerAuth": []
-  }
-]
+- `client-id`
+- `client-secret`
+
+```bash
+curl --request GET 'https://sandbox-api.payfonte.com/payments/v1/checkouts' \
+  --header 'client-id: <your-client-id>' \
+  --header 'client-secret: <your-client-secret>'
 ```
+
+## Endpoint Map
+
+### Collections
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| `POST` | `/payments/v1/checkouts` | Generate checkout URL |
+| `GET` | `/payments/v1/checkouts` | List checkout transactions (paginated) |
+| `POST` | `/payments/v1/payments/direct-charge` | Direct charge via provider |
+| `GET` | `/payments/v1/payments/direct-charge/{provider}/properties` | Fetch provider-specific properties |
+| `GET` | `/payments/v1/payments/verify/{reference}` | Verify a collection transaction |
+
+### Disbursements
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| `GET` | `/billing/v1/transfer-recipients/{provider}/properties` | Fetch recipient/provider properties |
+| `POST` | `/billing/v1/transfer-recipients/validate` | Validate transfer recipient |
+| `POST` | `/billing/v1/disbursements` | Request a disbursement |
+| `GET` | `/billing/v1/disbursements` | List disbursement transactions (paginated) |
+| `GET` | `/billing/v1/disbursements/verify/{reference}` | Verify disbursement status |
+
+### Wallets
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| `GET` | `/billing/v1/wallets` | Fetch wallet balances |
+
+## Common Request Conventions
+
+- **Amount format**: send `amount` in the lowest denomination (subunit).
+  Example: `100.00` USD is sent as `10000`.
+- **Currency**: 3-character code (for example `NGN`, `USD`, `XOF`, `XAF`).
+- **Country**: 2-character code (for example `NG`, `US`, `CI`, `SN`).
+- **Reference**: merchant-generated transaction reference should be unique per request.
+- **Webhook override**: selected endpoints accept a per-request webhook URL override.
+
+## Typical Workflows
+
+### Collections flow
+
+1. Create a checkout (`POST /payments/v1/checkouts`) or run direct charge (`POST /payments/v1/payments/direct-charge`).
+2. Receive transaction updates via webhook and/or poll verification (`GET /payments/v1/payments/verify/{reference}`).
+3. Use list endpoint (`GET /payments/v1/checkouts`) for reconciliation and reporting.
+
+### Disbursements flow
+
+1. Fetch provider properties (if required) and validate recipient (`POST /billing/v1/transfer-recipients/validate`).
+2. Request disbursement (`POST /billing/v1/disbursements`).
+3. Verify status (`GET /billing/v1/disbursements/verify/{reference}`) and reconcile with list endpoint (`GET /billing/v1/disbursements`).
+
+## Pagination and Filters
+
+List endpoints support pagination with `page` and `limit`.
+Collection and disbursement list endpoints also support date filters (`dateFrom`, `dateTo`).
+
+## Support
+
+- Product docs: https://docs.payfonte.com
+- Contact: tech@payfonte.com

@@ -1,36 +1,121 @@
-# Authorization
-To interact with the Payfonte API, you need to authenticate your requests. Authorization is required for all API calls to ensure the security and integrity of the payment transactions. Payfonte uses industry-standard authentication mechanisms to protect your account and data.
+---
+title: "Authorization"
+description: "Authenticate Payfonte API requests using client-id and client-secret headers."
+icon: "key"
+---
 
-!> ❗️ Security
-!> We strongly advised that the client-secret should not be used on any frontend application or saved in any frontend application storage as it grants an attacker full access to the client's data and resources on the platform.
+Every Payfonte API request is authenticated using two headers:
 
-## Account Creation
+- `client-id`
+- `client-secret`
 
-You can create an account in any environment you want to work with. We advise you create a sandbox account for testing purposes only as it doesn't scale for production workload.
+<Danger>
+  Never expose `client-secret` in frontend apps, mobile apps, browser storage, or public repositories.
+</Danger>
 
-PS: Default verification code on sandbox is `4777`
+## Authentication Model
 
-## Authorization
+<CardGroup cols={2}>
+  <Card title="client-id" icon="fingerprint">
+    Public identifier for your account and environment.
+  </Card>
+  <Card title="client-secret" icon="lock">
+    Secret key used to authorize requests. Store only on trusted backend systems.
+  </Card>
+  <Card title="Header-Based Auth" icon="server">
+    Pass both credentials in request headers on every API call.
+  </Card>
+  <Card title="Environment-Specific Keys" icon="flask">
+    Sandbox and Production use different credentials. Do not mix them.
+  </Card>
+</CardGroup>
 
-You can find your `client-id` and `client-secret` in the `Settings > API Keys/Webhook section`. These parameters should be passed in the headers only. The `client-secret` should not be used on any frontend application as it gives an attacker full access to your platform.
+## Where To Get Your Keys
 
-### Client ID and Client Secret
+<Steps>
+  <Step title="Sign in to Dashboard">
+    Use [sandbox-app.payfonte.com](https://sandbox-app.payfonte.com) for testing or [app.payfonte.com](https://app.payfonte.com) for live operations.
+  </Step>
+  <Step title="Open API key settings">
+    Navigate to `Settings -> API Keys/Webhooks`.
+  </Step>
+  <Step title="Copy credentials securely">
+    Save your `client-id` and `client-secret` into server environment variables.
+  </Step>
+</Steps>
 
-Payfonte uses a combination client-id and client-secret keys for authentication. To obtain both keys, you need to [create an account](https://Payfonte.io/register)  with Payfonte and generate your `client-id` and` client-secret` from the account settings. The `client-secret`  acts as a secret token that authenticates your requests to Payfonte.
+## Request Example
 
-### Using the Credentials
-
-To include the client-id and client-secret in your API requests, you should include it as an HTTP header. The exact method for including the client-id and client-secret may vary depending on the API endpoint and the programming language or framework you are using. Here's an example of including the client-id and client-secret as an HTTP header:
-
-```shell
-//header of the request should contain:
-curl --request POST \
-  --url http://sandbox-api.payfonte.com/... \
+<CodeGroup>
+```bash cURL
+curl --location 'https://sandbox-api.payfonte.com/payments/v1/checkouts' \
+  --header 'client-id: <your-client-id>' \
+  --header 'client-secret: <your-client-secret>' \
   --header 'Content-Type: application/json' \
-  --header 'client-id: <client-id>' \
-  --header 'client-secret: <client-secret>'
+  --data '{
+    "reference": "test-001",
+    "amount": 1000,
+    "currency": "NGN",
+    "country": "NG",
+    "user": {
+      "phoneNumber": "08012345678"
+    }
+  }'
 ```
 
-Replace `<client-id>` with your actual `client-id` and `<client-secret>` with your actual `client-secret`  obtained from Payfonte
+```javascript Node.js (fetch)
+await fetch("https://sandbox-api.payfonte.com/payments/v1/checkouts", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "client-id": process.env.PAYFONTE_SANDBOX_CLIENT_ID,
+    "client-secret": process.env.PAYFONTE_SANDBOX_CLIENT_SECRET
+  },
+  body: JSON.stringify({
+    reference: "test-001",
+    amount: 1000,
+    currency: "NGN",
+    country: "NG",
+    user: { phoneNumber: "08012345678" }
+  })
+});
+```
+</CodeGroup>
 
-Note: Keep your `client-secret` secure and do not share it with unauthorized parties. Treat it as a sensitive piece of information to protect the integrity and security of your payment transactions.
+## Common Mistakes
+
+<AccordionGroup>
+  <Accordion title="Using production keys in sandbox" icon="triangle-exclamation">
+    Sandbox and production are separate environments. Use the matching base URL and matching credentials together.
+  </Accordion>
+  <Accordion title="Placing client-secret in frontend code" icon="shield-halved">
+    Frontend code is public to end users. Keep all authenticated Payfonte API calls on your backend.
+  </Accordion>
+  <Accordion title="Forgetting required headers" icon="circle-info">
+    Requests without either `client-id` or `client-secret` will fail authentication.
+  </Accordion>
+  <Accordion title="Hardcoding secrets in source control" icon="code">
+    Always load credentials from environment variables or a secure secret manager.
+  </Accordion>
+</AccordionGroup>
+
+## Security Checklist
+
+- Keep `client-secret` on backend only.
+- Use HTTPS for API and webhook endpoints.
+- Rotate credentials if exposure is suspected.
+- Restrict internal access to production secrets.
+
+## Related Docs
+
+<CardGroup cols={3}>
+  <Card title="Environments" icon="server" href="/guides/introductions/environments">
+    Sandbox and production URL/key setup.
+  </Card>
+  <Card title="Getting Started" icon="flag-checkered" href="/guides/introductions/getting-started">
+    Make your first successful API call.
+  </Card>
+  <Card title="API Reference" icon="file-code" href="/api-reference/introduction">
+    Full endpoint and schema details.
+  </Card>
+</CardGroup>

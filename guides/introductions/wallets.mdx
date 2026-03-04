@@ -1,52 +1,109 @@
-# Wallets Overview
-Payfonte assigns 2 types of wallets to each merchant for every country they subscribe to.
-These wallets are designed to manage different aspects of the merchant's financial transactions.
-This document provides a detailed explanation of the three wallet types and the actions that can be performed on these wallets.
+---
+title: "Wallets"
+description: "Understand Payfonte wallet types, balances, and operational actions for collections and disbursements."
+icon: "wallet"
+---
+
+Payfonte assigns wallets per merchant and market to separate collection inflows from disbursement outflows.
 
 ## Wallet Types
-### Collection Wallet
-The Collection Wallet is where all funds collected from payments are initially deposited.
 
-**Purpose**
-- Acts as the initial receiving wallet for all payment collections.
+<CardGroup cols={2}>
+  <Card title="Collection Wallet (Deposit)" icon="arrow-down">
+    Incoming payment funds are settled here first. Use this wallet as your primary collection balance.
+  </Card>
+  <Card title="Disbursement Wallet (Disbursement)" icon="arrow-up">
+    Disbursement and transfers are deducted from this wallet when you run disbursements.
+  </Card>
+</CardGroup>
 
-**Usage**
-- Collects payment values.
+## Wallet Status
 
-### Disbursement Wallet
-The Disbursement Wallet is used for handling disbursement/payout from the platform.
+Wallets can appear in these states:
 
-**Purpose**
-- Funds required for payouts are deducted from this wallet.
+| Status | Meaning |
+| --- | --- |
+| `active` | Wallet can receive and send funds based on configured operations. |
+| `post-no-debit` | Wallet can receive funds, but outgoing debits are blocked. |
 
-**Usage**
-- Funds can be transferred from the Collection Wallet to the Disbursement Wallet.
-- Executes all payout transactions.
+<Info>
+  `post-no-debit` is commonly used as a safety control when credentials or disbursement controls may be compromised.
+</Info>
 
+## Wallet Operations
 
+<AccordionGroup>
+  <Accordion title="Transfer funds between wallets" icon="right-left" defaultOpen>
+    Move funds from collection wallet to disbursement wallet when you need disbursement liquidity.
+  </Accordion>
+  <Accordion title="Suspend outgoing activity" icon="shield-halved">
+    Apply a suspend/post-no-debit control to stop outgoing deductions while investigations or security checks are ongoing.
+  </Accordion>
+  <Accordion title="Resume normal operations" icon="circle-check">
+    Remove restrictions when controls are restored and your account is verified as safe.
+  </Accordion>
+</AccordionGroup>
 
-## Wallet Actions
+## Fetch Wallet Balances via API
 
-### Transfer Funds
-Funds can be transferred between wallets as needed. This action allows for the movement of funds from `collection` wallet to `disbursement` to facilitate different types of transactions.
+Use the wallet endpoint to query current balances by `country` and `currency`.
 
-[//]: # (   ![image ]&#40;../_images/transfer.png&#41;)
+```bash
+curl --location 'https://api.payfonte.com/billing/v1/wallets?country=NG&currency=NGN' \
+  --header 'client-id: <your-client-id>' \
+  --header 'client-secret: <your-client-secret>'
+```
 
-### Suspend Wallet
-Merchants have the ability to suspend a wallet in case of security concerns, such as a compromised `disbursement PIN` or compromised `API Credentials`.
+Sample response shape:
 
-[//]: # (   ![image]&#40;../_images/suspend.png&#41;)
+```json
+{
+  "data": [
+    {
+      "type": "deposit",
+      "amount": 1250000,
+      "currency": "NGN",
+      "country": "NG",
+      "status": "active"
+    },
+    {
+      "type": "disbursement",
+      "amount": 500000,
+      "currency": "NGN",
+      "country": "NG",
+      "status": "active"
+    }
+  ]
+}
+```
 
-#### Effect of Suspension:
-A suspended wallet has a "post no debit" status. Funds can still be deposited into a suspended wallet, but all outgoing transactions (deductions) will be rejected.
-Usage: Suspend the wallet to prevent unauthorized disbursements while still allowing deposits.
+## Recommended Workflow
 
-#### Summary
-The 2 types of wallets in Payfonte's system are designed to streamline and secure the financial operations of merchants. The Collection Wallet collects initial payment funds, and the Disbursement Wallet manages payout transactions. Merchants can transfer funds between these wallets and suspend them if necessary to protect their accounts.
+<Steps>
+  <Step title="Monitor collection inflow">
+    Track funds entering your deposit/collection wallet after successful transactions.
+  </Step>
+  <Step title="Fund disbursement wallet proactively">
+    Transfer enough balance to disbursement wallet before high-volume disbursement runs.
+  </Step>
+  <Step title="Alert on low disbursement balance">
+    Set internal alerts so disbursement operations do not fail due to insufficient wallet funds.
+  </Step>
+  <Step title="Apply security controls quickly">
+    If compromise is suspected, suspend outgoing wallet operations and rotate credentials immediately.
+  </Step>
+</Steps>
 
-This documentation ensures that merchants understand the functionality and management of their wallets, facilitating smooth and secure financial transactions on the Payfonte platform.
+## Related Docs
 
-
-
-
-
+<CardGroup cols={3}>
+  <Card title="Authorization" icon="key" href="/guides/introductions/authorization">
+    Secure wallet API calls with required headers.
+  </Card>
+  <Card title="Disbursements" icon="money-bill-transfer" href="/guides/disbursements/overview">
+    Learn disbursement flows that use your disbursement wallet.
+  </Card>
+  <Card title="API Reference" icon="file-code" href="/api-reference/introduction">
+    Full endpoint details for wallet queries.
+  </Card>
+</CardGroup>

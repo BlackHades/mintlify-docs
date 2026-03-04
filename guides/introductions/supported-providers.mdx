@@ -1,10 +1,98 @@
+---
+title: 'Supported Provider Details'
+description: 'Technical specifications for Africa mobile money API providers including MTN MoMo API, M-Pesa API, Airtel Money API, Wave Money integration - decimal places, currency codes, authorization types.'
+icon: 'list-check'
+seo:
+    title: 'Provider Details - MTN MoMo API, M-Pesa API, Airtel Money API Specifications'
+    description: 'Complete technical specifications for mobile money API integration in Africa. MTN MoMo API, M-Pesa API, Wave Money integration, Airtel Money API - decimal places, limits, currencies.'
+    keywords: 'MTN MoMo API integration, M-Pesa API, Airtel Money API, Wave Money integration, Africa mobile money API, mobile money integration Africa, alternative payment methods APM, local payment methods Africa'
+---
+
+<Info>
+  This page is the source of truth for provider coverage, provider slugs, and min/max transaction limits.
+</Info>
+
+Use this page to pick the right provider slug for your integration by country and transaction type.
+
+## How To Use This Page
+
+<CardGroup cols={3}>
+  <Card title="Match Country + Type" icon="location-dot">
+    Select a country tab and confirm whether the provider supports `payment`, `disbursement`, or both.
+  </Card>
+  <Card title="Use Exact Slug" icon="fingerprint">
+    The `Slug` value is what your API payloads should send in the `provider` field.
+  </Card>
+  <Card title="Check Limits Early" icon="scale-balanced">
+    Review min/max amount ranges where available to avoid failed requests.
+  </Card>
+</CardGroup>
+
+## Column Guide
+
+<AccordionGroup>
+  <Accordion title="Provider" icon="building" defaultOpen>
+    Human-readable provider name (for example, MTN MoMo, Orange, Wave, Bank Transfer).
+  </Accordion>
+  <Accordion title="Slug" icon="tag">
+    Machine-readable provider identifier used in API calls (for example, `mtn-momo-ghana`).
+  </Accordion>
+  <Accordion title="Type" icon="right-left">
+    - `payment`: collection/charge flow
+    - `disbursement`: disbursement flow
+  </Accordion>
+  <Accordion title="Fetch Properties" icon="sliders">
+    `Yes` means you may need to call a provider-properties endpoint before initiating a request.
+  </Accordion>
+  <Accordion title="Min. Amount / Max. Amount" icon="hashtag">
+    Transaction thresholds where currently defined. Amount values follow the currency minor-unit rules in [Amount Specification](/guides/introductions/amount-specification).
+  </Accordion>
+</AccordionGroup>
+
+## Quick API Examples
+
+<Warning>
+  Payfonte does not support decimal amounts. Send integer amounts only in minor units (for example, `100.50 NGN` becomes `10050`). See [Amount Specification](/guides/introductions/amount-specification).
+</Warning>
+
+<CodeGroup>
+```json Collection example (provider slug)
+{
+  "provider": "mtn-momo-ghana",
+  "amount": 10000,
+  "currency": "GHS",
+  "country": "GH",
+  "reference": "ORDER-1001",
+  "customerInput": {
+    "phoneNumber": "233xxxxxxxxx"
+  }
+}
+```
+
+```json Disbursement example (provider slug)
+{
+  "provider": "bank-transfer-nigeria",
+  "country": "NG",
+  "currency": "NGN",
+  "account": {
+    "accountNumber": "0123456789",
+    "bankCode": "044"
+  }
+}
+```
+</CodeGroup>
+
+<Info>
+  Provider availability can change by market, compliance policy, or partner uptime. Confirm current setup in your dashboard before going live.
+</Info>
+
+## Country Coverage
+
 <Tabs>
   <Tab title="Burkina Faso">
     | **Provider** | **Slug** | **Type** | **Fetch Properties** | **Min. Amount** | **Max. Amount** |
     | :--- | :--- | :--- | :--- | :--- | :--- |
     | Orange | orange-burkina-faso | payment | No | | |
-    | Mobicash | mobicash-burkina-faso | disbursement | No | 500 | 1 000 000 |
-    | Mobicash | mobicash-burkina-faso | payment | No | | |
     | Orange | orange-burkina-faso | disbursement | No | 100 | 1 000 000 |
     | Wave | wave-burkina-faso | payment | No | | |
     | Wave | wave-burkina-faso | disbursement | No | | |
@@ -56,14 +144,22 @@
     | Safaricom (M-Pesa) | safaricom-kenya | payment | No | | |
     | Safaricom (M-Pesa) | safaricom-kenya | disbursement | No | | |
   </Tab>
-  <Tab title="Mali">
-    | **Provider** | **Slug** | **Type** | **Fetch Properties** | **Min. Amount** | **Max. Amount** |
-    | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Orange | orange-mali | payment | No | | |
-    | Orange | orange-mali | disbursement | No | 500 | 1 500 000 |
-    | Mobicash | mobicash-mali | disbursement | No | 500 | 1 500 000 |
-    | Mobicash | mobicash-mali | payment | No | | |
-  </Tab>
+
+[//]: # (<Tab title="Mali">)
+
+[//]: # (  | **Provider** | **Slug** | **Type** | **Fetch Properties** | **Min. Amount** | **Max. Amount** |)
+
+[//]: # (  | :--- | :--- | :--- | :--- | :--- | :--- |)
+
+[//]: # (  | Orange | orange-mali | payment | No | | |)
+
+[//]: # (  | Orange | orange-mali | disbursement | No | 500 | 1 500 000 |)
+
+[//]: # (  | Mobicash | mobicash-mali | disbursement | No | 500 | 1 500 000 |)
+
+[//]: # (  | Mobicash | mobicash-mali | payment | No | | |)
+
+[//]: # (</Tab>)
   <Tab title="Nigeria">
     | **Provider** | **Slug** | **Type** | **Fetch Properties** | **Min. Amount** | **Max. Amount** |
     | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -85,12 +181,18 @@
     | Wave | wave-senegal | payment | No | | |
     | Wave | wave-senegal | disbursement | No | | |
   </Tab>
-  <Tab title="South Sudan">
-    | **Provider** | **Slug** | **Type** | **Fetch Properties** | **Min. Amount** | **Max. Amount** |
-    | :--- | :--- | :--- | :--- | :--- | :--- |
-    | MTN MoMo | mtn-momo-south-sudan | payment | No | | |
-    | MTN MoMo | mtn-momo-south-sudan | disbursement | No | | |
-  </Tab>
+
+[//]: # (<Tab title="South Sudan">)
+
+[//]: # (  | **Provider** | **Slug** | **Type** | **Fetch Properties** | **Min. Amount** | **Max. Amount** |)
+
+[//]: # (  | :--- | :--- | :--- | :--- | :--- | :--- |)
+
+[//]: # (  | MTN MoMo | mtn-momo-south-sudan | payment | No | | |)
+
+[//]: # (  | MTN MoMo | mtn-momo-south-sudan | disbursement | No | | |)
+
+[//]: # (</Tab>)
   <Tab title="Togo">
     | **Provider** | **Slug** | **Type** | **Fetch Properties** | **Min. Amount** | **Max. Amount** |
     | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -114,3 +216,17 @@
     | MPesa | mpesa-tanzania | payment | No | 100 | |
   </Tab>
 </Tabs>
+
+## Related Docs
+
+<CardGroup cols={3}>
+  <Card title="Collect Payments" icon="credit-card" href="/guides/collections/overview">
+    Integration options for checkout and direct charge.
+  </Card>
+  <Card title="Disbursements Overview" icon="money-bill-transfer" href="/guides/disbursements/overview">
+    Step-by-step disbursement workflow.
+  </Card>
+  <Card title="API Reference" icon="file-code" href="/api-reference/introduction">
+    Endpoint details and schema definitions.
+  </Card>
+</CardGroup>

@@ -1,26 +1,80 @@
-# Error Code During Transactions
+---
+title: "Error Codes"
+description: "Common Payfonte API error codes, meanings, and recommended fixes for collection and disbursement flows."
+icon: "triangle-exclamation"
+---
 
-PS: All error descriptions can be found in the `error` part of each response
+All non-2xx responses include error details in this shape:
 
-| Module       | Status Code | Error Code                       | Meaning                                                                                                                                       |
-|--------------|-------------|----------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------|
-| Collection   | 404         | CurrencyExchangeValueNotFound    | This means we are unable to find a currency exchange value to convert the `shop.currency` to   `base.currency` during checkout                |
-| Disbursement | 404         | TransferRecipientNotFound        | Transfer Recipient Cannot be found. It's possible it has also been deleted.                                                                   |
-| Disbursement | 500         | InActiveWallet                   | This means your Payout Wallet is either inactive or a PND (post-no-debit) has been placed on your wallet.                                     |
-| Disbursement | 500         | InsufficientBalance              | You have insufficient balance to carry out the transaction                                                                                    |
-| Disbursement | 500         | InvalidDisbursementConfiguration | There is an error in your disbursement configuration. You can check the disbursements section on the dashboard to validate your configuration |
-| Disbursement | 400         | InvalidDisbursementPin           | This means either you haven't set your pin or you are passing an invalid pin.                                                                 |
-| Disbursement | 403         | InvalidDisbursementWhitelistedIP | This means you are calling our API from an invalid IP that is not whitelisted.                                                                |
-| Disbursement | 409         | TransferRecipientExists          | This means the transfer recipient you are trying to create already exists                                                                     |
-| Disbursement | 404         | TransferRecipientNotFound        | This means the selected transfer recipient does not exist on the platform                                                                     |
-| Disbursement | 400         | TransferRecipientBlacklisted     | This means the selected transfer recipient has been blacklisted                                                                               |
-| Disbursement | 422         | ValidateAuthorizationURLError    | This means we are unable to validate the transaction on your authorization URL                                                                |
-| Disbursement | 422         | ValidateAuthorizationURLError    | This means we are unable to validate the transaction on your authorization URL                                                                |
-| Disbursement | 400         | RecipientDailyLimitReached       | This means the recipient has maxed out their daily limit                                                                                      |
-| Disbursement | 400         | DuplicateDisbursementDetected    | This means the we received the same amount to the same recipient in the space of 5 minutes                                                    |
-| General      | 409         | DuplicateTransactionReference    | Duplicate Reference                                                                                                                           |
-| General      | 422         | ValidationError                  | One or more fields have failed to pass initial validation.                                                                                    |
-| General      | 404         | IntegrationNotFound              | The Provider Integration Could not be found. You can check the `My Integrations` on the dashboard to see if your integration is active.       |
-| General      | 404         | ResourceNotFound                 | This is a generic error that indicates the resource you are trying to access cannot be found                                                  |
-| General      | 500         | InvalidProvider                  | This means you are passing a `provider` that is not supported                                                                                 |
-| General      | 500         | InternalServerError              | General Server Error                                                                                                                          |
+```json
+{
+  "error": "Human-readable message",
+  "errorCode": "MachineReadableCode"
+}
+```
+
+Use both HTTP status and `errorCode` in your handling logic.
+
+## Collection Errors
+
+| Status | Error Code | Meaning | Recommended Action |
+| --- | --- | --- | --- |
+| `404` | `CurrencyExchangeValueNotFound` | Exchange value needed for currency conversion is unavailable. | Retry later or use a supported currency/country pair. |
+
+## Disbursement Errors
+
+| Status | Error Code | Meaning | Recommended Action |
+| --- | --- | --- | --- |
+| `404` | `TransferRecipientNotFound` | Transfer recipient does not exist (or was removed). | Re-validate and recreate recipient, then retry. |
+| `500` | `InActiveWallet` | disbursement wallet is inactive or on post-no-debit (PND). | Check wallet status on dashboard before retrying. |
+| `500` | `InsufficientBalance` | Wallet balance is too low for disbursement. | Fund disbursement wallet and retry. |
+| `500` | `InvalidDisbursementConfiguration` | Disbursement setup is incomplete or invalid. | Review disbursement settings in dashboard. |
+| `400` | `InvalidDisbursementPin` | Disbursement PIN missing or incorrect. | Set/reset PIN and retry with valid value. |
+| `403` | `InvalidDisbursementWhitelistedIP` | Request IP is not whitelisted for disbursement. | Add caller IP to allowlist or route from approved IP. |
+| `409` | `TransferRecipientExists` | Recipient already exists. | Reuse existing recipient instead of creating a new one. |
+| `400` | `TransferRecipientBlacklisted` | Recipient is blacklisted. | Use another eligible recipient. |
+| `422` | `ValidateAuthorizationURLError` | Authorization URL validation failed for disbursement flow. | Check authorization endpoint availability and response behavior. |
+| `400` | `RecipientDailyLimitReached` | Recipient daily limit has been exceeded. | Retry later or lower amount if supported. |
+| `400` | `DuplicateDisbursementDetected` | Same amount to same recipient detected in short window. | Use unique references and idempotent retry strategy. |
+
+## General Errors
+
+| Status | Error Code | Meaning | Recommended Action |
+| --- | --- | --- | --- |
+| `409` | `DuplicateTransactionReference` | A request used a previously used reference value. | Generate unique references per transaction. |
+| `422` | `ValidationError` | One or more request fields are invalid. | Fix field types/values and retry. |
+| `404` | `IntegrationNotFound` | Requested provider integration is not configured/active. | Activate integration in dashboard. |
+| `404` | `ResourceNotFound` | Requested resource does not exist. | Verify endpoint path and identifiers. |
+| `500` | `InvalidProvider` | Unsupported provider slug passed in request. | Use a valid slug from Supported Providers. |
+| `500` | `InternalServerError` | Unexpected server-side failure. | Retry with backoff and contact support if persistent. |
+
+## Fast Troubleshooting Flow
+
+<Steps>
+  <Step title="Check HTTP status and errorCode">
+    Parse both values first to classify auth, validation, configuration, or processing issues.
+  </Step>
+  <Step title="Verify request basics">
+    Confirm `client-id`, `client-secret`, provider slug, reference uniqueness, and integer minor-unit `amount`.
+  </Step>
+  <Step title="Check dashboard state">
+    Confirm wallet status, integration status, disbursement PIN, webhook config, and whitelisted IP settings.
+  </Step>
+  <Step title="Retry safely">
+    Use idempotent retries with exponential backoff for transient failures.
+  </Step>
+</Steps>
+
+## Related Docs
+
+<CardGroup cols={3}>
+  <Card title="Endpoint Specification" icon="diagram-project" href="/guides/introductions/endpoint-specification">
+    Response format, filtering, and API conventions.
+  </Card>
+  <Card title="Supported Providers" icon="globe-africa" href="/guides/introductions/supported-providers">
+    Validate provider slugs and market coverage.
+  </Card>
+  <Card title="Testing" icon="flask" href="/guides/introductions/testing">
+    Reproduce and validate error scenarios in sandbox.
+  </Card>
+</CardGroup>

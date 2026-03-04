@@ -1,0 +1,221 @@
+---
+title: 'Getting Started'
+description: 'Africa payment orchestration platform - Mobile money API integration for MTN MoMo, M-Pesa, Airtel Money, Wave. Accept local payment methods across 14+ African markets with one API.'
+icon: 'rocket'
+seo:
+  title: 'Payfonte - Africa Payment Orchestration Platform | Mobile Money API'
+  description: 'Leading payment orchestration API for Africa. Integrate MTN MoMo API, M-Pesa API, Airtel Money API, Wave Money integration in one platform. Enterprise payment orchestration with smart payment routing.'
+  keywords: 'payment orchestration platform Africa, Africa mobile money API, MTN MoMo API integration, M-Pesa API, mobile money integration Africa, alternative payment methods APM, local payment methods Africa, mobile money payment aggregator, multi-PSP integration Africa'
+---
+
+import { Card, CardGroup, Icon } from '@mintlify/components';
+
+# Welcome to Payfonte
+
+<img
+  className="block dark:hidden"
+  src="/images/hero-light.svg"
+  alt="Payfonte - Africa Payment Orchestration Platform | Mobile Money API Integration"
+/>
+<img
+  className="hidden dark:block"
+  src="/images/hero-dark.svg"
+  alt="Payfonte - Africa Payment Orchestration Platform | Mobile Money API Integration"
+/>
+
+## What is Payfonte?
+
+**Payfonte** is Africa's leading **payment orchestration platform** and **mobile money payment aggregator** that enables businesses to accept and disburse payments across **14+ African markets** through a single, unified **payment orchestration API**. 
+
+We provide the infrastructure for integrating **Alternative Payment Methods (APM)** and **local payment methods in Africa**—including mobile money, bank transfers, and cards—through one **multi-PSP integration**. Our platform offers **smart payment routing** and **enterprise payment orchestration** capabilities designed specifically for African markets.
+
+<CardGroup cols={4}>
+  <Card title="14+ Markets" icon="globe-africa">
+    Pan-African coverage
+  </Card>
+  <Card title="$100M+ TPV" icon="chart-line">
+    Processed transactions
+  </Card>
+  <Card title="99.99% Uptime" icon="shield-check">
+    Enterprise reliability
+  </Card>
+  <Card title="T+1-3 Settlement" icon="clock">
+    Fast settlement cycles
+  </Card>
+</CardGroup>
+
+---
+
+## Why Payfonte?
+
+Our **Africa payment orchestration** platform provides everything you need to accept **local payment methods in Africa**:
+
+<AccordionGroup>
+  <Accordion title="🔀 Hybrid Orchestration" icon="shuffle">
+    Use **your existing MNO contracts** where you have better rates, or leverage **Payfonte's direct partnerships**. Our **multi-PSP integration Africa** approach lets you combine both for optimal coverage and cost efficiency across all markets.
+  </Accordion>
+  
+  <Accordion title="💰 Cost Efficiency" icon="piggy-bank">
+    Eliminate the cost of developing and maintaining individual **mobile money API** integrations in-house. No **MTN MoMo API integration**, **M-Pesa API**, or **Airtel Money API** development needed—we handle the infrastructure.
+  </Accordion>
+  
+  <Accordion title="⚡ Smart Payment Routing" icon="route">
+    Our **smart payment routing Africa** technology provides automatic failover and backup rails ensuring maximum transaction success rates. The routing engine selects the optimal path for each transaction across your **alternative payment methods (APM)**.
+  </Accordion>
+  
+  <Accordion title="📊 Unified Dashboard" icon="table-columns">
+    One dashboard for all markets, payment methods, and MNOs. Manage your entire **mobile money integration Africa** portfolio with streamlined payment operations, financial reconciliation, and real-time reporting.
+  </Accordion>
+  
+  <Accordion title="🔄 Smart Reconciliation" icon="arrows-rotate">
+    In-built reconciliation engine ensures **100% final state resolution**. No missing or hanging transactions—every payment reaches a definitive status across all your **Africa mobile money API** integrations.
+  </Accordion>
+  
+  <Accordion title="🎨 White-Label Solutions" icon="palette">
+    Fully customizable checkout pages with your branding, or complete **Payment Infrastructure-as-a-Service** for fintechs building **enterprise payment orchestration Africa** solutions.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Our Products
+
+Payfonte offers two primary product lines to meet different business needs:
+
+<CardGroup cols={2}>
+  <Card 
+    title="Payment Orchestration / Infrastructure-as-a-Service" 
+    icon="server"
+    href="/guides/introductions/products#payment-orchestration"
+  >
+    **For Fintechs & Enterprises**
+    
+    Full payment infrastructure on your own MNO contracts. We provide the technology layer—you maintain direct relationships with providers.
+    
+    - Use your own MNO/PSP contracts
+    - White-label checkout & dashboard
+    - Complete API access
+    - Custom routing rules
+  </Card>
+  
+  <Card 
+    title="Payment Aggregation" 
+    icon="layer-group"
+    href="/guides/introductions/products#payment-aggregation"
+  >
+    **For Merchants & Businesses**
+    
+    Start accepting payments immediately using Payfonte's aggregated MNO partnerships. No direct contracts required.
+    
+    - Instant go-live capability
+    - Pre-negotiated MNO rates
+    - Simplified onboarding
+    - Managed compliance
+  </Card>
+</CardGroup>
+
+---
+
+## Quick Start Guide
+
+Get up and running in three simple steps:
+
+<Steps>
+  <Step title="Create Your Sandbox Account">
+    Sign up at [sandbox-app.payfonte.com](https://sandbox-app.payfonte.com) to access your test environment. No credit card required.
+  </Step>
+  
+  <Step title="Get Your API Credentials">
+    Navigate to **Settings → API Keys/Webhooks** in your dashboard to retrieve your `client-id` and `client-secret`.
+  </Step>
+  
+  <Step title="Make Your First API Call">
+    Use the sandbox base URL to test your integration:
+    
+    ```bash
+    curl --location 'https://sandbox-api.payfonte.com/payments/v1/checkouts' \
+      --header 'client-id: <your-client-id>' \
+      --header 'client-secret: <your-client-secret>' \
+      --header 'Content-Type: application/json' \
+      --data '{
+        "reference": "test-001",
+        "amount": 1000,
+        "currency": "NGN",
+        "country": "NG",
+        "redirectURL": "https://yoursite.com/callback",
+        "user": {
+          "email": "customer@example.com",
+          "phoneNumber": "08012345678"
+        }
+      }'
+    ```
+  </Step>
+</Steps>
+
+<Note>
+  **Ready for production?** Complete the KYB process via our [onboarding form](https://form.jotform.com/240038360690048) and go live in 1-5 business days.
+</Note>
+
+---
+
+## Supported Alternative Payment Methods (APM)
+
+Payfonte supports comprehensive **local payment methods in Africa** through our **mobile money payment aggregator**:
+
+| Category | Providers |
+|----------|-----------|
+| **Mobile Money API** | MTN MoMo, Orange Money, Airtel Money, M-Pesa, Wave, Moov, Togocel, Halopesa |
+| **Bank Transfers** | Direct bank transfers (Nigeria, Kenya, South Africa) |
+| **Cards** | Visa, Mastercard (via partner gateways) |
+| **Wallets** | Opay, PalmPay, OPay Wallet |
+
+Our **Africa mobile money API** integrations include:
+- **MTN MoMo API integration** across 10+ countries
+- **M-Pesa API** for Kenya, Tanzania, and other East African markets
+- **Airtel Money API** for pan-African coverage
+- **Wave Money integration** for West Africa
+- Orange Money, Moov, and other regional providers
+
+<CardGroup cols={2}>
+  <Card title="View All Providers" icon="list" href="/guides/introductions/supported-providers">
+    Complete list of supported **alternative payment methods** by country
+  </Card>
+  <Card title="Provider Details" icon="info" href="/guides/introductions/provider-details">
+    Decimal places, limits, and technical specifications for each **mobile money API**
+  </Card>
+</CardGroup>
+
+---
+
+## Security & Compliance
+
+<CardGroup cols={2}>
+  <Card title="PCI DSS Compliant" icon="shield-halved">
+    Full Payment Card Industry Data Security Standard compliance
+  </Card>
+  <Card title="Quarterly ASV Scans" icon="magnifying-glass">
+    External vulnerability assessments by certified security consultants
+  </Card>
+  <Card title="End-to-End Encryption" icon="lock">
+    All data encrypted in transit and at rest
+  </Card>
+  <Card title="Secure Tokenization" icon="key">
+    Card data tokenized for recurring payments
+  </Card>
+</CardGroup>
+
+---
+
+## Need Help?
+
+<CardGroup cols={3}>
+  <Card title="API Reference" icon="code" href="/api-reference">
+    Complete API documentation
+  </Card>
+  <Card title="Contact Support" icon="headset" href="mailto:support@payfonte.com">
+    support@payfonte.com
+  </Card>
+  <Card title="Book a Demo" icon="calendar" href="https://calendly.com/marc-payfonte/30min">
+    Schedule a walkthrough
+  </Card>
+</CardGroup>

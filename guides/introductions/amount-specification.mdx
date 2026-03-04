@@ -1,83 +1,109 @@
 ---
-title: Amount Specification
+title: "Amount Specification"
+description: "How to format amounts for Payfonte APIs using the smallest currency denomination."
+icon: "hashtag"
 ---
 
-This page explains how to represent monetary values when interacting with Payfonte APIs. To keep calculations precise and consistent across currencies and providers, **all amounts must be sent in the smallest (least) denomination** of the currency.
+Payfonte expects `amount` values in the **smallest denomination** of the currency (minor unit).
 
-For example, instead of sending `100.50` naira, you send `10050` kobo.
+Use this rule:
 
-## Why least denomination?
+`amount_to_send = major_amount * 100`
 
-- **Accuracy**
-  Working in the smallest unit avoids floating‑point rounding issues (e.g. `0.1 + 0.2 ≠ 0.3` in many languages).
-- **Consistency across endpoints**
-  All Payfonte endpoints that accept amounts (collections, disbursements, refunds, fees, etc.) expect the same format.
-- **Provider alignment**
-  Underlying payment processors, banks and wallets generally operate on integer minor units (kobo, cents, pesewas, etc.).
+Example: `100.50 NGN` becomes `10050`.
 
-## General rule
+<Warning>
+  Do not send decimal values in API requests. Always send integer amounts.
+</Warning>
 
-Send **integer values only**, representing the amount in the currency’s smallest unit.
+## Why This Format?
 
-- **XOF (Ivorian Franc)** → centimes
-- **NGN (Nigerian Naira)** → kobo
-- **GHS (Ghanaian Cedi)** → pesewas
-- **KES (Kenyan Shilling)** → cents
+<CardGroup cols={3}>
+  <Card title="Precision" icon="bullseye">
+    Prevents floating-point rounding issues in financial calculations.
+  </Card>
+  <Card title="Consistency" icon="repeat">
+    Same amount format across collections, disbursements, and wallets.
+  </Card>
+  <Card title="Provider Alignment" icon="link">
+    Matches how payment providers process transaction values internally.
+  </Card>
+</CardGroup>
 
-```text
-major unit   → least denomination
-1 XOF        → 100 centimes
-1 NGN        → 100 kobo
-1 GHS        → 100 pesewas
-1 KES        → 100 cents
-```
+## Quick Conversion Table
 
-## Example conversions
+| Currency | Major Unit | Minor Unit | Example |
+| --- | --- | --- | --- |
+| NGN | Naira | Kobo | `100.00 NGN -> 10000` |
+| GHS | Cedi | Pesewa | `50.00 GHS -> 5000` |
+| KES | Shilling | Cent | `100.00 KES -> 10000` |
+| XOF | CFA Franc | Minor unit | `10.00 XOF -> 1000` |
+| USD | Dollar | Cent | `25.99 USD -> 2599` |
 
-```text
-10.00 XOF  → 1000  //centimes
-100.00 NGN  → 10000  // kobo
-1,250.75 NGN → 125075 // kobo
-50.00 GHS   → 5000   // pesewas
-100.00 KES  → 10000  // cents
-```
+## API Examples
 
-> 📘 Important
-> 
-> Always **convert on your side** before hitting our endpoints. The API does **not** accept decimal amounts.
+The examples below show the same rule in real requests:
 
-## Example: Collections request
+- `1250.75 NGN` is sent as `125075` (`amount` in kobo)
+- `10000.00 NGN` is sent as `1000000` (`amount` in kobo)
 
-Below is an example request body for a collections endpoint where the customer is to be charged `1,250.75 NGN`.
-
-```json
+<CodeGroup>
+```json Collections
 {
   "currency": "NGN",
   "amount": 125075,
-  "description": "Wallet funding via card"
+  "reference": "ORDER-1001"
 }
 ```
 
-## Example: Disbursement request
-
-For a payout of `10,000.00 NGN` to a beneficiary account, the amount field becomes `1000000` (kobo):
-
-```json
+```json Disbursements
 {
-  "transferRecipientId": "BEN_9876543210",
-  "currency": "NGN",
+  "transferRecipientId": "6659692f019f6a143f7f90db",
   "amount": 1000000,
-  "narration": "Vendor settlement"
+  "reference": "disbursement-1001"
 }
 ```
+</CodeGroup>
 
-## Common pitfalls
+## Common Mistakes
 
-- **Sending decimals**
-  - ❌ `"amount": 1250.75`
-  - ✅ `"amount": 125075`
-- **Mixing units**
-  - Don’t send some requests in naira and others in kobo.
-  - Always standardize to the smallest denomination in your integration layer.
+<AccordionGroup>
+  <Accordion title="Sending decimal amounts" icon="triangle-exclamation" defaultOpen>
+    - Incorrect: `"amount": 1250.75`
+    - Correct: `"amount": 125075`
+  </Accordion>
+  <Accordion title="Mixing major and minor units" icon="shuffle">
+    Do not send some requests in major units and others in minor units. Standardize conversion in one shared utility.
+  </Accordion>
+  <Accordion title="Converting on frontend only" icon="mobile-screen-button">
+    Conversion logic should run on your backend so it stays controlled and consistent.
+  </Accordion>
+</AccordionGroup>
 
-By always sending amounts in least denomination, your integrations with Payfonte collections and disbursement flows stay deterministic, predictable and aligned with our other endpoint specifications.
+## Recommended Implementation Pattern
+
+<Steps>
+  <Step title="Store business amounts as decimals or strings in your app">
+    Keep your display and business logic readable (for example `1250.75`).
+  </Step>
+  <Step title="Convert right before API request">
+    Convert to minor unit integer (`125075`) at your service boundary.
+  </Step>
+  <Step title="Log both values for debugging">
+    Log `displayAmount` and `apiAmount` so reconciliation is easier.
+  </Step>
+</Steps>
+
+## Related Docs
+
+<CardGroup cols={3}>
+  <Card title="Authorization" icon="key" href="/guides/introductions/authorization">
+    Add required auth headers to your requests.
+  </Card>
+  <Card title="Wallets" icon="wallet" href="/guides/introductions/wallets">
+    Understand wallet balances and wallet states.
+  </Card>
+  <Card title="API Reference" icon="file-code" href="/api-reference/introduction">
+    Explore request/response schemas.
+  </Card>
+</CardGroup>

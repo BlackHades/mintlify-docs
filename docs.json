@@ -3,9 +3,9 @@
   "theme": "willow",
   "name": "Payfonte",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#0033C7",
+    "light": "#0033C7",
+    "dark": "#0033C7"
   },
   "favicon": "/payfonte-favicon.ico",
   "navigation": {
@@ -14,40 +14,52 @@
         "tab": "Introduction",
         "groups": [
           {
-            "group": "Get Started",
+            "group": "Getting Started",
             "pages": [
-              "guides/introductions/getting-started",
+              "guides/introductions/overview",
+              "guides/introductions/products",
+              "guides/introductions/quick-start",
+              "guides/introductions/faq"
+            ]
+          },
+          {
+            "group": "Core Concepts",
+            "pages": [
               "guides/introductions/platform-overview",
               "guides/introductions/authorization",
-              "guides/introductions/endpoint-specification",
-              "guides/introductions/amount-specification",
               "guides/introductions/environments",
-              "guides/introductions/wallets",
-              "guides/introductions/testing",
-              "guides/introductions/error-codes",
+              "guides/introductions/amount-specification",
+              "guides/introductions/wallets"
+            ]
+          },
+          {
+            "group": "Providers & Coverage",
+            "pages": [
               "guides/introductions/supported-providers"
+            ]
+          },
+          {
+            "group": "Development",
+            "pages": [
+              "guides/introductions/endpoint-specification",
+              "guides/introductions/testing",
+              "guides/introductions/error-codes"
             ]
           },
           {
             "group": "Collect Payment",
             "pages": [
+              "guides/collections/overview",
               "guides/collections/inline",
               "guides/collections/standard",
+              "guides/collections/webhook",
               {
-                "group": "Direct Charge API",
+                "group": "Collections API - Direct",
+                "icon": "bolt",
                 "pages": [
                   "guides/collections/direct-charge-api",
                   "guides/collections/direct-charge/mobile-money",
                   "guides/collections/direct-charge/examples"
-                ]
-              },
-              "guides/collections/webhook",
-              {
-                "group": "Plugins And SDKs",
-                "pages": [
-                  "guides/collections/sdks/javascript",
-                  "guides/collections/sdks/wordpress-woocommerce",
-                  "guides/collections/sdks/shopify"
                 ]
               }
             ]
@@ -55,8 +67,7 @@
           {
             "group": "Disbursements",
             "pages": [
-              "guides/disbursements/process",
-              "guides/disbursements/supported-providers",
+              "guides/disbursements/overview",
               "guides/disbursements/authorization-mode",
               "guides/disbursements/examples",
               "guides/disbursements/webhook"
@@ -72,19 +83,14 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Home",
-          "href": "https://payfonte.com",
-          "icon": "house"
+          "anchor": "Website",
+          "icon": "house",
+          "href": "https://payfonte.com"
         },
         {
-          "anchor": "Supported Providers",
-          "href": "https://docs.payfonte.com/guides/introductions/supported-providers",
-          "icon": "money-bill"
-        },
-        {
-          "anchor": "Documentation",
-          "href": "https://docs.payfonte.com",
-          "icon": "book-open-cover"
+          "anchor": "Book a Demo",
+          "icon": "calendar",
+          "href": "https://calendly.com/payfonte-onboarding/30min"
         }
       ]
     }

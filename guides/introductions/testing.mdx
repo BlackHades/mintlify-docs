@@ -1,60 +1,106 @@
-# Documentation and Testing
+---
+title: "Testing"
+description: "Sandbox testing guide for Payfonte integrations, including provider simulators, webhook validation, and test scenarios."
+icon: "flask"
+---
 
+Use sandbox first for all integration validation before moving to production.
 
-## Flutterwave
-- Documentation:  https://developer.flutterwave.com/docs/quickstart
-- Test Data: https://developer.flutterwave.com/docs/integration-guides/testing-helpers/
+## Sandbox Setup
 
+<Steps>
+  <Step title="Use sandbox base URL">
+    API base URL: `https://sandbox-api.payfonte.com`
+  </Step>
+  <Step title="Use sandbox credentials">
+    Get your `client-id` and `client-secret` from `Settings -> API Keys/Webhooks` in [sandbox-app.payfonte.com](https://sandbox-app.payfonte.com).
+  </Step>
+  <Step title="Set webhook endpoint">
+    Configure a test callback URL so you can validate async transaction updates.
+  </Step>
+</Steps>
 
-## Opay:
-- Documentation: https://documentation.opaycheckout.com
-- Test Data: https://documentation.opaycheckout.com/end-to-end-testing
+## What To Validate Before Go-Live
 
+<CardGroup cols={2}>
+  <Card title="Auth and Headers" icon="key">
+    Confirm all requests include `client-id` and `client-secret`.
+  </Card>
+  <Card title="Amount Format" icon="hashtag">
+    Confirm you send integer minor-unit values only. Decimals are not supported.
+  </Card>
+  <Card title="Status Lifecycle" icon="repeat">
+    Validate pending/processing to final states (`success` or `failed`) in your business flow.
+  </Card>
+  <Card title="Webhook Handling" icon="bell">
+    Verify signature validation, retries, idempotency, and response timing.
+  </Card>
+</CardGroup>
 
-## MTN Momo
-- Documentation: https://momodeveloper.mtn.com/api-documentation
-- Test Data: https://momodeveloper.mtn.com/api-documentation/testing
+## Core Test Scenarios
 
-## CinetPay
-- Documentation: https://docs.cinetpay.com/api/1.0-en/checkout/notification
+| Scenario | Expected Result |
+| --- | --- |
+| Valid charge request | `201` response with transaction reference |
+| Invalid credentials | Authentication failure (`401`/`403`) |
+| Decimal amount sent | Validation/provider failure |
+| Duplicate reference | `409` with `DuplicateTransactionReference` |
+| Invalid provider slug | Error with `InvalidProvider` |
+| Webhook delivery | Callback received and processed once (idempotent) |
 
+## Provider-Specific Test Data
 
-## Wave
-- Documentation
-  - Collection: https://docs.wave.com/business#api-reference
-  - Disbursement: https://docs.wave.com/payout/#payout-api
+<AccordionGroup>
+  <Accordion title="Orange Ivory Coast OTP simulator" icon="mobile-screen-button" defaultOpen>
+    For Orange Ivory Coast testing on Payfonte:
 
-## Paystack
-- Documentation: https://paystack.com/docs/
-- Test Data: https://paystack.com/docs/payments/test-payments/
+    1. Open https://mpayment.orange-money.com/mpayment-otp/login
+    2. Sign in with:
+       - Username: `7701901040`
+       - Password: `MerchantWP01040`
+    3. Generate OTP with:
+       - Phone Number: `7701101040` (usually pre-loaded)
+       - PIN: `1791`
+    4. Use the generated OTP on the payment platform.
+  </Accordion>
+  <Accordion title="Safaricom / Equitel / T-Kash / Telkom" icon="phone">
+    - Collection test number: `254700000000`
+    - disbursement test number: `254711111111`
+  </Accordion>
+  <Accordion title="Airtel / Telecel / MTN (Ghana)" icon="phone">
+    - Collection test number: `233240000000`
+    - disbursement test number: `233242426222`
+  </Accordion>
+</AccordionGroup>
 
-## Interswitch
-- Documentation: https://docs.interswitchgroup.com/v1.1/docs/home
-- Test Data: https://docs.interswitchgroup.com/docs/test-cards
+## Quick Sandbox Request
 
-## Orange Ivory Coast
-For testing orange ivory coast on our platform, you will need a 4 digit code after we redirect you to orange platform. This is an instruction on how to generate it
+```bash
+curl --location 'https://sandbox-api.payfonte.com/payments/v1/checkouts' \
+  --header 'client-id: <your-client-id>' \
+  --header 'client-secret: <your-client-secret>' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "reference": "test-001",
+    "amount": 10000,
+    "currency": "NGN",
+    "country": "NG",
+    "user": {
+      "phoneNumber": "08012345678"
+    }
+  }'
+```
 
-- Navigate to  https://mpayment.orange-money.com/mpayment-otp/login . This is a simulator
-- Sign-in with
-  - Username: 7701901040
-  - Password: MerchantWP01040
-- Then use the following to generate the OTP
-  - Phone Number: 7701101040 (Usually pre-loaded)
-  - PIN: 1791
-- Then use the OTP on the payment platform.
+## Related Docs
 
-
-## Safaricom/Equitel/T-Kash/Telkom
-### Collection/Pay-in
-Test Number: 254700000000 
-
-### Payout
-Test Number: 254711111111
-
-## Airtel/Telecel/MTN
-### Collection/Payin
-Test Number: 233240000000
-
-### Payout
-Test Number: 233242426222
+<CardGroup cols={3}>
+  <Card title="Environments" icon="server" href="/guides/introductions/environments">
+    Sandbox and production URLs and credential setup.
+  </Card>
+  <Card title="Webhooks" icon="bell" href="/guides/collections/webhook">
+    Verify callback payloads and signature handling.
+  </Card>
+  <Card title="Error Codes" icon="triangle-exclamation" href="/guides/introductions/error-codes">
+    Troubleshoot failed test requests quickly.
+  </Card>
+</CardGroup>

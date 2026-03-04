@@ -1,127 +1,162 @@
-# Direct Charge Mobile Money Flows
-When using the  Direct Charge API for mobile money payments, there are three primary flow types that can occur based on the provider and region. Understanding these flows is crucial for implementing a seamless payment experience for your customers.
-## 1. Standard Flow (USSD Prompt)
-The standard flow is where the customer receives a USSD prompt on their mobile device to enter their PIN to authorize the payment.
-### How It Works:
-1. You initiate a direct charge request to our API
-2. The mobile network operator sends a USSD prompt to the customer's device
-3. The customer enters their PIN on their mobile device
-4. The transaction is processed without any further action required from the merchant
+---
+title: "Direct Charge Mobile Money Flows"
+description: "Understand how mobile money direct charge behaves across processing, redirect, and pre-OTP provider flows."
+icon: "mobile-screen-button"
+---
 
-### Identifying the Flow:
-In the API response, you'll receive `data.action` as `processing`, indicating that the customer needs to complete the action on their device.
-### Sample Response:
-``` json
+When you call the Direct Charge API for mobile money, provider behavior usually follows one of three flow types:
+
+- `processing` (USSD/STK prompt flow)
+- `redirect` (provider-hosted completion flow)
+- `pre-otp` (customer code required before request)
+
+## 1) Processing Flow (USSD/STK Prompt)
+
+Customer receives authorization prompt on mobile device and confirms with PIN.
+
+### What happens
+
+1. You initiate direct charge.
+2. Provider sends STK push/USSD prompt to customer.
+3. Customer authorizes on device.
+4. Transaction remains pending until provider final response.
+
+### How to detect
+
+`data.action` is `processing`.
+
+```json
 {
-    "data": {
-        "action": "processing",
-        "sessionId": "1031-4120-a98f-9357692945",
-        "provider": "safaricom-kenya",
-        "channel": "mobile-money",
-        "reference": "DDC20250812042317DIFMW",
-        "amount": 1000,
-        "status": "pending",
-        "charge": 5,
-        "statusDescription": "Awaiting Provider's Feedback"
-    },
-    "statusCode": 201
+  "data": {
+    "action": "processing",
+    "sessionId": "1031-4120-a98f-9357692945",
+    "provider": "safaricom-kenya",
+    "channel": "mobile-money",
+    "reference": "DDC20250812042317DIFMW",
+    "amount": 1000,
+    "status": "pending",
+    "charge": 5,
+    "statusDescription": "Awaiting Provider's Feedback"
+  },
+  "statusCode": 201
 }
 ```
-### Common Providers:
-- Safaricom (M-Pesa) in Kenya
-- MTN MoMo in various countries
-- Most providers that support USSD authentication
 
-## 2. Redirection Flow
-This flow requires redirecting the customer to a payment page hosted by the provider where they can complete their payment.
-### How It Works:
-1. You initiate a direct charge request to our API
-2. We return a URL that you must redirect the customer to
-3. The customer completes the payment on the provider's page
-4. The customer is redirected back to your application (if you provided a redirect URL)
+### Merchant handling
 
-### Identifying the Flow:
-In the API response, you'll receive `data.action` as `redirect`, along with a URL in the `data.data.link` field.
-### Sample Response:
-``` json
+- Show pending state to customer.
+- Do not fulfill on initial response.
+- Wait for webhook or verify by reference.
+
+## 2) Redirect Flow
+
+Provider returns a link; customer must complete payment on provider page/app.
+
+### What happens
+
+1. You initiate direct charge.
+2. API responds with redirect URL.
+3. Customer completes payment on provider channel.
+4. Customer may return to your app/site afterward.
+
+### How to detect
+
+`data.action` is `redirect` and URL is typically in `data.data.link`.
+
+```json
 {
+  "data": {
+    "action": "redirect",
+    "sessionId": "v1nadjww8lwfxxd7giumi3dyik7pzaxrxqmyvdeuunvixo25jhqf4o6wzuxhjdzg",
+    "provider": "orange-ivory-coast",
+    "channel": "mobile-money",
+    "reference": "DDC20250812042546ICXFC",
+    "amount": 10000,
+    "status": "pending",
+    "charge": 150,
+    "statusDescription": "Awaiting Provider's Feedback",
     "data": {
-        "action": "redirect",
-        "sessionId": "v1nadjww8lwfxxd7giumi3dyik7pzaxrxqmyvdeuunvixo25jhqf4o6wzuxhjdzg",
-        "provider": "orange-ivory-coast",
-        "channel": "mobile-money",
-        "reference": "DDC20250812042546ICXFC",
-        "amount": 10000,
-        "status": "pending",
-        "charge": 150,
-        "statusDescription": "Awaiting Provider's Feedback",
-        "data": {
-            "link": "https://mpayment.orange-money.com/sx/mpayment/abstract/v1nadjww8lwfxxd7giumi3dyik7pzaxrxqmyvdeuunvixo25jhqf4o6wzuxhjdzg",
-            "message": "Click on <a href=\"https://mpayment.orange-money.com/sx/mpayment/abstract/v1nadjww8lwfxxd7giumi3dyik7pzaxrxqmyvdeuunvixo25jhqf4o6wzuxhjdzg\">this link</a> to complete your payment",
-            "reference": "DDC20250812042546ICXFC"
-        }
-    },
-    "statusCode": 201
+      "link": "https://mpayment.orange-money.com/sx/mpayment/abstract/...",
+      "message": "Click link to complete your payment",
+      "reference": "DDC20250812042546ICXFC"
+    }
+  },
+  "statusCode": 201
 }
 ```
-### Implementation Requirements:
-- You must redirect the customer to the URL provided in `data.data.link`
-- For web applications, this can be done using standard redirect methods
-- For mobile applications, you may need to open the URL in an in-app browser or external browser
 
-### Common Providers:
-- Wave in various countries
-- Orange in several countries
+### Merchant handling
 
-## 3. Pre-OTP Flow
-This flow requires the customer to generate a one-time password (OTP) on their device before the payment can be initiated.
-### How It Works:
-1. The customer dials a USSD code on their device to generate an OTP
-2. The customer provides you with this OTP
-3. You include this OTP as `customerInput.customerCode` in your direct charge request
-4. The transaction is processed without further customer action
+- Redirect user to `data.data.link`.
+- On return, still verify final status server-side.
+- Do not mark success from redirect alone.
 
-### USSD Codes by Provider/Country:
+## 3) Pre-OTP Flow
+
+Some providers require customer to generate a provider code/OTP before you send the charge request.
+
+### What happens
+
+1. Customer generates code via provider USSD.
+2. Customer shares code with merchant.
+3. Merchant sends `customerInput.customerCode`.
+4. Provider processes charge.
+
+### Common USSD codes
+
 - Orange Ivory Coast: `#144*82#`
 - Orange Senegal: `#144#391#`
 - Orange Burkina Faso: `*144*4*6*Amount*PIN#`
 - Orange Mali: `#144#37#`
 
-### Sample Request:
-``` json
-{
-    "clientId": "payfusion",
-    "reference": "{{$guid}}",
-    "amount": 50000,
-    "provider": "orange-senegal",
-    "webhook": "https://webhook.site/8568b5e3-58e0-47c5-9e23-d9d4bff21a4f",
-    "narration": "Test payment from payfusion",
-    "customerInput": {
-        "phoneNumber": "786175702",
-        "customerCode": "758610"
-    }
-}
-```
-### Sample Response:
-``` json
-{
-    "data": {
-        "action": "processing",
-        "provider": "orange-senegal",
-        "channel": "mobile-money",
-        "reference": "DDC20250812042840JXBUK",
-        "amount": 50000,
-        "status": "pending",
-        "charge": 0,
-        "statusDescription": "Awaiting Provider's Feedback"
-    },
-    "statusCode": 201
-}
-```
-### Implementation Requirements:
-- Instruct your customers to generate the OTP using the appropriate USSD code for their provider
-- Collect the OTP from the customer
-- Include the OTP in your direct charge request as `customerInput.customerCode`
+### Sample request
 
-### Common Providers:
-- Orange in various countries (Senegal, Ivory Coast, Burkina Faso, Mali)
+```json
+{
+  "reference": "ORDER-1002",
+  "amount": 50000,
+  "provider": "orange-senegal",
+  "webhook": "https://yourapp.com/webhooks/payfonte",
+  "narration": "Direct charge test",
+  "customerInput": {
+    "phoneNumber": "786175702",
+    "customerCode": "758610"
+  }
+}
+```
+
+### Merchant handling
+
+- Collect OTP/customer code explicitly.
+- Validate format before API call.
+- Continue with normal webhook/verification completion flow.
+
+## Flow Decision Summary
+
+| Action | Customer next step | Merchant next step |
+| --- | --- | --- |
+| `processing` | Approve on device (USSD/STK) | Wait for webhook/verify |
+| `redirect` | Complete payment on provider page | Redirect + wait for webhook/verify |
+| `pre-otp` request pattern | Generate and share code first | Send code in `customerInput.customerCode` |
+
+## Important Rules
+
+<Warning>
+  Amount values must be integers in minor units. Decimals are not supported.
+</Warning>
+
+See [Amount Specification](/guides/introductions/amount-specification).
+
+## Related Docs
+
+<CardGroup cols={3}>
+  <Card title="Direct Charge API" icon="bolt" href="/guides/collections/direct-charge-api">
+    Endpoint usage and request field definitions.
+  </Card>
+  <Card title="Example Payloads" icon="code" href="/guides/collections/direct-charge/examples">
+    Provider-specific payload templates.
+  </Card>
+  <Card title="Webhooks" icon="bell" href="/guides/collections/webhook">
+    Confirm final transaction outcome asynchronously.
+  </Card>
+</CardGroup>

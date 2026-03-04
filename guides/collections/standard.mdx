@@ -1,98 +1,140 @@
-# Payfonte Standard
+---
+title: "Collection - Standard Checkout"
+description: "Redirect customers to Payfonte hosted checkout using a server-side API request."
+icon: "arrow-up-right-from-square"
+---
 
-The Payfonte checkout page is a page that allows customers to complete their purchases. Here is how it works:
+Standard checkout is a redirect flow:
 
-- From your infrastructure/application, call
-  our [Generate Checkout URL Endpoint](https://docs.payfonte.com/api-reference/collections/generate-a-payment-checkout-url) with the payment
-  details.
-- We will provide you with a link to a payment page, which you can then redirect your customer to in order to complete
-  the payment process.
-- Once the transaction is complete, we will redirect the customer back to you.
+1. Your backend creates a checkout session.
+2. Payfonte returns a checkout URL.
+3. You redirect the customer to that URL.
+4. Customer completes payment and Payfonte notifies your system via webhook.
 
-## 1. Get all the payment details
+## Why Use Standard Checkout?
 
-First, you need to assemble the payment details. Here are the details you'll need:
+<CardGroup cols={3}>
+  <Card title="Fastest Launch" icon="rocket">
+    Minimal frontend complexity. Your backend creates a checkout and redirects users.
+  </Card>
+  <Card title="Hosted Experience" icon="window-maximize">
+    Payfonte handles payment method UI and provider-specific interactions.
+  </Card>
+  <Card title="Reliable Status Updates" icon="bell">
+    Use webhook events and transaction verification for final payment outcomes.
+  </Card>
+</CardGroup>
 
-| Field              | Type   | Description                                                                                                                                                                                                                                                       | Required                           |
-|--------------------|--------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------|
-| `amount`           | Number | This is the amount to charge the customer. This should be in the lowest currency denomination                                                                                                                                                                     | false                              |
-| `user`             | Object | This is an object containing the users `email`, `phoneNumber` and `name`                                                                                                                                                                                          | True                               |
-| `user.email`       | String | This is the user's email address.                                                                                                                                                                                                                                 | True                               |
-| `user.phoneNumber` | String | This is the user's phone number. This is required for mobile money providers.                                                                                                                                                                                     | False                              |
-| `user.name`        | String | This is the user's name                                                                                                                                                                                                                                           | False                              |
-| `narration`        | String | This is the transaction description                                                                                                                                                                                                                               | False                              |
-| `reference`        | String | A reference code you'll generate to identify this transaction. This must be unique for every transaction. If you don't pass one, we will generate one for you.                                                                                                    | False                              |
-| `currency`         | String | This specifies the currency in which you would like to charge. If you do not provide a value, we will assume "NGN".                                                                                                                                               | True                               |
-| `country`          | String | This is the 2 character country code for the country that owns the currency. Multiple countries can share same currency e.g XOF. this is enforced to all better seperation of value                                                                               | True                               |
-| `redirectURL`      | String | The URL to which the customer should be redirected after the payment is completed.                                                                                                                                                                                | False                              |
-| `webhook`          | String | This is a URL, if this is passed we will send the event webhook payload to this endpoint                                                                                                                                                                          |                                    |
+## Integration Steps
 
-## 2. Call the endpoint to generate a checkout URL
+<Steps>
+  <Step title="Collect payment details on your backend">
+    Prepare required fields like `amount`, `currency`, `country`, and customer information.
+  </Step>
+  <Step title="Create checkout session">
+    Send a request to `POST /payments/v1/checkouts` with your `client-id` and `client-secret`.
+  </Step>
+  <Step title="Redirect customer">
+    Redirect users to `data.shortURL` (or `data.url`) from the response.
+  </Step>
+  <Step title="Confirm final status">
+    Process webhook notifications and/or verify transaction status before order fulfillment.
+  </Step>
+</Steps>
 
-Next, in order to initiate the payment process, you will need to call
-our [Generate Checkout URL Endpoint](https://docs.payfonte.com/api-reference/collections/generate-a-payment-checkout-url) API and provide the
-collected payment details. Please ensure that you authorize the API call using your client-id and client-secret. Below
-is an example in Node.js:
+## Create Checkout Request
 
-```shell shell
+```bash
 curl --location 'https://sandbox-api.payfonte.com/payments/v1/checkouts' \
---header 'client-id: <client-id>' \
---header 'client-secret: <client-secret>' \
---header 'Content-Type: application/json' \
---data-raw '{
-    "reference": "0f0d9d90-9099-435e-9aa1-2c000ef8598b",
+  --header 'client-id: <client-id>' \
+  --header 'client-secret: <client-secret>' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "reference": "ORDER-1001",
     "amount": 50000,
-    "redirectURL": "https://payfonte.com",
-    "customerBearsCharge": false,
-    "webhook": "https://webhook.site/93745537-9d53-4aeb-b8ac-a489e0dd9967",
+    "currency": "NGN",
+    "country": "NG",
+    "redirectURL": "https://yourapp.com/payment/complete",
+    "webhook": "https://yourapp.com/webhooks/payfonte",
     "user": {
-        "email": "dummy@dummy.com",
-        "phoneNumber": "07012345678"
+      "email": "customer@example.com",
+      "phoneNumber": "2348012345678",
+      "name": "John Doe"
     }
-}'
+  }'
 ```
 
-After making the API call, you will receive a response similar to this:
+Sample response:
 
 ```json
 {
   "data": {
-    "id": "644ebe614c2604002fac9d13",
-    "url": "https://checkout-staging.payfonte.com/payfusion/644ebe614c2604002fac9d13",
-    "shortURL": "https://l.6bd.co/m_DbfggPw",
-    "reference": "0ba83bfd-9bba-48d4-b182-57cb4d1442cb",
+    "url": "https://checkout-staging.payfonte.com/payfusion/66579afe04916ddcfcf73e7b",
+    "shortURL": "https://l.6bd.co/XXXXX",
+    "reference": "ORDER-1001",
     "amount": 50000
   }
 }
 ```
 
-## 3. Redirect the user to the generated payment link
+## Parameter Reference
 
-Once you receive the response, simply redirect your customer to the link provided in `data.shortURL` or `data.url`. Our
-checkout modal will be displayed to your customer, allowing them to complete the payment process.
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `reference` | string | Recommended | Unique transaction identifier from your system |
+| `amount` | integer | Yes | Amount in minor units (no decimals) |
+| `currency` | string | Yes | ISO currency code (for example `NGN`) |
+| `country` | string | Yes | ISO country code (for example `NG`) |
+| `user` | object | Yes | Customer object (email/phone/name fields) |
+| `redirectURL` | string | No | Customer return URL after checkout |
+| `webhook` | string | No | Per-transaction webhook override URL |
+| `metadata` | object | No | Custom fields for your internal tracking |
 
-[//]: # (![image Checkout Page]&#40;../_images/checkout.png&#41;)
+## Amount Rule (Important)
 
-## 4\. After the payment
+Payfonte does not support decimal API amounts. Send integer minor-unit values only.
 
-This following event will occur after a payment is completed
+- `500.00 NGN` -> `50000`
+- `1250.75 NGN` -> `125075`
 
-1. The customer will be redirected to the URL specified in `redirectURL` with the `status` and `reference`.
-2. If you have webhooks enabled, we will send you a notification via webhook once the payment is completed. To learn
-   more about webhooks and see examples, please visit the following link [Webhooks](/guides/collections/webhook).
+See [Amount Specification](/guides/introductions/amount-specification) for full conversion rules.
 
-[//]: # (## 5\. When Payment Fails)
+## After Redirect and Payment
 
-[//]: # ()
-[//]: # (In the event that a payment attempt fails, such as due to insufficient funds, there is no need for you to take any)
+<AccordionGroup>
+  <Accordion title="Customer redirect result" icon="link" defaultOpen>
+    After checkout, customer is redirected to your `redirectURL` with transaction context such as `status` and `reference`.
+  </Accordion>
+  <Accordion title="Webhook notification" icon="bell">
+    If webhooks are configured, Payfonte sends asynchronous status updates to your webhook endpoint.
+  </Accordion>
+  <Accordion title="Final state verification" icon="shield-check">
+    For critical flows, verify transaction status from your backend before shipping goods or crediting wallets.
+  </Accordion>
+  <Accordion title="Failed payment handling" icon="triangle-exclamation">
+    If payment fails, allow user retry and keep your order state pending until final success is confirmed.
+  </Accordion>
+</AccordionGroup>
 
-[//]: # (action. The payment page will remain open so that the customer can try again with another provider until the payment is)
+## Production Best Practices
 
-[//]: # (successful or they choose to cancel.)
+| Practice | Why It Matters |
+| --- | --- |
+| Generate references server-side | Prevent duplicate references and improve reconciliation |
+| Process webhook idempotently | Avoid duplicate order fulfillment on retries |
+| Validate redirect parameters | Protect against malformed/forged client-side values |
+| Use backend verification | Ensure final status before business-critical actions |
 
-[//]: # ()
-[//]: # (If you have webhooks enabled, we will send you a notification for each failed payment attempt. This can be useful if you)
+## Related Docs
 
-[//]: # (need to follow up with customers who had issues with payment at a later time. Please refer to)
-
-[//]: # (our  [Webhooks]&#40;../collections/webhook.md&#41; guide for an example of how this works.)
+<CardGroup cols={3}>
+  <Card title="Inline Checkout" icon="window-maximize" href="/guides/collections/inline">
+    Embedded checkout alternative for on-page payment.
+  </Card>
+  <Card title="Webhooks" icon="bell" href="/guides/collections/webhook">
+    Set up and validate payment event callbacks.
+  </Card>
+  <Card title="API Reference" icon="file-code" href="/api-reference/introduction">
+    Endpoint and schema details for checkout operations.
+  </Card>
+</CardGroup>

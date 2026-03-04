@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Payfonte Documentation - Payment orchestration platform built for Africa">
+  <title>Payfonte Docs - Wireframe Mockup</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    :root {
+      --primary: #0033C7;
+      --primary-light: #5580FF;
+      --primary-dark: #002299;
+      --dark-navy: #0A1628;
+      --gray-50: #F9FAFB;
+      --gray-100: #F3F4F6;
+      --gray-200: #E5E7EB;
+      --gray-500: #6B7280;
+      --gray-700: #374151;
+      --gray-900: #111827;
+      --green: #059669;
+      --light-green: #D1FAE5;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      line-height: 1.6;
+      color: var(--gray-900);
+      background: #fff;
+    }
+    
+    .docs-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr 220px;
+      min-height: 100vh;
+    }
+    
+    /* Sidebar */
+    .sidebar {
+      background: var(--gray-50);
+      border-right: 1px solid var(--gray-200);
+      padding: 24px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+    
+    .sidebar-logo {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 32px;
+      display: block;
+      text-decoration: none;
+    }
+    
+    .sidebar-search {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      font-size: 14px;
+      margin-bottom: 24px;
+      background: white;
+    }
+    
+    .nav-group {
+      margin-bottom: 24px;
+    }
+    
+    .nav-group-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--gray-500);
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+    
+    .nav-link {
+      display: block;
+      padding: 8px 12px;
+      font-size: 14px;
+      color: var(--gray-700);
+      text-decoration: none;
+      border-radius: 6px;
+      margin-bottom: 2px;
+      transition: all 0.15s;
+    }
+    
+    .nav-link:hover {
+      background: var(--gray-100);
+      color: var(--primary);
+    }
+    
+    .nav-link.active {
+      background: #E8EDFF;
+      color: var(--primary);
+      font-weight: 600;
+    }
+    
+    .nav-link.new-badge::after {
+      content: 'NEW';
+      font-size: 9px;
+      background: var(--primary);
+      color: white;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: 8px;
+      font-weight: 700;
+    }
+    
+    /* Main Content */
+    .main-content {
+      padding: 48px 64px;
+      max-width: 900px;
+    }
+    
+    .breadcrumb {
+      font-size: 13px;
+      color: var(--gray-500);
+      margin-bottom: 24px;
+    }
+    
+    .breadcrumb a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+    
+    h1 {
+      font-size: 36px;
+      font-weight: 800;
+      margin-bottom: 16px;
+      color: var(--gray-900);
+    }
+    
+    .hero-description {
+      font-size: 18px;
+      color: var(--gray-500);
+      margin-bottom: 32px;
+    }
+    
+    /* Stats Bar */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+    
+    .stat-card {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      color: white;
+    }
+    
+    .stat-value {
+      font-size: 28px;
+      font-weight: 800;
+    }
+    
+    .stat-label {
+      font-size: 12px;
+      opacity: 0.8;
+      margin-top: 4px;
+    }
+    
+    /* Section */
+    .section {
+      margin-bottom: 48px;
+    }
+    
+    .section-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--gray-100);
+    }
+    
+    /* USP Accordions */
+    .accordion {
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    
+    .accordion-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      background: white;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 15px;
+    }
+    
+    .accordion-icon {
+      width: 32px;
+      height: 32px;
+      background: #E8EDFF;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+    
+    .accordion-content {
+      padding: 0 20px 16px 64px;
+      color: var(--gray-500);
+      font-size: 14px;
+      display: none;
+    }
+    
+    .accordion.open .accordion-content {
+      display: block;
+    }
+    
+    /* Product Cards */
+    .product-cards {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-bottom: 48px;
+    }
+    
+    .product-card {
+      border: 2px solid var(--gray-200);
+      border-radius: 16px;
+      padding: 24px;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    
+    .product-card:hover {
+      border-color: var(--primary);
+      box-shadow: 0 4px 20px rgba(0, 51, 199, 0.1);
+    }
+    
+    .product-card-icon {
+      width: 48px;
+      height: 48px;
+      background: #E8EDFF;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-bottom: 16px;
+    }
+    
+    .product-card-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    
+    .product-card-subtitle {
+      font-size: 12px;
+      color: var(--primary);
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    
+    .product-card-description {
+      font-size: 14px;
+      color: var(--gray-500);
+      margin-bottom: 16px;
+    }
+    
+    .product-card ul {
+      list-style: none;
+    }
+    
+    .product-card li {
+      font-size: 13px;
+      color: var(--gray-700);
+      padding: 4px 0;
+      padding-left: 20px;
+      position: relative;
+    }
+    
+    .product-card li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: var(--green);
+      font-weight: 700;
+    }
+    
+    /* Quick Start Steps */
+    .steps {
+      counter-reset: step;
+    }
+    
+    .step {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--gray-100);
+    }
+    
+    .step:last-child {
+      border-bottom: none;
+    }
+    
+    .step-number {
+      width: 32px;
+      height: 32px;
+      background: var(--primary);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    
+    .step-content h4 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    
+    .step-content p {
+      font-size: 14px;
+      color: var(--gray-500);
+    }
+    
+    .step-content a {
+      color: var(--primary);
+    }
+    
+    /* Code Block */
+    .code-block {
+      background: var(--dark-navy);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 16px 0;
+      overflow-x: auto;
+    }
+    
+    .code-block pre {
+      font-family: 'Monaco', 'Menlo', monospace;
+      font-size: 13px;
+      color: #E2E8F0;
+      line-height: 1.7;
+      margin: 0;
+    }
+    
+    /* Info Box */
+    .info-box {
+      background: #E8EDFF;
+      border-left: 4px solid var(--primary);
+      padding: 16px 20px;
+      border-radius: 0 8px 8px 0;
+      margin: 16px 0;
+    }
+    
+    .info-box.success {
+      background: var(--light-green);
+      border-color: var(--green);
+    }
+    
+    .info-box-title {
+      font-weight: 700;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+    
+    .info-box-content {
+      font-size: 14px;
+      color: var(--gray-700);
+    }
+    
+    /* Table of Contents (Right Sidebar) */
+    .toc {
+      padding: 24px;
+      position: sticky;
+      top: 24px;
+    }
+    
+    .toc-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--gray-500);
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+    }
+    
+    .toc-link {
+      display: block;
+      font-size: 13px;
+      color: var(--gray-500);
+      text-decoration: none;
+      padding: 6px 0;
+      border-left: 2px solid transparent;
+      padding-left: 12px;
+      transition: all 0.15s;
+    }
+    
+    .toc-link:hover,
+    .toc-link.active {
+      color: var(--primary);
+      border-left-color: var(--primary);
+    }
+    
+    /* CTA Cards */
+    .cta-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    
+    .cta-card {
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      padding: 20px;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.2s;
+    }
+    
+    .cta-card:hover {
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(0, 51, 199, 0.1);
+    }
+    
+    .cta-card-icon {
+      width: 40px;
+      height: 40px;
+      background: #E8EDFF;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      margin-bottom: 12px;
+    }
+    
+    .cta-card-title {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+    
+    .cta-card-description {
+      font-size: 12px;
+      color: var(--gray-500);
+    }
+    
+    /* Badge */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--primary);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      background: #4ADE80;
+      border-radius: 50%;
+    }
+    
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .docs-layout {
+        grid-template-columns: 260px 1fr;
+      }
+      .toc {
+        display: none;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .docs-layout {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        display: none;
+      }
+      .main-content {
+        padding: 24px;
+      }
+      .stats-bar,
+      .product-cards {
+        grid-template-columns: 1fr;
+      }
+      .cta-cards {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="docs-layout">
+  <!-- Left Sidebar -->
+  <aside class="sidebar">
+    <a href="/" class="sidebar-logo">Payfonte</a>
+    <input type="text" class="sidebar-search" placeholder="Search documentation...">
+    
+    <nav>
+      <div class="nav-group">
+        <div class="nav-group-title">Getting Started</div>
+        <a href="#" class="nav-link active">Getting Started</a>
+        <a href="#" class="nav-link new-badge">Products</a>
+        <a href="#" class="nav-link new-badge">Quick Start</a>
+      </div>
+      
+      <div class="nav-group">
+        <div class="nav-group-title">Core Concepts</div>
+        <a href="#" class="nav-link">Platform Overview</a>
+        <a href="#" class="nav-link">Authorization</a>
+        <a href="#" class="nav-link">Environments</a>
+        <a href="#" class="nav-link">Amount Specification</a>
+        <a href="#" class="nav-link">Wallets</a>
+      </div>
+      
+      <div class="nav-group">
+        <div class="nav-group-title">Providers & Coverage</div>
+        <a href="#" class="nav-link">Supported Providers</a>
+        <a href="#" class="nav-link new-badge">Provider Details</a>
+      </div>
+      
+      <div class="nav-group">
+        <div class="nav-group-title">Development</div>
+        <a href="#" class="nav-link">Endpoint Specification</a>
+        <a href="#" class="nav-link">Testing</a>
+        <a href="#" class="nav-link">Error Codes</a>
+      </div>
+      
+      <div class="nav-group">
+        <div class="nav-group-title">Collect Payments</div>
+        <a href="#" class="nav-link new-badge">Overview</a>
+        <a href="#" class="nav-link">Inline</a>
+        <a href="#" class="nav-link">Standard</a>
+        <a href="#" class="nav-link">Direct Charge</a>
+        <a href="#" class="nav-link">Webhook</a>
+      </div>
+      
+      <div class="nav-group">
+        <div class="nav-group-title">Disbursements</div>
+        <a href="#" class="nav-link new-badge">Overview</a>
+        <a href="#" class="nav-link">Process</a>
+        <a href="#" class="nav-link">Supported Providers</a>
+        <a href="#" class="nav-link">Examples</a>
+        <a href="#" class="nav-link">Webhook</a>
+      </div>
+    </nav>
+  </aside>
+  
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="breadcrumb">
+      <a href="#">Docs</a> / Getting Started
+    </div>
+    
+    <div class="badge">
+      <span class="badge-dot"></span>
+      Africa Tech Summit Nairobi 2025
+    </div>
+    
+    <h1>Welcome to Payfonte</h1>
+    <p class="hero-description">
+      Africa's leading <strong>payment orchestration platform</strong> enabling businesses to accept and disburse payments across <strong>14+ African markets</strong> through a single, unified API integration.
+    </p>
+    
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+      <div class="stat-card">
+        <div class="stat-value">14+</div>
+        <div class="stat-label">African Markets</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">$100M+</div>
+        <div class="stat-label">Processed Value</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">99.99%</div>
+        <div class="stat-label">System Uptime</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">T+1-3</div>
+        <div class="stat-label">Settlement</div>
+      </div>
+    </div>
+    
+    <!-- Why Payfonte -->
+    <div class="section">
+      <h2 class="section-title">Why Payfonte?</h2>
+      
+      <div class="accordion open">
+        <div class="accordion-header">
+          <span class="accordion-icon">🔀</span>
+          Hybrid Orchestration
+        </div>
+        <div class="accordion-content">
+          Use <strong>your existing MNO contracts</strong> where you have better rates, or leverage <strong>Payfonte's direct partnerships</strong>. Combine both for optimal coverage and cost efficiency.
+        </div>
+      </div>
+      
+      <div class="accordion">
+        <div class="accordion-header">
+          <span class="accordion-icon">💰</span>
+          Cost Efficiency
+        </div>
+        <div class="accordion-content">
+          Eliminate the cost of developing and maintaining MNO API integrations. No server hosting, no ongoing technical support—we handle the infrastructure.
+        </div>
+      </div>
+      
+      <div class="accordion">
+        <div class="accordion-header">
+          <span class="accordion-icon">⚡</span>
+          Intelligent Routing
+        </div>
+        <div class="accordion-content">
+          Automatic failover and backup rails ensure maximum transaction success rates. Our routing engine selects the optimal path for each transaction.
+        </div>
+      </div>
+      
+      <div class="accordion">
+        <div class="accordion-header">
+          <span class="accordion-icon">📊</span>
+          Unified Dashboard
+        </div>
+        <div class="accordion-content">
+          One dashboard for all markets, payment methods, and MNOs. Streamlined payment operations, financial reconciliation, and real-time reporting.
+        </div>
+      </div>
+      
+      <div class="accordion">
+        <div class="accordion-header">
+          <span class="accordion-icon">🔄</span>
+          Smart Reconciliation
+        </div>
+        <div class="accordion-content">
+          In-built reconciliation engine ensures 100% final state resolution. No missing or hanging transactions—every payment reaches a definitive status.
+        </div>
+      </div>
+      
+      <div class="accordion">
+        <div class="accordion-header">
+          <span class="accordion-icon">🎨</span>
+          White-Label Solutions
+        </div>
+        <div class="accordion-content">
+          Fully customizable checkout pages with your branding, or complete Payment Infrastructure-as-a-Service for fintechs and enterprises.
+        </div>
+      </div>
+    </div>
+    
+    <!-- Products -->
+    <div class="section">
+      <h2 class="section-title">Our Products</h2>
+      
+      <div class="product-cards">
+        <div class="product-card">
+          <div class="product-card-icon">🖥️</div>
+          <div class="product-card-title">Payment Orchestration / IaaS</div>
+          <div class="product-card-subtitle">For Fintechs & Enterprises</div>
+          <p class="product-card-description">
+            Full payment infrastructure on your own MNO contracts. We provide the technology—you maintain direct provider relationships.
+          </p>
+          <ul>
+            <li>Use your own MNO/PSP contracts</li>
+            <li>White-label dashboard & checkout</li>
+            <li>Complete API access</li>
+            <li>Custom routing rules</li>
+          </ul>
+        </div>
+        
+        <div class="product-card">
+          <div class="product-card-icon">📦</div>
+          <div class="product-card-title">Payment Aggregation</div>
+          <div class="product-card-subtitle">For Merchants & Businesses</div>
+          <p class="product-card-description">
+            Start accepting payments immediately using Payfonte's aggregated MNO partnerships. No direct contracts required.
+          </p>
+          <ul>
+            <li>Instant go-live capability</li>
+            <li>Pre-negotiated MNO rates</li>
+            <li>Simplified onboarding</li>
+            <li>Managed compliance</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Quick Start -->
+    <div class="section">
+      <h2 class="section-title">Quick Start Guide</h2>
+      
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h4>Create Your Sandbox Account</h4>
+            <p>Sign up at <a href="https://sandbox-app.payfonte.com">sandbox-app.payfonte.com</a> to access your test environment. No credit card required.</p>
+          </div>
+        </div>
+        
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h4>Get Your API Credentials</h4>
+            <p>Navigate to <strong>Settings → API Keys/Webhooks</strong> in your dashboard to retrieve your client-id and client-secret.</p>
+          </div>
+        </div>
+        
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h4>Make Your First API Call</h4>
+            <p>Use the sandbox base URL to test your integration:</p>
+            
+            <div class="code-block">
+<pre>curl --location 'https://sandbox-api.payfonte.com/payments/v1/checkouts' \
+  --header 'client-id: &lt;your-client-id&gt;' \
+  --header 'client-secret: &lt;your-client-secret&gt;' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "reference": "test-001",
+    "amount": 1000,
+    "currency": "NGN",
+    "country": "NG"
+  }'</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="info-box success">
+        <div class="info-box-title">Ready for production?</div>
+        <div class="info-box-content">
+          Complete the KYB process via our <a href="https://form.jotform.com/240038360690048">onboarding form</a> and go live in 1-5 business days.
+        </div>
+      </div>
+    </div>
+    
+    <!-- Need Help -->
+    <div class="section">
+      <h2 class="section-title">Need Help?</h2>
+      
+      <div class="cta-cards">
+        <a href="#" class="cta-card">
+          <div class="cta-card-icon">📄</div>
+          <div class="cta-card-title">API Reference</div>
+          <div class="cta-card-description">Complete API documentation</div>
+        </a>
+        
+        <a href="mailto:support@payfonte.com" class="cta-card">
+          <div class="cta-card-icon">🎧</div>
+          <div class="cta-card-title">Contact Support</div>
+          <div class="cta-card-description">support@payfonte.com</div>
+        </a>
+        
+        <a href="https://calendly.com/marc-payfonte/30min" class="cta-card">
+          <div class="cta-card-icon">📅</div>
+          <div class="cta-card-title">Book a Demo</div>
+          <div class="cta-card-description">Schedule a walkthrough</div>
+        </a>
+      </div>
+    </div>
+  </main>
+  
+  <!-- Right Sidebar (TOC) -->
+  <aside class="toc">
+    <div class="toc-title">On This Page</div>
+    <a href="#" class="toc-link active">What is Payfonte?</a>
+    <a href="#" class="toc-link">Why Payfonte?</a>
+    <a href="#" class="toc-link">Our Products</a>
+    <a href="#" class="toc-link">Quick Start Guide</a>
+    <a href="#" class="toc-link">Supported Payment Methods</a>
+    <a href="#" class="toc-link">Security & Compliance</a>
+    <a href="#" class="toc-link">Need Help?</a>
+  </aside>
+</div>
+
+<script>
+  // Simple accordion toggle
+  document.querySelectorAll('.accordion-header').forEach(header => {
+    header.addEventListener('click', () => {
+      header.parentElement.classList.toggle('open');
+    });
+  });
+</script>
+
+</body>
+</html>

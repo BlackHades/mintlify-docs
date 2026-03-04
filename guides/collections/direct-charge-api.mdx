@@ -1,177 +1,166 @@
-# Payfonte Direct Charge API
+---
+title: "Overview"
+description: "Charge customers directly from your backend using provider slugs and customer input without creating a hosted checkout session."
+icon: "bolt"
+---
 
-The Payfonte direct charge API allows you to call some providers API directly from your backend application without using a
-checkout session. Here is how it works:
 
-- `Optional` From your infrastructure/application, call our [Fetch Provider Payment Properties](https://docs.payfonte.com/api-reference/disbursements/fetch-provider-properties) to get the additional the for the API call.
-- Make a call to our direct charge API with the payment details
-- Once the transaction is complete, We will send a webhook response to your webhook URL.
+Direct Charge allows your backend to initiate payment directly with a provider, without first creating a checkout URL.
 
-## 1. Get Payment Provider Properties [Optional for Some providers]
+## When To Use Direct Charge
 
-if you are using a provider that expects some addition properties for a direct call, this API will return what you need
-to make that decision.
-Example is Orange Senegal, Pawapay. You can find a list of providers that you need to fetch properties for in
-the [Supported Providers](/guides/introductions/supported-providers) Section.
-Find a Sample CURL Below to fetch provider properties:
+<CardGroup cols={3}>
+  <Card title="Backend-Driven Flows" icon="server">
+    Best for server-to-server payment initiation where you control the full transaction lifecycle.
+  </Card>
+  <Card title="Provider-Specific Inputs" icon="sliders">
+    Use when payment requires provider-specific fields like `network` or customer OTP codes.
+  </Card>
+  <Card title="Recurring / Embedded UX" icon="repeat">
+    Useful for tightly integrated experiences where redirect checkout is not preferred.
+  </Card>
+</CardGroup>
 
-```shell
-curl --location 'https://sandbox-api.payfonte.com/payments/v1/payments/direct-charge/{{provider-slug}}/properties' \
---header 'client-id: <client-id>' \
---header 'client-secret: <client-secret>'
+## Endpoints
+
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| `GET` | `/payments/v1/payments/direct-charge/{provider}/properties` | Fetch provider-specific properties (optional for some providers) |
+| `POST` | `/payments/v1/payments/direct-charge` | Initiate direct charge |
+| `GET` | `/payments/v1/payments/verify/{reference}` | Verify final transaction status |
+
+## Integration Steps
+
+<Steps>
+  <Step title="Pick provider slug">
+    Select a valid provider from [Supported Providers](/guides/introductions/supported-providers).
+  </Step>
+  <Step title="Fetch provider properties (optional)">
+    For providers like Pawapay, fetch required properties (for example network values) before charging.
+  </Step>
+  <Step title="Send direct charge request">
+    Call the direct-charge endpoint with `provider`, `amount`, and `customerInput`.
+  </Step>
+  <Step title="Handle action + confirm final status">
+    Use response action (`processing`, `redirect`, `bank-transfer`) and finalize based on webhook/verification.
+  </Step>
+</Steps>
+
+## Fetch Provider Properties (Optional)
+
+```bash
+curl --location 'https://sandbox-api.payfonte.com/payments/v1/payments/direct-charge/{provider}/properties' \
+  --header 'client-id: <client-id>' \
+  --header 'client-secret: <client-secret>'
 ```
 
-Here is a sample response for pawapay
+Example response:
 
 ```json
 {
   "data": {
     "networks": [
-      {
-        "name": "Airtel",
-        "image": "https://pbs.twimg.com/profile_images/1422229945317744642/1f6bLEh__400x400.jpg",
-        "value": "airtel"
-      },
-      {
-        "name": "MTN MoMo",
-        "image": "https://seeklogo.com/images/M/mtn-logo-40644FC8B0-seeklogo.com.png",
-        "value": "mtn-momo"
-      }
+      { "name": "Airtel", "value": "airtel" },
+      { "name": "MTN MoMo", "value": "mtn-momo" }
     ]
   }
 }
 ```
 
-## 2. Get all the payment details
+## Direct Charge Request
 
-First, you need to assemble the payment details. Here are the details you'll need:
-
-| Field           | Type                   | Description                                                                                                                                                              | Required |
-|-----------------|------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|
-| `provider`      | String [Provider Slug] | This is the Provider we are routing the request to. e.g `mtn-momo-ivory-coast`                                                                                           | false    |
-| `amount`        | Number                 | This is the amount to charge the customer. This should be in the lowest currency denomination                                                                            | false    |
-| `reference`     | String                 | A reference code you'll generate to identify this transaction. This must be unique for every transaction. If you don't pass one, we will generate one for you.           | False    |
-| `redirectURL`   | String                 | The URL to which the customer should be redirected after the payment is completed.                                                                                       | False    |
-| `webhook`       | String                 | This is a URL, if this is passed we will send the event webhook payload to this endpoint                                                                                 |          |
-| `customerInput` | Object                 | This is an object of inputs to be passed to the provider. This varies per provider. You can find more in the [Examples](/guides/collections/direct-charge/examples) Section. | True     |
-| `narration`     | String                 | This is the transaction description                                                                                                                                      | False    |
-
-## 3. Call the endpoint to initialize the Direct Charge
-
-Next, in order to initiate the payment process, you will need to call
-our [Direct Charge API](https://docs.payfonte.com/api-reference/collections/direct-charge-api) API and provide the
-collected payment details. Please ensure that you authorize the API call using your client-id and client-secret. Below
-is an example in CURL:
-
-```shell
+```bash
 curl --location 'https://sandbox-api.payfonte.com/payments/v1/payments/direct-charge' \
---header 'client-id: <client-id>' \
---header 'client-secret: <client-secret>' \
---header 'Content-Type: application/json' \
---data '{
-    "reference": "9617a32a-e936-48b4-99bd-f0fcd882561c",
+  --header 'client-id: <client-id>' \
+  --header 'client-secret: <client-secret>' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "reference": "ORDER-1001",
     "amount": 10000,
     "provider": "mtn-momo-ivory-coast",
-    "webhook": "https://webhook.site/9e5c6a7c-3345-4e7a-8e05-f6c4cc61f4a0",
-    "narration": "Test payment from payfonte",
+    "webhook": "https://yourapp.com/webhooks/payfonte",
+    "narration": "Order payment",
     "customerInput": {
-        "phoneNumber": "8023456789"
+      "phoneNumber": "2250512345678"
     }
-}'
+  }'
 ```
 
-After making the API call, you will receive a response similar to this:
+Sample response:
 
 ```json
 {
   "data": {
-    "sessionId": "e0b04887-ee15-40ba-a3c0-5efc8b207292",
+    "action": "processing",
+    "sessionId": "1031-4120-a98f-9357692945",
     "provider": "mtn-momo-ivory-coast",
-    "reference": "D20240612202245CGOCK",
+    "channel": "mobile-money",
+    "reference": "ORDER-1001",
     "amount": 10000,
     "status": "pending",
-    "statusDescription": "Awaiting Customer Input"
+    "statusDescription": "Awaiting Provider's Feedback"
   },
   "statusCode": 201
 }
 ```
 
-## 4. Provider/MNO Response Shape
+## Request Fields
 
-```ts
-{
-  data: {
-    action: 'processing' | 'redirect' | 'bank-transfer';
-    sessionId: string; // currently payment.reference
-    provider: string;
-    channel: string;
-    reference: string;
-    amount: number;
-    totalAmount: number;
-    status: string;
-    charge: number;
-    statusDescription: string;
-    data?: {
-      // redirect fields
-      link?: string;
-      message?: string;
-      expiry?: string | number;
-      reference?: string;
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `provider` | string | Yes | Provider slug (for example `mtn-momo-ivory-coast`) |
+| `amount` | integer | Yes | Amount in minor units (no decimals) |
+| `customerInput` | object | Yes | Provider/customer fields (for example `phoneNumber`) |
+| `reference` | string | Recommended | Unique merchant reference |
+| `webhook` | string | No | Override webhook for this transaction |
+| `narration` | string | No | Transaction description |
+| `metadata` | object | No | Custom metadata returned downstream |
 
-      // bank-transfer fields
-      bankName?: string;
-      accountNumber?: string;
-      accountName?: string;
-      amount?: number;
-      currency?: string;
-      accountExpiry?: { unit: string; value: number };
-      message?: string;
-    };
-  };
-  statusCode: 201;
-}
-```
+## Action Types and Handling
 
-## 4.2 Action Types And Merchant Handling
+<AccordionGroup>
+  <Accordion title="processing" icon="clock" defaultOpen>
+    Customer/provider interaction is in progress (for example USSD/STK authorization pending).
+    Keep payment state pending and wait for webhook/verification final status.
+  </Accordion>
+  <Accordion title="redirect" icon="arrow-up-right-from-square">
+    Redirect customer to provider URL (usually at `data.data.link`).
+    Do not treat redirect completion alone as payment success.
+  </Accordion>
+  <Accordion title="bank-transfer" icon="building">
+    Display returned bank transfer instructions (account name/number, amount, expiry).
+    Wait for webhook/verification before marking success.
+  </Accordion>
+</AccordionGroup>
 
-### 4.2.1. `processing`
+## Amount Rule (Important)
 
-Meaning:
-Payment was initialized and is waiting for provider/customer completion.
+<Warning>
+  Payfonte does not support decimal amounts in API requests. Send integer minor-unit values only.
+</Warning>
 
-How merchant should handle:
+- `100.00 NGN` -> `10000`
+- `2500.75 NGN` -> `250075`
 
-1. Show pending/processing state.
-2. Track transaction with `reference`.
-3. Wait for verification/webhook before marking final status.
+See [Amount Specification](/guides/introductions/amount-specification).
 
-Response note:
-`data` is usually absent for this action in the normalized charge response.
+## Final Status Confirmation
 
-### 4.2.2. `redirect`
+For order fulfillment, rely on:
 
-Meaning:
-Customer must continue payment on a provider-hosted page.
+1. [Webhooks](/guides/collections/webhook) for async payment updates.
+2. `GET /payments/v1/payments/verify/{reference}` for backend verification.
 
-How merchant should handle:
+## Related Docs
 
-1. Redirect customer to `data.link`.
-2. After customer returns, verify server-side.
-3. Do not treat redirect return alone as success.
-
-### 4.2.3. `bank-transfer`
-
-Meaning:
-Provider returned account details for manual transfer.
-
-How merchant should handle:
-
-1. Display `data` account fields (bank, account number, account name, exact amount, currency, expiry).
-2. Instruct customer to transfer exact amount before expiry.
-3. Keep payment pending until webhook/verification confirms outcome.
-
-## 5. After the payment
-
-This following event will occur after a payment is completed
-1. If you have webhooks enabled, we will send you a notification via webhook once the payment is completed. To learn
-   more about webhooks and see examples, please visit the following link [Webhooks](/guides/collections/webhook).
+<CardGroup cols={3}>
+  <Card title="Direct Charge Flows" icon="mobile-screen-button" href="/guides/collections/direct-charge/mobile-money">
+    Understand `processing`, `redirect`, and pre-OTP patterns.
+  </Card>
+  <Card title="Example Payloads" icon="code" href="/guides/collections/direct-charge/examples">
+    Copy provider-specific request examples.
+  </Card>
+  <Card title="Supported Providers" icon="globe-africa" href="/guides/introductions/supported-providers">
+    Provider slugs, limits, and country coverage.
+  </Card>
+</CardGroup>

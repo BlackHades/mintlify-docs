@@ -40,7 +40,7 @@ paths:
       tags:
         - Collections
       summary: Collection API - Direct
-      description: Direct Charge the Customer via API
+      description: Charge the Customer via API
       operationId: DirectChargeAPI
       requestBody:
         content:
@@ -62,8 +62,8 @@ paths:
     get:
       tags:
         - Collections
-      summary: Verify Transaction
-      description: This is the endpoint to verify a Transaction
+      summary: Verify Collection (TSQ)
+      description: This is the endpoint to verify a Transaction (TSQ)
       operationId: verifyPaymentTransaction
       parameters:
         - in: path
@@ -86,7 +86,7 @@ paths:
     post:
       tags:
         - Collections
-      summary: Generate Checkout URL
+      summary: Collections API - Generate Checkout
       description: Generate a Payment Checkout URL for customers to make payment
       operationId: generateCheckoutURL
       requestBody:
@@ -109,8 +109,8 @@ paths:
     get:
       tags:
         - Collections
-      summary: Fetch All Collection Transactions
-      description: Retrieve a paginated list of all checkout transactions
+      summary: Fetch Collection History
+      description: Retrieve a paginated list of all collection transactions
       operationId: getAllCheckouts
       parameters:
         - in: query
@@ -848,10 +848,10 @@ components:
           type: string
           description: This is the type of wallet
           enum:
-            - payout
+            - disbursement
             - deposit
           examples:
-            - payout
+            - disbursement
             - deposit
         amount:
           $ref: "#/components/schemas/Amount"

@@ -1,97 +1,114 @@
-# Payment Example Payload
+---
+title: "Disbursement Example Payloads"
+description: "Copy-ready payload examples for recipient validation, disbursement requests, and disbursement verification."
+icon: "code"
+---
 
-Payout has 2 crucial flow, which are:
-- Validate Transfer Recipient
-- Request Payout
-## Validate Transfer Recipient - Mobile Money (POST /billing/v1/transfer-recipients/validate)
-A Basic Validate Transfer Recipient for Mobile Money Payload will look like this (We will use MTN MoMo as a example):
+# Disbursement Example Payloads
+
+This page provides practical payloads for each major disbursement step:
+
+1. Validate recipient
+2. Request disbursement
+3. Verify disbursement
+
+## 1) Validate Recipient (Mobile Money)
+
+Endpoint: `POST /billing/v1/transfer-recipients/validate`
+
 ```json
 {
-      "provider": "mtn-momo-ivory-coast",
-      "channel": "mobile-money",
-      "currency": "XOF",
-      "country": "CI",
-      "account": {
-        "phoneNumber": "225XXXXXXXXXX"
-      }
+  "provider": "mtn-momo-ivory-coast",
+  "currency": "XOF",
+  "country": "CI",
+  "account": {
+    "phoneNumber": "225XXXXXXXXXX"
+  }
 }
 ```
-Sample Response:
+
+Sample response:
+
 ```json
 {
-    "statusCode": 200,
-    "data": {
-        "provider": "mtn-momo-ivory-coast",
-        "providerLabel": "MTN MoMo",
-        "source": "disbursement",
-        "channel": "mobile-money",
-        "currency": "XOF",
-        "country": "CI",
-        "accountLabel": "MTN MoMo | 225XXXXXXXXXX",
-        "account": {
-            "network": "MTN",
-            "phoneNumber": "225XXXXXXXXXX",
-            "accountName": "John Doe"
-        },
-        "status": "active",
-        "createdAt": "2024-12-12T02:06:32.155Z",
-        "updatedAt": "2024-12-12T20:33:17.758Z",
-        "id": "675a4528d14b406a3d31e4a8"
-    }
+  "statusCode": 200,
+  "data": {
+    "provider": "mtn-momo-ivory-coast",
+    "providerLabel": "MTN MoMo",
+    "source": "disbursement",
+    "channel": "mobile-money",
+    "currency": "XOF",
+    "country": "CI",
+    "accountLabel": "MTN MoMo | 225XXXXXXXXXX",
+    "account": {
+      "network": "MTN",
+      "phoneNumber": "225XXXXXXXXXX",
+      "accountName": "John Doe"
+    },
+    "status": "active",
+    "id": "675a4528d14b406a3d31e4a8"
+  }
 }
 ```
-## Validate Transfer Recipient - Bank Transfer (POST /billing/v1/transfer-recipients/validate)
-A Basic Validate Transfer Recipient for Mobile Money Payload will look like this:
+
+## 2) Validate Recipient (Bank Transfer)
+
+Endpoint: `POST /billing/v1/transfer-recipients/validate`
+
 ```json
 {
-      "provider": "bank-transfer-nigeria",
-      "channel": "bank-transfer",
-      "currency": "NGN",
-      "country": "NG",
-      "account": {
-        "accountNumber": "0123456789",
-        "bankCode": "948"
-      }
+  "provider": "bank-transfer-nigeria",
+  "currency": "NGN",
+  "country": "NG",
+  "account": {
+    "accountNumber": "0123456789",
+    "bankCode": "948"
+  }
 }
 ```
-Sample Response:
+
+Sample response:
+
 ```json
 {
-    "statusCode": 200,
-    "data": {
-        "provider": "bank-transfer-nigeria",
-        "providerLabel": "Bank Transfer",
-        "source": "disbursement",
-        "channel": "bank-transfer",
-        "currency": "NGN",
-        "country": "NG",
-        "tags": [],
-        "accountLabel": "Momo Payment Service Bank | AAA BBB XXX | 2215381176",
-        "account": {
-            "name": "AAA BBB XXX",
-            "accountName": "AAA BBB XXX",
-            "accountNumber": "2215381176",
-            "bankCode": "948",
-            "bankName": "Momo Payment Service Bank"
-        },
-        "status": "pending",
-        "createdAt": "2025-05-26T12:58:04.476Z",
-        "updatedAt": "2025-05-26T12:58:04.476Z",
-        "id": "6834655cdc1370231451f2a5"
-    }
+  "statusCode": 200,
+  "data": {
+    "provider": "bank-transfer-nigeria",
+    "providerLabel": "Bank Transfer",
+    "source": "disbursement",
+    "channel": "bank-transfer",
+    "currency": "NGN",
+    "country": "NG",
+    "accountLabel": "Momo Payment Service Bank | AAA BBB XXX | 2215381176",
+    "account": {
+      "name": "AAA BBB XXX",
+      "accountName": "AAA BBB XXX",
+      "accountNumber": "2215381176",
+      "bankCode": "948",
+      "bankName": "Momo Payment Service Bank"
+    },
+    "status": "pending",
+    "id": "6834655cdc1370231451f2a5"
+  }
 }
 ```
-## Request Payout (POST /billing/v1/disbursements)
-A Basic Validate Transfer Recipient for Mobile Money Payload will look like this (We will use MTN MoMo as a example):
-```json lines
+
+## 3) Request Disbursement
+
+Endpoint: `POST /billing/v1/disbursements`
+
+```json
 {
-  "transferRecipientId": "675a4528d14b406a3d31e4a8", //ID from Validate Transfer Recipient
-  "amount": 3000, // Amount in lowest denomination (cents/kobo)
-  "narration": "payment 10.0",
-  "pin": "1111",
+  "transferRecipientId": "675a4528d14b406a3d31e4a8",
+  "amount": 3000,
+  "reference": "disbursement-1001",
+  "narration": "Vendor disbursement",
+  "pin": "1111"
 }
 ```
-Sample Response:
+
+Sample response:
+
 ```json
 {
   "statusCode": 201,
@@ -108,10 +125,12 @@ Sample Response:
 }
 ```
 
+## 4) Verify Disbursement
 
+Endpoint: `GET /billing/v1/disbursements/verify/{reference}`
 
-## Verify Payout (GET /billing/v1/disbursements/:reference)
-Sample Response:
+Sample response:
+
 ```json
 {
   "data": {
@@ -137,3 +156,33 @@ Sample Response:
 }
 ```
 
+## Validation Checklist
+
+<AccordionGroup>
+  <Accordion title="Amount format" icon="hashtag" defaultOpen>
+    Send integer minor-unit values only. Decimals are not supported.
+  </Accordion>
+  <Accordion title="Unique reference" icon="fingerprint">
+    Use a unique disbursement reference to avoid duplicate transaction errors.
+  </Accordion>
+  <Accordion title="Recipient validation first" icon="user">
+    Always validate recipient before requesting disbursement.
+  </Accordion>
+  <Accordion title="Authorization mode alignment" icon="key">
+    Ensure request matches your configured authorization mode (PIN or Authorization URL).
+  </Accordion>
+</AccordionGroup>
+
+## Related Docs
+
+<CardGroup cols={3}>
+  <Card title="Disbursements Overview" icon="money-bill-transfer" href="/guides/disbursements/overview">
+    Full disbursement flow walkthrough.
+  </Card>
+  <Card title="Authorization Mode" icon="key" href="/guides/disbursements/authorization-mode">
+    Configure and secure disbursement authorization.
+  </Card>
+  <Card title="Disbursement Webhooks" icon="bell" href="/guides/disbursements/webhook">
+    Process status callbacks safely.
+  </Card>
+</CardGroup>
