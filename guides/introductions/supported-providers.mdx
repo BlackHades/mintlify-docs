@@ -18,7 +18,7 @@ Use this page to pick the right provider slug for your integration by country an
 
 <CardGroup cols={3}>
   <Card title="Match Country + Type" icon="location-dot">
-    Select a country tab and confirm whether the provider supports `collection`, `disbursement`, or both.
+    Find your country in the list below and confirm whether the provider supports `Collection`, `Disbursement`, or both.
   </Card>
   <Card title="Use Exact Slug" icon="fingerprint">
     The `Slug` value is what your API payloads should send in the `provider` field.
@@ -38,8 +38,8 @@ Use this page to pick the right provider slug for your integration by country an
     Machine-readable provider identifier used in API calls (for example, `mtn-momo-ghana`).
   </Accordion>
   <Accordion title="Type" icon="right-left">
-    - `collection`: collection/charge flow
-    - `disbursement`: disbursement flow
+    - `Collection`: collection/charge flow
+    - `Disbursement`: disbursement flow
   </Accordion>
   <Accordion title="Fetch Properties" icon="sliders">
     `Yes` means you may need to call a provider-properties endpoint before initiating a request.
@@ -88,139 +88,135 @@ Use this page to pick the right provider slug for your integration by country an
 
 ## Country Coverage
 
-<Tabs>
-  <Tab title="Burkina Faso">
+Jump to: [Burkina Faso](#burkina-faso) | [Benin](#benin) | [Cameroon](#cameroon) | [DRC](#dr-congo) | [Ghana](#ghana) | [Ivory Coast](#ivory-coast) | [Kenya](#kenya) | [Nigeria](#nigeria) | [Senegal](#senegal) | [Togo](#togo) | [Tanzania](#tanzania)
+
+<AccordionGroup>
+  <Accordion title="Burkina Faso" id="burkina-faso">
     | **Provider** | **Slug** | **Type** | **Fetch Properties** | **Min. Amount** | **Max. Amount** |
     | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Orange | orange-burkina-faso | collection | No | | |
-    | Orange | orange-burkina-faso | disbursement | No | 100 | 1 000 000 |
-    | Wave | wave-burkina-faso | collection | No | | |
-    | Wave | wave-burkina-faso | disbursement | No | | |
-    | Moov | moov-burkina-faso | collection | No | | |
-    | Moov | moov-burkina-faso | disbursement | No | | |
-  </Tab>
-  <Tab title="Benin">
+    | Orange | orange-burkina-faso | Collection | No | — | — |
+    | Orange | orange-burkina-faso | Disbursement | No | 100 | 1,000,000 |
+    | Wave | wave-burkina-faso | Collection | No | — | — |
+    | Wave | wave-burkina-faso | Disbursement | No | — | — |
+    | Moov | moov-burkina-faso | Collection | No | — | — |
+    | Moov | moov-burkina-faso | Disbursement | No | — | — |
+  </Accordion>
+
+  <Accordion title="Benin" id="benin">
     | **Provider** | **Slug** | **Type** | **Fetch Properties** | **Min. Amount** | **Max. Amount** |
     | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Moov | moov-benin | collection | No | 100 | 3 000 000 |
-    | Moov | moov-benin | disbursement | No | | |
-    | MTN MoMo | mtn-momo-benin | collection | No | 100 | 3 000 000 |
-    | MTN MoMo | mtn-momo-benin | disbursement | No | | |
-  </Tab>
-  <Tab title="Ivory Coast">
+    | Moov | moov-benin | Collection | No | 100 | 3,000,000 |
+    | Moov | moov-benin | Disbursement | No | — | — |
+    | MTN MoMo | mtn-momo-benin | Collection | No | 100 | 3,000,000 |
+    | MTN MoMo | mtn-momo-benin | Disbursement | No | — | — |
+  </Accordion>
+
+  <Accordion title="Ivory Coast" id="ivory-coast">
     | **Provider** | **Slug** | **Type** | **Fetch Properties** | **Min. Amount** | **Max. Amount** |
     | :--- | :--- | :--- | :--- | :--- | :--- |
-    | MTN MoMo | mtn-momo-ivory-coast | disbursement | No | | |
-    | Wave | wave-ivory-coast | collection | No | | |
-    | Orange | orange-ivory-coast | collection | No | | |
-    | MTN MoMo | mtn-momo-ivory-coast | collection | No | | |
-    | Wave | wave-ivory-coast | disbursement | No | | |
-    | Wave B2B | wave-b2b-ivory-coast | disbursement | No | | |
-    | Orange | orange-ivory-coast | disbursement | No | 200 | 1 500 000 |
-    | Moov | moov-ivory-coast | disbursement | No | 500 | 2 000 000 |
-    | Moov | moov-ivory-coast | collection | No | | |
-  </Tab>
-  <Tab title="Cameroon">
+    | MTN MoMo | mtn-momo-ivory-coast | Disbursement | No | — | — |
+    | Wave | wave-ivory-coast | Collection | No | — | — |
+    | Orange | orange-ivory-coast | Collection | No | — | — |
+    | MTN MoMo | mtn-momo-ivory-coast | Collection | No | — | — |
+    | Wave | wave-ivory-coast | Disbursement | No | — | — |
+    | Wave B2B | wave-b2b-ivory-coast | Disbursement | No | — | — |
+    | Orange | orange-ivory-coast | Disbursement | No | 200 | 1,500,000 |
+    | Moov | moov-ivory-coast | Disbursement | No | 500 | 2,000,000 |
+    | Moov | moov-ivory-coast | Collection | No | — | — |
+  </Accordion>
+
+  <Accordion title="Cameroon" id="cameroon">
     | **Provider** | **Slug** | **Type** | **Fetch Properties** | **Min. Amount** | **Max. Amount** |
     | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Orange | orange-cameroon | collection | No | 500 | 500 000 |
-    | MTN MoMo | mtn-momo-cameroon | collection | No | 500 | 500 000 |
-    | MTN MoMo | mtn-momo-cameroon | disbursement | No | 500 | 500 000 |
-    | Orange | orange-cameroon | disbursement | No | 500 | 500 000 |
-  </Tab>
-  <Tab title="Ghana">
+    | Orange | orange-cameroon | Collection | No | 500 | 500,000 |
+    | MTN MoMo | mtn-momo-cameroon | Collection | No | 500 | 500,000 |
+    | MTN MoMo | mtn-momo-cameroon | Disbursement | No | 500 | 500,000 |
+    | Orange | orange-cameroon | Disbursement | No | 500 | 500,000 |
+  </Accordion>
+
+  <Accordion title="DRC (Congo Kinshasa)" id="dr-congo">
     | **Provider** | **Slug** | **Type** | **Fetch Properties** | **Min. Amount** | **Max. Amount** |
     | :--- | :--- | :--- | :--- | :--- | :--- |
-    | MTN MoMo | mtn-momo-ghana | collection | No | | |
-    | MTN MoMo | mtn-momo-ghana | disbursement | No | | |
-    | Airtel Tigo(AT) | airtel-ghana | collection | No | | |
-    | Airtel Tigo(AT) | airtel-ghana | disbursement | No | | |
-    | Telecel (Ex: Vodafone) | telecel-ghana | disbursement | No | | |
-    | Telecel (Ex: Vodafone) | telecel-ghana | collection | No | | |
-  </Tab>
-  <Tab title="Kenya">
+    | Airtel | airtel-dr-congo | Collection | No | — | — |
+    | Airtel | airtel-dr-congo | Disbursement | No | — | — |
+    | Afrimoney | afrimoney-dr-congo | Collection | No | — | — |
+    | Afrimoney | afrimoney-dr-congo | Disbursement | No | — | — |
+    | Orange | orange-dr-congo | Collection | No | — | — |
+    | Orange | orange-dr-congo | Disbursement | No | — | — |
+    | MPesa | mpesa-dr-congo | Collection | No | — | — |
+    | MPesa | mpesa-dr-congo | Disbursement | No | — | — |
+  </Accordion>
+
+  <Accordion title="Ghana" id="ghana">
     | **Provider** | **Slug** | **Type** | **Fetch Properties** | **Min. Amount** | **Max. Amount** |
     | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Safaricom (M-Pesa) | safaricom-kenya | collection | No | | |
-    | Safaricom (M-Pesa) | safaricom-kenya | disbursement | No | | |
-  </Tab>
+    | MTN MoMo | mtn-momo-ghana | Collection | No | — | — |
+    | MTN MoMo | mtn-momo-ghana | Disbursement | No | — | — |
+    | Airtel Tigo(AT) | airtel-ghana | Collection | No | — | — |
+    | Airtel Tigo(AT) | airtel-ghana | Disbursement | No | — | — |
+    | Telecel (Ex: Vodafone) | telecel-ghana | Disbursement | No | — | — |
+    | Telecel (Ex: Vodafone) | telecel-ghana | Collection | No | — | — |
+  </Accordion>
 
-[//]: # (<Tab title="Mali">)
-
-[//]: # (  | **Provider** | **Slug** | **Type** | **Fetch Properties** | **Min. Amount** | **Max. Amount** |)
-
-[//]: # (  | :--- | :--- | :--- | :--- | :--- | :--- |)
-
-[//]: # (  | Orange | orange-mali | collection | No | | |)
-
-[//]: # (  | Orange | orange-mali | disbursement | No | 500 | 1 500 000 |)
-
-[//]: # (  | Mobicash | mobicash-mali | disbursement | No | 500 | 1 500 000 |)
-
-[//]: # (  | Mobicash | mobicash-mali | collection | No | | |)
-
-[//]: # (</Tab>)
-  <Tab title="Nigeria">
+  <Accordion title="Kenya" id="kenya">
     | **Provider** | **Slug** | **Type** | **Fetch Properties** | **Min. Amount** | **Max. Amount** |
     | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Bank Transfer | bank-transfer-nigeria | collection | Yes | | |
-    | Bank Transfer | bank-transfer-nigeria | disbursement | Yes | | |
-    | Opay | opay-nigeria | collection | No | | |
-    | Opay Wallet | opay-wallet-nigeria | disbursement | No | | |
-    | Airtel | airtel-smartcash-ng | disbursement | No | | |
-    | Airtel | airtel-smartcash-ng | collection | No | | |
-    | MTN MoMo | mtn-momo-nigeria | collection | No | | |
-    | MTN MoMo | mtn-momo-nigeria | disbursement | No | | |
-    | PalmPay | palmpay-nigeria | collection | No | | |
-  </Tab>
-  <Tab title="Senegal">
+    | Safaricom (M-Pesa) | safaricom-kenya | Collection | No | — | — |
+    | Safaricom (M-Pesa) | safaricom-kenya | Disbursement | No | — | — |
+  </Accordion>
+
+  <Accordion title="Nigeria" id="nigeria">
     | **Provider** | **Slug** | **Type** | **Fetch Properties** | **Min. Amount** | **Max. Amount** |
     | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Orange | orange-senegal | disbursement | No | | |
-    | Orange | orange-senegal | collection | No | | |
-    | Wave | wave-senegal | collection | No | | |
-    | Wave | wave-senegal | disbursement | No | | |
-  </Tab>
+    | Bank Transfer | bank-transfer-nigeria | Collection | Yes | — | — |
+    | Bank Transfer | bank-transfer-nigeria | Disbursement | Yes | — | — |
+    | Opay | opay-nigeria | Collection | No | — | — |
+    | Opay Wallet | opay-wallet-nigeria | Disbursement | No | — | — |
+    | Airtel | airtel-smartcash-ng | Disbursement | No | — | — |
+    | Airtel | airtel-smartcash-ng | Collection | No | — | — |
+    | MTN MoMo | mtn-momo-nigeria | Collection | No | — | — |
+    | MTN MoMo | mtn-momo-nigeria | Disbursement | No | — | — |
+    | PalmPay | palmpay-nigeria | Collection | No | — | — |
+  </Accordion>
 
-[//]: # (<Tab title="South Sudan">)
-
-[//]: # (  | **Provider** | **Slug** | **Type** | **Fetch Properties** | **Min. Amount** | **Max. Amount** |)
-
-[//]: # (  | :--- | :--- | :--- | :--- | :--- | :--- |)
-
-[//]: # (  | MTN MoMo | mtn-momo-south-sudan | collection | No | | |)
-
-[//]: # (  | MTN MoMo | mtn-momo-south-sudan | disbursement | No | | |)
-
-[//]: # (</Tab>)
-  <Tab title="Togo">
+  <Accordion title="Senegal" id="senegal">
     | **Provider** | **Slug** | **Type** | **Fetch Properties** | **Min. Amount** | **Max. Amount** |
     | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Moov | moov-togo | collection | No | | |
-    | Togocel | togocel-togo | disbursement | No | | |
-    | Moov | moov-togo | disbursement | No | | |
-    | Togocel | togocel-togo | collection | No | | |
-  </Tab>
-  <Tab title="Tanzania">
+    | Orange | orange-senegal | Disbursement | No | — | — |
+    | Orange | orange-senegal | Collection | No | — | — |
+    | Wave | wave-senegal | Collection | No | — | — |
+    | Wave | wave-senegal | Disbursement | No | — | — |
+  </Accordion>
+
+  <Accordion title="Togo" id="togo">
     | **Provider** | **Slug** | **Type** | **Fetch Properties** | **Min. Amount** | **Max. Amount** |
     | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Airtel | airtel-tanzania | collection | No | 100| |
-    | Airtel | airtel-tanzania | disbursement | No | 1000 | |
-    | Halopesa | halopesa-tanzania | collection | No | 100 | |
-    | Halopesa | halopesa-tanzania | disbursement | No | 100 | |
-    | Mixx by Yas (Ex: Tigo) | yas-tanzania | disbursement | No | 100 | |
-    | Mixx by Yas (Ex: Tigo) | yas-tanzania | collection | No | 100 | |
-    | T-Pesa | tpesa-tanzania | collection | No | | |
-    | T-Pesa | tpesa-tanzania | disbursement | No | | |
-    | MPesa | mpesa-tanzania | disbursement | No | 200 | |
-    | MPesa | mpesa-tanzania | collection | No | 100 | |
-  </Tab>
-</Tabs>
+    | Moov | moov-togo | Collection | No | — | — |
+    | Togocel | togocel-togo | Disbursement | No | — | — |
+    | Moov | moov-togo | Disbursement | No | — | — |
+    | Togocel | togocel-togo | Collection | No | — | — |
+  </Accordion>
+
+  <Accordion title="Tanzania" id="tanzania">
+    | **Provider** | **Slug** | **Type** | **Fetch Properties** | **Min. Amount** | **Max. Amount** |
+    | :--- | :--- | :--- | :--- | :--- | :--- |
+    | Airtel | airtel-tanzania | Collection | No | 100 | — |
+    | Airtel | airtel-tanzania | Disbursement | No | 1,000 | — |
+    | Halopesa | halopesa-tanzania | Collection | No | 100 | — |
+    | Halopesa | halopesa-tanzania | Disbursement | No | 100 | — |
+    | Mixx by Yas (Ex: Tigo) | yas-tanzania | Disbursement | No | 100 | — |
+    | Mixx by Yas (Ex: Tigo) | yas-tanzania | Collection | No | 100 | — |
+    | T-Pesa | tpesa-tanzania | Collection | No | — | — |
+    | T-Pesa | tpesa-tanzania | Disbursement | No | — | — |
+    | MPesa | mpesa-tanzania | Disbursement | No | 200 | — |
+    | MPesa | mpesa-tanzania | Collection | No | 100 | — |
+  </Accordion>
+</AccordionGroup>
 
 ## Related Docs
 
 <CardGroup cols={3}>
-  <Card title="Collect collections" icon="credit-card" href="/guides/collections/overview">
+  <Card title="Collect Collections" icon="credit-card" href="/guides/collections/overview">
     Integration options for checkout and direct charge.
   </Card>
   <Card title="Disbursements Overview" icon="money-bill-transfer" href="/guides/disbursements/overview">
