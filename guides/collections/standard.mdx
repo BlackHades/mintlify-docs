@@ -52,10 +52,10 @@ curl --location 'https://sandbox-api.payfonte.com/payments/v1/checkouts' \
   --data '{
     "reference": "ORDER-1001",
     "amount": 50000,
-    "currency": "NGN",
-    "country": "NG",
-    "redirectURL": "https://yourapp.com/payment/complete",
-    "webhook": "https://yourapp.com/webhooks/payfonte",
+    "currency": "XOF",
+    "redirectURL": "https://payfonte.com",
+    "customerBearsCharge": false,
+    "webhook": "https://webhook.site/93745537-9d53-4aeb-b8ac-a489e0dd9967",
     "user": {
       "email": "customer@example.com",
       "phoneNumber": "2348012345678",
@@ -89,6 +89,15 @@ Sample response:
 | `redirectURL` | string | No | Customer return URL after checkout |
 | `webhook` | string | No | Per-transaction webhook override URL |
 | `metadata` | object | No | Custom fields for your internal tracking |
+
+## Status values
+
+Collection status values from API responses:
+
+- `pending`
+- `failed`
+- `abandoned`
+- `success`
 
 ## Amount Rule (Important)
 
