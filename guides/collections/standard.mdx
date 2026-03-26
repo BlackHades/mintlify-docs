@@ -52,10 +52,11 @@ curl --location 'https://sandbox-api.payfonte.com/payments/v1/checkouts' \
   --data '{
     "reference": "ORDER-1001",
     "amount": 50000,
-    "currency": "XOF",
-    "redirectURL": "https://payfonte.com",
+    "currency": "NGN",
+    "country": "NG",
+    "redirectURL": "https://yourapp.com/payment/complete",
+    "webhook": "https://yourapp.com/webhooks/payfonte",
     "customerBearsCharge": false,
-    "webhook": "https://webhook.site/93745537-9d53-4aeb-b8ac-a489e0dd9967",
     "user": {
       "email": "customer@example.com",
       "phoneNumber": "2348012345678",
