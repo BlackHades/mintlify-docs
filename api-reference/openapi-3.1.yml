@@ -82,30 +82,7 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/VerifyTransactionResponse'
-  /payments/v1/checkouts:
-    post:
-      tags:
-        - Collections
-      summary: Collections API - Generate Checkout
-      description: Generate a Payment Checkout URL for customers to make payment
-      operationId: generateCheckoutURL
-      requestBody:
-        description: Generate A Payment Checkout URL
-        content:
-          application/json:
-            schema:
-              $ref:  '#/components/schemas/GenerateCheckoutURLRequest'
-        required: true
-      responses:
-        '201':
-          description: "Checkout URL Successfully Generated"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    $ref: '#/components/schemas/GenerateCheckoutURLResponse'
+  /payments/v1/payments:
     get:
       tags:
         - Collections
@@ -152,6 +129,31 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetAllCheckoutResponse'
+
+  /payments/v1/checkouts:
+    post:
+      tags:
+        - Collections
+      summary: Collections API - Generate Checkout
+      description: Generate a Payment Checkout URL for customers to make payment
+      operationId: generateCheckoutURL
+      requestBody:
+        description: Generate A Payment Checkout URL
+        content:
+          application/json:
+            schema:
+              $ref:  '#/components/schemas/GenerateCheckoutURLRequest'
+        required: true
+      responses:
+        '201':
+          description: "Checkout URL Successfully Generated"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/GenerateCheckoutURLResponse'
   /payments/v1/payments/direct-charge/{provider}/properties:
     get:
       tags:
