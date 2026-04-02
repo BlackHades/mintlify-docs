@@ -135,6 +135,14 @@ curl --location 'https://sandbox-api.payfonte.com/payments/v1/checkouts' \
 
 ---
 
+## Status values
+
+Collection status values from API responses:
+
+- `pending`
+- `failed` - final
+- `success` - final
+
 ## Handling Webhooks
 
 We send webhook notifications for payment status changes. Always implement webhook handling for production:
