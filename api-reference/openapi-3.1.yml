@@ -505,7 +505,13 @@ components:
               example: "2347012345678"
               examples:
                 - "2347012345678"
-
+        redirectURL:
+          type: string
+          format: uri
+          description: "Fully qualified URL to which the customer should be redirected after the payment is completed"
+          example: 'https://example.com/redirect/success'
+          examples:
+            - 'https://example.com/redirect/success'
         webhook:
           type: string
           format: uri
