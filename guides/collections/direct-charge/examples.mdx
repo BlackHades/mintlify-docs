@@ -1,6 +1,6 @@
 ---
 title: "Direct Charge Example Payloads"
-description: "Copy-ready direct charge payloads for standard mobile money, Pawapay, and Orange pre-OTP provider flows."
+description: "Copy-ready direct charge payloads for standard mobile money, Bank Transfer, and Orange pre-OTP provider flows."
 icon: "code"
 ---
 
@@ -60,7 +60,7 @@ On sandbox, any random 6-digit code can be used for testing.
 | `webhook` | string | No | Per-request webhook override |
 | `narration` | string | No | Human-readable transaction note |
 | `customerInput.phoneNumber` | string | Usually Yes | Format based on provider/country |
-| `customerInput.network` | string | Provider-specific | Required for Pawapay flows |
+| `customerInput.network` | string | Provider-specific | Required for some specific flows like bank transfer |
 | `customerInput.customerCode` | string | Provider-specific | Required for Orange pre-OTP flows |
 
 ## Validation Checklist Before Sending
