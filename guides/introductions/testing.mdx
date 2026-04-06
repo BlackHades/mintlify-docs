@@ -48,6 +48,22 @@ Use sandbox first for all integration validation before moving to production.
 | Invalid provider slug | Error with `InvalidProvider` |
 | Webhook delivery | Callback received and processed once (idempotent) |
 
+## Simulate Success, Failed, and Pending Outcomes
+
+For both collections and disbursements in sandbox, you can control the expected transaction outcome by changing the mobile money phone number used in the request.
+
+| Phone Number Pattern | Expected Result | How To Use It |
+| --- | --- | --- |
+| Any other phone number | `success` | Sandbox treats all other phone numbers as successful transactions |
+| Number ending in `000000` | `failed` | Sandbox forces the transaction to fail |
+| Number ending in `111111` | `pending` | Sandbox keeps the transaction pending so you can test async handling |
+
+<Info>
+  Apply this rule to the phone number field you send for the transaction. For collections, use the customer's mobile money number. For disbursements, use the recipient phone number.
+</Info>
+
+When testing pending flows, do not treat the initial API response as final. Wait for webhook updates or verify the transaction status from your backend before marking the transaction as `success` or `failed`.
+
 ## Provider-Specific Test Data
 
 <AccordionGroup>
@@ -64,12 +80,14 @@ Use sandbox first for all integration validation before moving to production.
     4. Use the generated OTP on the payment platform.
   </Accordion>
   <Accordion title="Safaricom / Equitel / T-Kash / Telkom" icon="phone">
-    - Collection test number: `254700000000`
-    - disbursement test number: `254711111111`
+    - Success example: `254700123456`
+    - Failed example: `254700000000`
+    - Pending example: `254711111111`
   </Accordion>
   <Accordion title="Airtel / Telecel / MTN (Ghana)" icon="phone">
-    - Collection test number: `233240000000`
-    - disbursement test number: `233242426222`
+    - Success example: `233242426222`
+    - Failed example: `233240000000`
+    - Pending example: `233241111111`
   </Accordion>
 </AccordionGroup>
 
