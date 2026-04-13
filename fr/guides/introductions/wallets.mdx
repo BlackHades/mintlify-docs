@@ -1,0 +1,109 @@
+---
+title: "Portefeuilles"
+description: "Comprenez les types de portefeuilles Payfonte, les soldes et les opérations pour les collectes et les décaissements."
+icon: "wallet"
+---
+
+Payfonte attribue des portefeuilles par marchand et par marché afin de séparer les flux entrants de collecte des flux sortants de décaissement.
+
+## Types de portefeuilles
+
+<CardGroup cols={2}>
+  <Card title="Portefeuille de collecte, dépôt" icon="arrow-down">
+    Les fonds entrants y sont d'abord réglés. Utilisez ce portefeuille comme solde principal de collecte.
+  </Card>
+  <Card title="Portefeuille de décaissement" icon="arrow-up">
+    Les décaissements et virements sont déduits de ce portefeuille lorsque vous lancez des décaissements.
+  </Card>
+</CardGroup>
+
+## Statut des portefeuilles
+
+Les portefeuilles peuvent avoir les états suivants :
+
+| Statut | Signification |
+| --- | --- |
+| `active` | Le portefeuille peut recevoir et envoyer des fonds selon les opérations configurées. |
+| `post-no-debit` | Le portefeuille peut recevoir des fonds, mais les débits sortants sont bloqués. |
+
+<Info>
+  `post-no-debit` est souvent utilisé comme contrôle de sécurité lorsque des identifiants ou des mécanismes de décaissement pourraient être compromis.
+</Info>
+
+## Opérations sur portefeuille
+
+<AccordionGroup>
+  <Accordion title="Transférer des fonds entre portefeuilles" icon="right-left" defaultOpen>
+    Déplacez des fonds du portefeuille de collecte vers le portefeuille de décaissement lorsque vous avez besoin de liquidité pour les décaissements.
+  </Accordion>
+  <Accordion title="Suspendre l'activité sortante" icon="shield-halved">
+    Appliquez un contrôle de suspension ou post-no-debit pour arrêter les sorties pendant une investigation ou un contrôle de sécurité.
+  </Accordion>
+  <Accordion title="Reprendre les opérations normales" icon="circle-check">
+    Supprimez les restrictions une fois les contrôles restaurés et le compte jugé sûr.
+  </Accordion>
+</AccordionGroup>
+
+## Récupérer les soldes des portefeuilles via l'API
+
+Utilisez l'endpoint wallet pour interroger les soldes actuels par `country` et `currency`.
+
+```bash
+curl --location 'https://api.payfonte.com/billing/v1/wallets?country=NG&currency=NGN' \
+  --header 'client-id: <your-client-id>' \
+  --header 'client-secret: <your-client-secret>'
+```
+
+Exemple de format de réponse :
+
+```json
+{
+  "data": [
+    {
+      "type": "deposit",
+      "amount": 1250000,
+      "currency": "NGN",
+      "country": "NG",
+      "status": "active"
+    },
+    {
+      "type": "disbursement",
+      "amount": 500000,
+      "currency": "NGN",
+      "country": "NG",
+      "status": "active"
+    }
+  ]
+}
+```
+
+## Flux recommandé
+
+<Steps>
+  <Step title="Surveiller les entrées de collecte">
+    Suivez les fonds qui arrivent sur le portefeuille dépôt ou collecte après des transactions réussies.
+  </Step>
+  <Step title="Alimenter le portefeuille de décaissement de manière proactive">
+    Transférez suffisamment de solde avant les campagnes de décaissement à fort volume.
+  </Step>
+  <Step title="Alerter sur un faible solde de décaissement">
+    Mettez en place des alertes internes pour éviter des échecs dus à un solde insuffisant.
+  </Step>
+  <Step title="Appliquer rapidement les contrôles de sécurité">
+    Si vous suspectez une compromission, suspendez les opérations sortantes et faites tourner les identifiants immédiatement.
+  </Step>
+</Steps>
+
+## Documentation associée
+
+<CardGroup cols={3}>
+  <Card title="Autorisation" icon="key" href="/fr/guides/introductions/authorization">
+    Sécurisez les appels à l'API wallet avec les en-têtes requis.
+  </Card>
+  <Card title="Décaissements" icon="money-bill-transfer" href="/fr/guides/disbursements/overview">
+    Comprendre les flux de décaissement utilisant votre portefeuille de décaissement.
+  </Card>
+  <Card title="Référence API" icon="file-code" href="/fr/api-reference/introduction">
+    Détails complets des endpoints de portefeuille.
+  </Card>
+</CardGroup>

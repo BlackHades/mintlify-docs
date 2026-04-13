@@ -1,0 +1,338 @@
+---
+title: "Démarrage rapide"
+description: "Mettez en place l'API d'orchestration de paiement Payfonte en moins de 10 minutes."
+icon: "bolt"
+seo:
+  title: "Démarrage rapide - Intégration de l'API d'orchestration de paiement"
+  description: "Guide pas à pas pour intégrer Payfonte et connecter MTN MoMo, M-Pesa, Airtel Money, Wave et d'autres moyens de paiement africains."
+  keywords: "API orchestration paiement, mobile money Afrique, intégration MTN MoMo, M-Pesa, guide démarrage rapide"
+---
+
+Ce guide vous aidera à effectuer votre premier appel à l'API Payfonte en moins de 10 minutes. À la fin, vous aurez intégré des capacités de paiement mobile money pour l'Afrique, y compris MTN MoMo, M-Pesa et d'autres moyens de paiement locaux.
+
+---
+
+## Prérequis
+
+Avant de commencer, vous aurez besoin de :
+
+<Check>Un compte sandbox Payfonte</Check>
+<Check>Vos identifiants API, `client-id` et `client-secret`</Check>
+<Check>Un outil pour faire des requêtes HTTP, cURL, Postman ou votre langage préféré</Check>
+
+---
+
+## Étape 1 : créer votre compte sandbox
+
+<Steps>
+  <Step title="S'inscrire">
+    Ouvrez [sandbox-app.payfonte.com](https://sandbox-app.payfonte.com) et créez un compte gratuit.
+  </Step>
+
+  <Step title="Vérifier votre e-mail">
+    Consultez votre boîte de réception puis confirmez votre adresse e-mail.
+  </Step>
+
+  <Step title="Compléter votre profil">
+    Renseignez les informations de base de votre entreprise pour activer le compte.
+  </Step>
+</Steps>
+
+---
+
+## Étape 2 : récupérer vos identifiants API
+
+<Frame>
+  <img src="/images/api-keys-location.png" alt="Emplacement des clés API dans le dashboard" />
+</Frame>
+
+<Steps>
+  <Step title="Ouvrir Settings">
+    Connectez-vous à votre dashboard puis cliquez sur Settings dans la barre latérale.
+  </Step>
+
+  <Step title="Aller vers API Keys/Webhooks">
+    Ouvrez l'onglet API Keys/Webhooks.
+  </Step>
+
+  <Step title="Copier vos identifiants">
+    Vous y trouverez :
+    - `client-id` : votre identifiant unique
+    - `client-secret` : votre clé secrète, à protéger
+  </Step>
+</Steps>
+
+<Danger>
+  N'exposez jamais votre `client-secret` dans du code côté client ni dans des dépôts publics. Faites toujours les appels API depuis votre backend.
+</Danger>
+
+---
+
+## Étape 3 : configurer le webhook, optionnel mais recommandé
+
+Les webhooks notifient votre serveur en temps réel lors des changements de statut de transaction.
+
+<Steps>
+  <Step title="Aller vers API Keys/Webhooks">
+    Dans Settings -> API Keys/Webhooks, trouvez la section de configuration webhook.
+  </Step>
+
+  <Step title="Saisir votre URL de callback">
+    Ajoutez l'URL de votre endpoint webhook, par exemple `https://yoursite.com/payfonte/webhook`.
+  </Step>
+
+  <Step title="Enregistrer la configuration">
+    Cliquez sur Save. Vous pourrez tester le webhook via une transaction de test.
+  </Step>
+</Steps>
+
+---
+
+## URL par environnement
+
+<Tabs>
+  <Tab title="Sandbox, test">
+    Utilisez ces URL pour le développement et les tests :
+
+    | Service | URL |
+    |---------|-----|
+    | URL de base API | `https://sandbox-api.payfonte.com` |
+    | Dashboard | `https://sandbox-app.payfonte.com` |
+    | Page de checkout | `https://sandbox-checkout.payfonte.com` |
+
+    <Note>
+      Les transactions sandbox sont simulées et n'impliquent pas de fonds réels.
+    </Note>
+  </Tab>
+
+  <Tab title="Production, live">
+    Utilisez ces URL pour les transactions réelles :
+
+    | Service | URL |
+    |---------|-----|
+    | URL de base API | `https://api.payfonte.com` |
+    | Dashboard | `https://app.payfonte.com` |
+    | Page de checkout | `https://checkout.payfonte.com` |
+
+    <Danger>
+      Les transactions en production impliquent de l'argent réel. Testez soigneusement en sandbox avant de basculer.
+    </Danger>
+  </Tab>
+</Tabs>
+
+---
+
+## Étape 4 : effectuer votre premier appel API
+
+Créons une session de checkout pour encaisser un paiement :
+
+<CodeGroup>
+```bash cURL
+curl --location 'https://sandbox-api.payfonte.com/payments/v1/checkouts' \
+  --header 'client-id: YOUR_CLIENT_ID' \
+  --header 'client-secret: YOUR_CLIENT_SECRET' \
+  --header 'Content-Type: application/json' \
+  --data-raw '{
+    "reference": "order-001",
+    "amount": 5000,
+    "currency": "NGN",
+    "country": "NG",
+    "redirectURL": "https://yoursite.com/payment/success",
+    "webhook": "https://yoursite.com/payfonte/webhook",
+    "user": {
+      "email": "customer@example.com",
+      "phoneNumber": "08012345678"
+    }
+  }'
+```
+
+```javascript Node.js
+const axios = require('axios');
+
+const response = await axios.post(
+  'https://sandbox-api.payfonte.com/payments/v1/checkouts',
+  {
+    reference: 'order-001',
+    amount: 5000,
+    currency: 'NGN',
+    country: 'NG',
+    redirectURL: 'https://yoursite.com/payment/success',
+    webhook: 'https://yoursite.com/payfonte/webhook',
+    user: {
+      email: 'customer@example.com',
+      phoneNumber: '08012345678'
+    }
+  },
+  {
+    headers: {
+      'client-id': 'YOUR_CLIENT_ID',
+      'client-secret': 'YOUR_CLIENT_SECRET',
+      'Content-Type': 'application/json'
+    }
+  }
+);
+
+console.log(response.data);
+```
+
+```python Python
+import requests
+
+url = "https://sandbox-api.payfonte.com/payments/v1/checkouts"
+
+headers = {
+    "client-id": "YOUR_CLIENT_ID",
+    "client-secret": "YOUR_CLIENT_SECRET",
+    "Content-Type": "application/json"
+}
+
+payload = {
+    "reference": "order-001",
+    "amount": 5000,
+    "currency": "NGN",
+    "country": "NG",
+    "redirectURL": "https://yoursite.com/payment/success",
+    "webhook": "https://yoursite.com/payfonte/webhook",
+    "user": {
+        "email": "customer@example.com",
+        "phoneNumber": "08012345678"
+    }
+}
+
+response = requests.post(url, json=payload, headers=headers)
+print(response.json())
+```
+
+```php PHP
+<?php
+$curl = curl_init();
+
+curl_setopt_array($curl, [
+    CURLOPT_URL => "https://sandbox-api.payfonte.com/payments/v1/checkouts",
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_POST => true,
+    CURLOPT_HTTPHEADER => [
+        "client-id: YOUR_CLIENT_ID",
+        "client-secret: YOUR_CLIENT_SECRET",
+        "Content-Type: application/json"
+    ],
+    CURLOPT_POSTFIELDS => json_encode([
+        "reference" => "order-001",
+        "amount" => 5000,
+        "currency" => "NGN",
+        "country" => "NG",
+        "redirectURL" => "https://yoursite.com/payment/success",
+        "webhook" => "https://yoursite.com/payfonte/webhook",
+        "user" => [
+            "email" => "customer@example.com",
+            "phoneNumber" => "08012345678"
+        ]
+    ])
+]);
+
+$response = curl_exec($curl);
+curl_close($curl);
+
+echo $response;
+```
+</CodeGroup>
+
+### Réponse attendue
+
+```json
+{
+  "success": true,
+  "data": {
+    "checkoutId": "chk_abc123xyz",
+    "checkoutUrl": "https://sandbox-checkout.payfonte.com/chk_abc123xyz",
+    "reference": "order-001",
+    "amount": 5000,
+    "currency": "NGN",
+    "status": "pending"
+  }
+}
+```
+
+---
+
+## Étape 5 : rediriger le client vers le checkout
+
+Récupérez `checkoutUrl` dans la réponse puis redirigez votre client pour qu'il finalise le paiement :
+
+```javascript
+// Redirect customer to checkout
+window.location.href = response.data.checkoutUrl;
+```
+
+Le client va :
+
+1. Voir les moyens de paiement disponibles pour son pays
+2. Sélectionner sa méthode préférée, par exemple MTN MoMo ou Bank Transfer
+3. Finaliser le paiement
+4. Être redirigé vers votre `redirectURL`
+
+---
+
+## Étape 6 : traiter le webhook
+
+Lorsque le statut du paiement change, nous envoyons une requête POST à votre URL webhook :
+
+```json
+{
+  "event": "payment.completed",
+  "data": {
+    "reference": "order-001",
+    "checkoutId": "chk_abc123xyz",
+    "amount": 5000,
+    "currency": "NGN",
+    "status": "successful",
+    "provider": "mtn-momo-nigeria",
+    "paidAt": "2025-02-06T10:30:00Z"
+  }
+}
+```
+
+<Tip>
+  Vérifiez toujours les signatures webhook et confirmez le statut de transaction via l'API avant d'exécuter une commande.
+</Tip>
+
+---
+
+## Et ensuite ?
+
+<CardGroup cols={2}>
+  <Card title="Explorer les méthodes de collecte" icon="credit-card" href="/fr/guides/collections/overview">
+    Découvrez les intégrations inline, standard et direct charge
+  </Card>
+  <Card title="Configurer les décaissements" icon="money-bill-transfer" href="/fr/guides/disbursements/overview">
+    Envoyez des fonds vers le mobile money et les comptes bancaires
+  </Card>
+  <Card title="Voir tous les providers" icon="globe-africa" href="/fr/guides/introductions/supported-providers">
+    Consultez les moyens de paiement disponibles par pays
+  </Card>
+  <Card title="Référence API" icon="code" href="/fr/api-reference/introduction">
+    Documentation API complète
+  </Card>
+</CardGroup>
+
+---
+
+## Dépannage
+
+<AccordionGroup>
+  <Accordion title="Erreur 401 Unauthorized">
+    Vérifiez `client-id` et `client-secret`. Assurez-vous d'utiliser les identifiants sandbox avec l'URL sandbox.
+  </Accordion>
+
+  <Accordion title="Combinaison pays ou devise invalide">
+    Assurez-vous que la devise correspond bien au pays. Par exemple, le Nigeria utilise NGN et le Kenya KES. Consultez [Providers pris en charge](/fr/guides/introductions/supported-providers) pour les combinaisons valides.
+  </Accordion>
+
+  <Accordion title="Le webhook ne reçoit aucun événement">
+    Vérifiez que votre URL webhook est accessible publiquement et renvoie un statut 200. Consultez aussi les logs de votre serveur.
+  </Accordion>
+</AccordionGroup>
+
+<Card title="Besoin d'aide ?" icon="headset" href="mailto:support@payfonte.com">
+  Contactez notre équipe support à support@payfonte.com
+</Card>

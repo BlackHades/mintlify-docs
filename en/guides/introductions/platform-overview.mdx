@@ -1,0 +1,80 @@
+---
+title: "Platform Overview"
+description: "Understand how to integrate with Payfonte using Dashboard, APIs, Webhooks, and hosted checkout flows."
+icon: "diagram-project"
+---
+
+Payfonte gives you multiple integration paths so your team can start quickly, then scale into deeper API control when needed.
+
+## Ecosystem At A Glance
+
+<CardGroup cols={3}>
+  <Card title="Dashboard" icon="gauge-high">
+    Configure providers, monitor transactions, manage disbursements, and control team access from one place.
+  </Card>
+  <Card title="APIs and Webhooks" icon="code">
+    Build server-to-server payment and disbursement flows with full automation and event callbacks.
+  </Card>
+  <Card title="Hosted Checkout" icon="window-maximize">
+    Send customers to a Payfonte-hosted payment page with local payment methods and minimal integration effort.
+  </Card>
+</CardGroup>
+
+## How Developers Use Payfonte
+
+<AccordionGroup>
+  <Accordion title="Start with the Dashboard" icon="rocket" defaultOpen>
+    The dashboard is the fastest way to begin. You can create your account, configure collection or disbursement providers, set webhook URLs, and invite teammates with roles and permissions.
+
+    This is ideal when you want to go live quickly without building everything from scratch.
+  </Accordion>
+  <Accordion title="Scale with API Integration" icon="server">
+    Payfonte APIs let you control checkout creation, direct charge, transaction verification, disbursements, and wallet operations from your backend.
+
+    Use this path when you need advanced control, custom business logic, or tight integration with your internal systems.
+  </Accordion>
+  <Accordion title="Collect with Hosted Checkout" icon="credit-card">
+    Hosted checkout is PCI-friendly and supports multiple African payment methods out of the box. You create a checkout session and redirect your customer to complete payment.
+
+    You can still receive webhook events and reconcile everything through API or dashboard.
+  </Accordion>
+</AccordionGroup>
+
+## Integration Paths
+
+| Path | Best For | Effort |
+| --- | --- | --- |
+| Dashboard-first | Fast setup and operations | Low |
+| Hosted checkout + webhooks | Quick launch with async status updates | Low-Medium |
+| Full API integration | Deep customization and automation | Medium-High |
+
+## Recommended Rollout
+
+<Steps>
+  <Step title="Set up sandbox account">
+    Create your account and configure test providers and webhooks in sandbox.
+  </Step>
+  <Step title="Choose your collection method">
+    Start with hosted checkout or inline flow, then move to direct charge/API where needed.
+  </Step>
+  <Step title="Implement webhook-driven status updates">
+    Treat webhook events as the source of truth for transaction lifecycle updates.
+  </Step>
+  <Step title="Go live with production credentials">
+    Complete KYB, switch base URL and keys, and monitor first live transactions in dashboard.
+  </Step>
+</Steps>
+
+## Where To Go Next
+
+<CardGroup cols={3}>
+  <Card title="Getting Started" icon="flag-checkered" href="/en/guides/introductions/getting-started">
+    Build your first successful API call.
+  </Card>
+  <Card title="Collect Payments" icon="credit-card" href="/en/guides/collections/overview">
+    Compare inline, standard, and direct charge methods.
+  </Card>
+  <Card title="API Reference" icon="file-code" href="/en/api-reference/introduction">
+    Explore endpoints, schemas, and request examples.
+  </Card>
+</CardGroup>

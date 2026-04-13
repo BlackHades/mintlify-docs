@@ -1,0 +1,144 @@
+---
+title: "Webhooks and Callbacks"
+description: "Receive and verify real-time collection payment updates from Payfonte."
+icon: "bell"
+---
+
+Payfonte sends webhook events to your configured endpoint when payment state changes.
+
+Use webhooks as your primary source of truth for asynchronous payment outcomes.
+
+## Why Webhooks Matter
+
+<CardGroup cols={3}>
+  <Card title="Real-Time Updates" icon="bolt">
+    Get payment updates without polling every transaction.
+  </Card>
+  <Card title="Reliable Completion" icon="check-double">
+    Confirm final status (`success` or `failed`) before fulfilling orders.
+  </Card>
+  <Card title="Operational Safety" icon="repeat">
+    Handle retries with idempotent processing to avoid duplicate fulfillment.
+  </Card>
+</CardGroup>
+
+## Webhook Payload Fields
+
+| Field | Description |
+| --- | --- |
+| `event` | Event type (for example `payment.completed`, `payment.failed`) |
+| `clientId` | Your Payfonte client identifier |
+| `data.status` | Transaction status (`success`, `failed`, or `pending`) |
+| `data.reference` | Payfonte transaction reference |
+| `data.externalReference` | Merchant-provided reference (if supplied) |
+| `data.amount` | Transaction amount in minor units |
+| `data.charge` | Applied transaction charge |
+| `data.provider` | Provider slug/name used for processing |
+| `data.channel` | Payment channel (for example `card`, `mobile-money`) |
+| `data.user` | Customer metadata (name/email/phone when available) |
+
+Sample payload:
+
+```json payment.completed
+{
+  "event": "payment.completed",
+  "clientId": "payfonte",
+  "data": {
+    "clientId": "payfonte",
+    "reference": "ORDER-1001",
+    "externalReference": "ORDER-1001",
+    "platformReference": "644ec09c4c2604002fac9d17",
+    "amount": 10000,
+    "provider": "mtn-momo-nigeria",
+    "channel": "mobile-money",
+    "status": "success",
+    "charge": 0,
+    "chargeFee": 0,
+    "user": {
+      "name": "John Doe",
+      "email": "john@example.com"
+    },
+    "paidAt": 1682883430
+  }
+}
+```
+
+## Signature Verification (Required)
+
+Every webhook includes:
+
+- Header: `x-webhook-signature`
+- Value: `sha512` HMAC digest of raw request body, signed with your `client-secret`
+
+Use your `client-secret` from `Settings -> API Keys/Webhooks`.
+
+```javascript
+const crypto = require("crypto");
+
+app.post("/payfonte/webhook", express.json({ type: "*/*" }), (req, res) => {
+  const secret = process.env.PAYFONTE_CLIENT_SECRET;
+  const payload = JSON.stringify(req.body);
+  const expected = crypto.createHmac("sha512", secret).update(payload).digest("hex");
+  const received = req.headers["x-webhook-signature"];
+
+  if (expected !== received) {
+    return res.status(401).send("Invalid signature");
+  }
+
+  // Acknowledge quickly, then process asynchronously.
+  res.status(200).send("OK");
+  processWebhook(req.body);
+});
+```
+
+<Warning>
+  If signature validation fails, do not process the event.
+</Warning>
+
+## Idempotent Processing Pattern
+
+<Steps>
+  <Step title="Acknowledge fast">
+    Return HTTP `200` quickly to prevent unnecessary retries.
+  </Step>
+  <Step title="Check duplicates">
+    Use `reference` + `status` (or a delivery identifier if available) to detect already-processed events.
+  </Step>
+  <Step title="Verify transaction when needed">
+    For critical flows, verify payment status from your backend before final fulfillment.
+  </Step>
+  <Step title="Apply state transition safely">
+    Ensure business actions (for example order fulfillment) run once per final success.
+  </Step>
+</Steps>
+
+## Webhook URL Priority
+
+Payfonte uses webhook URLs in this order:
+
+1. Webhook URL passed in the checkout/direct-charge request (`webhook`)
+2. Webhook URL configured on the provider integration
+3. Webhook URL configured in dashboard settings
+
+## Common Issues
+
+| Issue | Likely Cause | Fix |
+| --- | --- | --- |
+| Duplicate webhook processing | No idempotency guard | Track processed `reference` + `status` and skip repeats |
+| Signature mismatch | Wrong secret or payload mutation | Use correct `client-secret` and hash the exact received body |
+| Missed updates | Endpoint timeout/non-200 responses | Return `200` quickly and move heavy work to async workers |
+| Wrong environment events | Mixed sandbox/production setup | Use matching endpoint and credentials per environment |
+
+## Related Docs
+
+<CardGroup cols={3}>
+  <Card title="Standard Checkout" icon="arrow-up-right-from-square" href="/en/guides/collections/standard">
+    Redirect flow with webhook completion.
+  </Card>
+  <Card title="Direct Charge API" icon="bolt" href="/en/guides/collections/direct-charge-api">
+    Direct charge flow and action handling.
+  </Card>
+  <Card title="Authorization" icon="key" href="/en/guides/introductions/authorization">
+    Credential and header requirements.
+  </Card>
+</CardGroup>

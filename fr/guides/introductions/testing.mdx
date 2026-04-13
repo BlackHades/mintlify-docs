@@ -1,0 +1,124 @@
+---
+title: "Tests"
+description: "Guide de test sandbox pour les intégrations Payfonte, y compris les simulateurs provider, la validation webhook et les scénarios de test."
+icon: "flask"
+---
+
+Utilisez toujours la sandbox pour valider votre intégration avant de passer en production.
+
+## Configuration sandbox
+
+<Steps>
+  <Step title="Utiliser l'URL de base sandbox">
+    URL de base API : `https://sandbox-api.payfonte.com`
+  </Step>
+  <Step title="Utiliser les identifiants sandbox">
+    Récupérez votre `client-id` et `client-secret` depuis `Settings -> API Keys/Webhooks` sur [sandbox-app.payfonte.com](https://sandbox-app.payfonte.com).
+  </Step>
+  <Step title="Définir un endpoint webhook">
+    Configurez une URL de callback de test afin de valider les mises à jour de transaction asynchrones.
+  </Step>
+</Steps>
+
+## Points à valider avant le go-live
+
+<CardGroup cols={2}>
+  <Card title="Auth et en-têtes" icon="key">
+    Confirmez que toutes les requêtes incluent `client-id` et `client-secret`.
+  </Card>
+  <Card title="Format de montant" icon="hashtag">
+    Vérifiez que vous envoyez uniquement des valeurs entières en sous-unités. Les décimales ne sont pas prises en charge.
+  </Card>
+  <Card title="Cycle de vie des statuts" icon="repeat">
+    Validez le passage des états pending ou processing vers les états finaux `success` ou `failed` dans votre logique métier.
+  </Card>
+  <Card title="Traitement des webhooks" icon="bell">
+    Vérifiez la validation de signature, les retries, l'idempotence et les temps de réponse.
+  </Card>
+</CardGroup>
+
+## Scénarios de test principaux
+
+| Scénario | Résultat attendu |
+| --- | --- |
+| Requête de débit valide | Réponse `201` avec référence de transaction |
+| Identifiants invalides | Échec d'authentification, `401` ou `403` |
+| Envoi d'un montant décimal | Échec de validation ou provider |
+| Référence dupliquée | `409` avec `DuplicateTransactionReference` |
+| Slug provider invalide | Erreur avec `InvalidProvider` |
+| Livraison webhook | Callback reçu puis traité une seule fois |
+
+## Simuler des résultats success, failed et pending
+
+Pour les collectes comme pour les décaissements en sandbox, vous pouvez contrôler le résultat attendu en modifiant le numéro mobile money utilisé dans la requête.
+
+| Motif du numéro | Résultat attendu | Utilisation |
+| --- | --- | --- |
+| Tout autre numéro | `success` | La sandbox considère tous les autres numéros comme des transactions réussies |
+| Numéro se terminant par `000000` | `failed` | La sandbox force l'échec de la transaction |
+| Numéro se terminant par `111111` | `pending` | La sandbox maintient la transaction en attente pour tester le traitement asynchrone |
+
+<Info>
+  Appliquez cette règle au champ de numéro que vous envoyez pour la transaction. Pour les collectes, utilisez le numéro mobile money du client. Pour les décaissements, utilisez le numéro du bénéficiaire.
+</Info>
+
+Lorsque vous testez des flux pending, ne traitez pas la réponse API initiale comme définitive. Attendez les mises à jour webhook ou vérifiez le statut depuis votre backend avant de marquer la transaction comme `success` ou `failed`.
+
+## Données de test spécifiques à certains providers
+
+<AccordionGroup>
+  <Accordion title="Simulateur OTP Orange Ivory Coast" icon="mobile-screen-button" defaultOpen>
+    Pour tester Orange Ivory Coast avec Payfonte :
+
+    1. Ouvrez https://mpayment.orange-money.com/mpayment-otp/login
+    2. Connectez-vous avec :
+       - Username : `7701901040`
+       - Password : `MerchantWP01040`
+    3. Générez un OTP avec :
+       - Phone Number : `7701101040`, généralement prérempli
+       - PIN : `1791`
+    4. Utilisez l'OTP généré sur la plateforme de paiement.
+  </Accordion>
+  <Accordion title="Safaricom / Equitel / T-Kash / Telkom" icon="phone">
+    - Exemple success : `254700123456`
+    - Exemple failed : `254700000000`
+    - Exemple pending : `254711111111`
+  </Accordion>
+  <Accordion title="Airtel / Telecel / MTN, Ghana" icon="phone">
+    - Exemple success : `233242426222`
+    - Exemple failed : `233240000000`
+    - Exemple pending : `233241111111`
+  </Accordion>
+</AccordionGroup>
+
+## Requête sandbox rapide
+
+```bash
+curl --location 'https://sandbox-api.payfonte.com/payments/v1/checkouts' \
+  --header 'client-id: <your-client-id>' \
+  --header 'client-secret: <your-client-secret>' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "reference": "test-001",
+    "amount": 10000,
+    "currency": "NGN",
+    "country": "NG",
+    "user": {
+      "phoneNumber": "08012345678"
+    }
+  }'
+```
+
+## Documentation associée
+
+<CardGroup cols={3}>
+  <Card title="Environnements" icon="server" href="/fr/guides/introductions/environments">
+    URL sandbox et production, ainsi que configuration des identifiants.
+  </Card>
+  <Card title="Webhooks" icon="bell" href="/fr/guides/collections/webhook">
+    Vérifiez les payloads de callback et la validation de signature.
+  </Card>
+  <Card title="Codes d'erreur" icon="triangle-exclamation" href="/fr/guides/introductions/error-codes">
+    Dépannez rapidement les requêtes de test échouées.
+  </Card>
+</CardGroup>

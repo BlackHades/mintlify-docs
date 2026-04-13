@@ -1,0 +1,667 @@
+---
+title: "FAQ et fonctionnalités expliquées"
+description: "Questions fréquentes sur l'orchestration de paiement en Afrique, l'intégration mobile money, MTN MoMo, M-Pesa, Airtel Money et les moyens de paiement locaux."
+icon: "circle-question"
+seo:
+  title: "FAQ - Orchestration de paiement Afrique | Guide d'intégration mobile money"
+  description: "Découvrez le fonctionnement de Payfonte, du mobile money, du routage intelligent, des webhooks, des décaissements et de la conformité."
+  keywords: "mobile money API, Afrique mobile money API, intégration MTN MoMo API, M-Pesa API, Airtel Money API, Wave, API orchestration paiement, APM, moyens de paiement locaux Afrique"
+---
+
+Tout ce qu'il faut savoir sur la plateforme Payfonte, l'intégration mobile money et le traitement des moyens de paiement alternatifs à travers les marchés africains.
+
+---
+
+## Démarrer
+
+<AccordionGroup>
+  <Accordion title="Qu'est-ce que Payfonte ?" icon="circle-info">
+    Payfonte est une plateforme d'orchestration de paiement et un agrégateur mobile money conçus pour les marchés africains. Nous permettons aux entreprises d'encaisser et de décaisser dans plus de 14 pays africains via une seule intégration API.
+
+    Notre plateforme prend en charge les principaux moyens de paiement alternatifs et locaux :
+    - Mobile money : MTN MoMo, Orange Money, Airtel Money, M-Pesa, Wave, Moov
+    - Virements bancaires : paiements bancaires directs au Nigeria, au Kenya, en Afrique du Sud
+    - Cartes : Visa et Mastercard via des partenaires
+    - Portefeuilles numériques : Opay, PalmPay et autres
+
+    En une seule intégration multi-PSP, vous pouvez traiter les paiements sur plusieurs méthodes et marchés avec des capacités de routage intelligent.
+  </Accordion>
+
+  <Accordion title="Comment commencer avec Payfonte ?" icon="rocket">
+    Le démarrage est simple :
+
+    1. Créez un compte sandbox sur [sandbox-app.payfonte.com](https://sandbox-app.payfonte.com)
+    2. Récupérez vos identifiants API dans Settings -> API Keys/Webhooks
+    3. Configurez votre webhook dans Settings -> API Keys/Webhooks
+    4. Testez votre intégration en sandbox
+    5. Terminez le KYB via notre [formulaire KYB](https://form.jotform.com/240038360690048)
+    6. Passez en production une fois approuvé
+
+    Le délai d'onboarding est généralement de 1 à 5 jours ouvrés après la soumission KYB.
+  </Accordion>
+
+  <Accordion title="Quelle différence entre sandbox et production ?" icon="flask">
+    | Aspect | Sandbox | Production |
+    |--------|---------|------------|
+    | URL API | `https://sandbox-api.payfonte.com` | `https://api.payfonte.com` |
+    | Dashboard | `https://sandbox-app.payfonte.com` | `https://app.payfonte.com` |
+    | Argent réel | ❌ Non | ✅ Oui |
+    | Identifiants | Clés sandbox dédiées | Clés production dédiées |
+    | Prompts MNO | Réponses simulées | STK push et USSD réels |
+
+    <Warning>
+      Important : sandbox et production sont totalement séparés. Votre configuration sandbox, tokens API, URL de callback et données de test, n'est pas copiée en production. Il faut tout reconfigurer lors du passage en live.
+    </Warning>
+  </Accordion>
+
+  <Accordion title="Quels documents KYB sont requis ?" icon="file-contract">
+    Les exigences KYB dépendent du type d'entreprise, mais incluent généralement :
+
+    Pour les sociétés :
+    - Certificat d'incorporation
+    - Statuts ou mémorandum
+    - Résolution du conseil autorisant le traitement des paiements
+    - Pièce d'identité valide des dirigeants ou UBO
+    - Justificatif d'adresse
+    - Relevé bancaire des trois derniers mois
+
+    Pour les entrepreneurs individuels :
+    - Certificat d'enregistrement de l'activité
+    - Pièce d'identité officielle
+    - Justificatif d'adresse
+    - Relevé bancaire
+
+    Délai de traitement : 1 à 5 jours ouvrés.
+
+    <Tip>
+      Nos exigences KYB sont plus souples que celles de nombreuses intégrations MNO directes. Certains marchands finalisent l'onboarding en quelques minutes sur les dossiers simples.
+    </Tip>
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Comprendre le mobile money
+
+<AccordionGroup>
+  <Accordion title="Comment fonctionne un paiement mobile money ?" icon="mobile">
+    Le mobile money est un APM majeur : l'utilisateur paie directement depuis son portefeuille mobile, MTN MoMo, M-Pesa, Orange Money, Airtel Money, Wave, sans avoir besoin d'un compte bancaire ou d'une carte.
+
+    Flux type :
+
+    ```mermaid
+    sequenceDiagram
+        participant Customer as Client
+        participant Merchant as Marchand
+        participant Payfonte
+        participant MNO
+
+        Merchant->>Payfonte: Crée une session de checkout
+        Payfonte-->>Merchant: Retourne l'URL de checkout
+        Merchant->>Customer: Redirige vers le checkout
+        Customer->>Payfonte: Choisit mobile money, saisit son numéro
+        Payfonte->>MNO: Initie la demande de paiement
+        MNO->>Customer: Envoie un STK Push ou un prompt USSD
+        Customer->>MNO: Entre son PIN pour autoriser
+        MNO-->>Payfonte: Paiement confirmé
+        Payfonte->>Merchant: Notification webhook
+        Payfonte->>Customer: Redirection vers l'URL de succès
+    ```
+
+    Le processus complet prend généralement 30 à 60 secondes entre l'initiation et la confirmation.
+  </Accordion>
+
+  <Accordion title="Quelle différence entre STK Push et USSD ?" icon="code">
+    Ce sont deux méthodes utilisées par les MNO pour demander au client d'autoriser un paiement mobile money :
+
+    ### STK Push
+    - Le prompt de paiement est envoyé directement sur le téléphone du client
+    - Le client voit une fenêtre et saisit son PIN
+    - Pris en charge par M-Pesa et certains marchés MTN
+    - Expérience fluide mais nécessite un téléphone allumé avec du réseau
+
+    ### USSD
+    - Le client compose un code ou reçoit un menu de session
+    - Il navigue dans le menu puis saisit son PIN
+    - Utilisé par MTN MoMo, Orange Money et Airtel Money sur plusieurs marchés
+    - Compatible avec les téléphones basiques et sans data
+
+    ### Autorisation provider
+    - La demande de paiement est envoyée directement via l'API
+    - Le MNO invite ensuite le client sur son appareil
+
+    <Note>
+      Payfonte choisit automatiquement la bonne méthode d'autorisation selon le provider et le pays. Vous n'avez pas à gérer cette logique vous-même.
+    </Note>
+  </Accordion>
+
+  <Accordion title="Quelle est l'expérience client pour un paiement mobile money ?" icon="user">
+    Étape 1 : initiation
+    - Le client choisit mobile money
+    - Il saisit son numéro mobile money
+    - Il clique sur payer
+
+    Étape 2 : autorisation
+    - Le client reçoit un STK push ou un prompt USSD
+    - Le prompt affiche le marchand, le montant et la référence
+    - Le client saisit son PIN pour autoriser
+
+    Étape 3 : confirmation
+    - Le client voit un message de paiement réussi sur son téléphone
+    - Il reçoit la confirmation SMS du MNO
+    - Il est redirigé vers votre page de succès
+
+    | Étape | Durée typique |
+    |-------|---------------|
+    | Initiation vers le prompt | 2 à 5 secondes |
+    | Autorisation client | 10 à 30 secondes |
+    | Callback de confirmation | 1 à 3 secondes |
+    | Total | 15 à 45 secondes |
+  </Accordion>
+
+  <Accordion title="Qu'est-ce que la pré-autorisation mobile money ?" icon="lock">
+    Certaines intégrations MNO prennent en charge une pré-autorisation, où le client génère un code avant que le marchand n'initie le paiement.
+
+    Fonctionnement :
+    1. Le client ouvre l'application ou l'USSD du MNO et génère un code
+    2. Il partage ce code avec le marchand
+    3. Le marchand envoie `preAuthorisationCode` dans la requête API
+    4. Le paiement est traité sans prompt additionnel
+
+    Marchés courants :
+    - Orange Burkina Faso
+    - Orange Sénégal
+
+    <Note>
+      La disponibilité dépend du MNO et du marché. Contactez le support pour connaître les configurations actuellement prises en charge.
+    </Note>
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Traitement des transactions
+
+<AccordionGroup>
+  <Accordion title="Quels statuts de transaction dois-je prévoir ?" icon="traffic-light">
+    Les transactions Payfonte peuvent prendre les statuts suivants :
+
+    | Statut | Description | Final ? | Action requise |
+    |--------|-------------|---------|----------------|
+    | `queued` | Paiement mis en file pour traitement | ❌ | Attendre le webhook |
+    | `pending` | Paiement initié, en attente d'autorisation client | ❌ | Attendre le webhook |
+    | `processing` | Client autorisé, traitement provider en cours | ❌ | Attendre le webhook |
+    | `success` | Paiement terminé avec succès | ✅ | Exécuter la commande |
+    | `rejected` | Paiement rejeté | ✅ | Proposer un retry |
+    | `failed` | Paiement échoué | ✅ | Proposer un retry |
+    | `expired` | Le client n'a pas autorisé à temps | ✅ | Proposer un retry |
+    | `reversed` | Les fonds ont été retournés au client | ✅ | Mettre à jour vos enregistrements |
+
+    <Warning>
+      N'exécutez jamais une commande sur les statuts `pending` ou `processing`. Attendez toujours un statut final comme `success`, `failed` ou `expired`.
+    </Warning>
+  </Accordion>
+
+  <Accordion title="Comment Payfonte garantit-il un état final à 100 % ?" icon="check-double">
+    Notre moteur de rapprochement intelligent garantit qu'aucune transaction ne reste indéfiniment en attente :
+
+    1. Monitoring temps réel de chaque transaction
+    2. Polling automatique des API MNO pour les transactions pending
+    3. Téléchargement et rapprochement des relevés MNO
+    4. Gestion des timeouts
+    5. Retry des callbacks webhook jusqu'à accusé de réception
+
+    Résultat : chaque paiement atteint un statut conclusif, `success`, `failed` ou `expired`, dans la fenêtre de timeout du provider, généralement entre 5 et 60 minutes.
+
+    <Tip>
+      Si une transaction semble bloquée dans le dashboard, le moteur de rapprochement travaille déjà à sa résolution. Vérifiez à nouveau entre 5 et 60 minutes plus tard.
+    </Tip>
+  </Accordion>
+
+  <Accordion title="Quels sont les délais de timeout selon les providers ?" icon="clock">
+    Chaque MNO a sa propre fenêtre de timeout pour l'autorisation client :
+
+    | Provider | Timeout | Notes |
+    |----------|---------|-------|
+    | M-Pesa, Kenya | 60 secondes | Le STK push expire rapidement |
+    | MTN MoMo | 5 à 15 minutes | Varie selon le pays |
+    | Orange Money | 5 à 10 minutes | Timeout de session USSD |
+    | Airtel Money | 5 à 10 minutes | Timeout standard |
+    | Wave | 5 minutes | Confirmation via application |
+
+    Si le client n'autorise pas à temps, la transaction passe à `expired` et vous recevez un webhook.
+  </Accordion>
+
+  <Accordion title="Comment gérer les transactions échouées ?" icon="triangle-exclamation">
+    Lorsqu'une transaction échoue, vérifiez `errorCode` et `errorMessage` dans la réponse ou le webhook.
+
+    | Erreur | Cause | Résolution |
+    |-------|-------|------------|
+    | `INSUFFICIENT_FUNDS` | Solde client insuffisant | Demandez au client de recharger |
+    | `WRONG_PIN` | PIN incorrect | Réessayer avec le bon PIN |
+    | `TIMEOUT` | Le client n'a pas répondu à temps | Relancer la transaction |
+    | `ACCOUNT_LOCKED` | Portefeuille client verrouillé | Le client doit contacter son MNO |
+    | `INVALID_PHONE` | Numéro non enregistré en mobile money | Vérifier le numéro |
+    | `DAILY_LIMIT_EXCEEDED` | Plafond journalier atteint | Réduire le montant ou attendre |
+    | `SYSTEM_ERROR` | Incident technique provider | Réessayer après quelques minutes |
+
+    Bonnes pratiques :
+    - Afficher des messages d'erreur compréhensibles
+    - Proposer un retry pour les erreurs relançables
+    - Journaliser toutes les transactions en échec
+    - Contacter le support si les erreurs `SYSTEM_ERROR` persistent
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Webhooks et callbacks
+
+<AccordionGroup>
+  <Accordion title="Comment configurer les webhooks ?" icon="bell">
+    Les webhooks notifient votre serveur en temps réel lors des changements de statut.
+
+    Étapes :
+    1. Ouvrir Dashboard -> Settings -> API Keys/Webhooks
+    2. Saisir votre URL webhook, par exemple `https://yoursite.com/payfonte/webhook`
+    3. Cliquer sur Save
+
+    Exigences :
+    - Endpoint accessible publiquement, pas en localhost
+    - HTTPS obligatoire
+    - Réponse HTTP 200 en moins de 30 secondes
+    - Traitement idempotent
+
+    <Tip>
+      Vous pouvez aussi envoyer une URL webhook par transaction via le champ `webhook` dans la requête API. Cela surcharge le webhook par défaut pour cette transaction.
+    </Tip>
+  </Accordion>
+
+  <Accordion title="À quoi ressemble un payload webhook ?" icon="code">
+    Lorsque le statut d'une transaction change, nous envoyons un POST vers votre URL webhook :
+
+    ```json
+    {
+      "event": "payment.completed",
+      "timestamp": "2025-02-06T10:30:00Z",
+      "data": {
+        "reference": "ORDER-12345",
+        "checkoutId": "chk_abc123xyz",
+        "amount": 5000,
+        "currency": "NGN",
+        "country": "NG",
+        "status": "success",
+        "provider": "mtn-momo-nigeria",
+        "channel": "mobile-money",
+        "user": {
+          "email": "customer@example.com",
+          "phoneNumber": "08012345678"
+        },
+        "paidAt": "2025-02-06T10:30:00Z",
+        "metadata": {
+          "orderId": "your-custom-data"
+        }
+      }
+    }
+    ```
+
+    Types d'événements courants :
+    - `payment.completed`
+    - `payment.failed`
+    - `payment.expired`
+    - `disbursement.completed`
+    - `disbursement.failed`
+  </Accordion>
+
+  <Accordion title="Comment traiter correctement les webhooks ?" icon="server">
+    Bonnes pratiques de traitement :
+
+    ```javascript
+    app.post('/payfonte/webhook', async (req, res) => {
+      const event = req.body;
+
+      // 1. Répondre immédiatement
+      res.status(200).send('OK');
+
+      // 2. Traiter de façon asynchrone
+      processWebhookAsync(event);
+    });
+
+    async function processWebhookAsync(event) {
+      // 3. Vérifier si déjà traité
+      const existing = await db.findTransaction(event.data.reference);
+      if (existing?.status === event.data.status) {
+        return;
+      }
+
+      // 4. Vérifier via l'API, optionnel mais recommandé
+      const verified = await payfonte.verifyTransaction(event.data.reference);
+
+      // 5. Mettre à jour vos données
+      await db.updateTransaction(event.data.reference, {
+        status: verified.status,
+        paidAt: verified.paidAt
+      });
+
+      // 6. Exécuter l'action métier
+      if (verified.status === 'success') {
+        await fulfillOrder(event.data.reference);
+      }
+    }
+    ```
+
+    <Warning>
+      Répondez toujours rapidement avec HTTP 200. Si votre endpoint timeout ou renvoie une erreur, le webhook sera rejoué. Implémentez l'idempotence pour gérer les doublons.
+    </Warning>
+  </Accordion>
+
+  <Accordion title="Que se passe-t-il si mon endpoint webhook est indisponible ?" icon="server">
+    Nous appliquons une logique de retry automatique :
+
+    - Tentative 1 : immédiate
+    - Tentative 2 : 1 minute plus tard
+    - Tentative 3 : 5 minutes plus tard
+    - Tentative 4 : 30 minutes plus tard
+    - Tentative 5 : 1 heure plus tard
+
+    Si toutes les tentatives échouent :
+    - Le statut reste mis à jour dans notre système
+    - Vous pouvez toujours interroger le statut via l'API
+    - Vous pouvez rejouer les webhooks depuis le dashboard
+
+    <Tip>
+      Mettez en place une surveillance de votre endpoint webhook et des alertes de livraison échouée. Un polling de secours peut aussi servir de filet de sécurité.
+    </Tip>
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Règlement et décaissements
+
+<AccordionGroup>
+  <Accordion title="Sous quel délai reçois-je mes fonds ?" icon="money-bill-transfer">
+    Les délais de règlement varient selon le pays et le moyen de paiement :
+
+    | Pays | Méthode | Règlement |
+    |------|---------|-----------|
+    | Nigeria | Virement bancaire | T+1 |
+    | Nigeria | Mobile money | T+1 à T+2 |
+    | Kenya | M-Pesa | T+1 |
+    | Ghana | Toutes méthodes | T+1 à T+2 |
+    | Côte d'Ivoire | Mobile money | T+2 à T+3 |
+    | Autres pays CFA | Mobile money | T+2 à T+3 |
+
+    T correspond au jour de demande de règlement.
+  </Accordion>
+
+  <Accordion title="Puis-je envoyer des décaissements ?" icon="paper-plane">
+    Oui. Payfonte prend en charge les décaissements vers :
+
+    - Portefeuilles mobile money
+    - Comptes bancaires, notamment au Nigeria, au Kenya et dans d'autres marchés
+    - Flux de décaissement en masse selon la configuration
+
+    Processus :
+    1. Valider le bénéficiaire
+    2. Soumettre la demande de décaissement
+    3. Recevoir le webhook de finalisation
+
+    Délais typiques :
+    - Mobile money : 30 secondes à 5 minutes
+    - Virement bancaire : le jour même à J+1 ouvré
+
+    Voir le [guide des décaissements](/fr/guides/disbursements/overview) pour la procédure complète.
+  </Accordion>
+
+  <Accordion title="Comment vérifier mon solde portefeuille ?" icon="wallet">
+    Vous pouvez consulter vos soldes via :
+
+    Dashboard :
+    - Connectez-vous au dashboard marchand
+    - Consultez les soldes sur l'écran d'accueil
+    - Changez de pays via le sélecteur en haut à droite
+
+    API :
+    ```bash
+    curl --location 'https://api.payfonte.com/billing/v1/wallets' \
+      --header 'client-id: YOUR_CLIENT_ID' \
+      --header 'client-secret: YOUR_CLIENT_SECRET'
+    ```
+
+    Exemple de réponse :
+
+    ```json
+    {
+      "data": [
+        { "currency": "NGN", "country": "NG", "balance": 1500000 },
+        { "currency": "KES", "country": "KE", "balance": 85000 },
+        { "currency": "XOF", "country": "CI", "balance": 2500000 }
+      ]
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Intégration technique
+
+<AccordionGroup>
+  <Accordion title="Comment formater les montants ?" icon="hashtag">
+    Payfonte ne prend pas en charge les montants décimaux. Envoyez toujours des entiers en sous-unités.
+
+    | Montant affiché | Valeur à envoyer |
+    |-----------------|------------------|
+    | `5000.50 NGN` | `500050` |
+    | `100.00 GHS` | `10000` |
+    | `1000 KES` | `100000` |
+    | `10000 XOF` | `1000000` |
+    | `5000 XAF` | `500000` |
+
+    <Warning>
+      Envoyer des décimales comme `1250.75` provoquera des erreurs de validation ou provider. Envoyez `125075` à la place.
+    </Warning>
+
+    Voir [Spécification des montants](/fr/guides/introductions/amount-specification) et [Providers pris en charge](/fr/guides/introductions/supported-providers) pour les limites provider.
+  </Accordion>
+
+  <Accordion title="Comment formater les numéros de téléphone ?" icon="phone">
+    Les numéros doivent être au format international sans signe plus :
+
+    | Pays | Format | Exemple |
+    |------|--------|---------|
+    | Nigeria | 234XXXXXXXXXX | `2348012345678` |
+    | Kenya | 254XXXXXXXXX | `254712345678` |
+    | Ghana | 233XXXXXXXXX | `233201234567` |
+    | Côte d'Ivoire | 225XXXXXXXXXX | `2250512345678` |
+    | Cameroun | 237XXXXXXXXX | `237612345678` |
+
+    N'incluez pas :
+    - Le signe plus
+    - Les espaces ni les tirets
+    - Les zéros initiaux après l'indicatif pays
+
+    ```json
+    // ✅ Correct
+    { "phoneNumber": "2348012345678" }
+
+    // ❌ Incorrect
+    { "phoneNumber": "+234-801-234-5678" }
+    { "phoneNumber": "08012345678" }
+    ```
+  </Accordion>
+
+  <Accordion title="Qu'est-ce que l'API Direct Charge ?" icon="bolt">
+    L'API Direct Charge permet d'initier des paiements directement sans rediriger le client vers une page de checkout. C'est utile pour :
+
+    - Les paiements serveur à serveur
+    - Les paiements récurrents
+    - Les intégrations mobiles natives
+
+    ```bash
+    curl --location 'https://api.payfonte.com/payments/v1/payments/direct-charge' \
+      --header 'client-id: YOUR_CLIENT_ID' \
+      --header 'client-secret: YOUR_CLIENT_SECRET' \
+      --header 'Content-Type: application/json' \
+      --data '{
+        "provider": "mtn-momo-nigeria",
+        "amount": 5000,
+        "reference": "ORDER-12345",
+        "customerInput": {
+          "phoneNumber": "2348012345678"
+        },
+        "webhook": "https://yoursite.com/webhook"
+      }'
+    ```
+
+    Le client reçoit ensuite directement le prompt STK ou USSD sur son téléphone.
+  </Accordion>
+
+  <Accordion title="Prenez-vous en charge l'orchestration hybride, BYOK ?" icon="key">
+    Oui. Bring Your Own Keys, ou orchestration hybride, vous permet d'utiliser vos contrats MNO existants via l'infrastructure Payfonte.
+
+    Fonctionnement :
+    - Vous gardez vos contrats directs avec les MNO
+    - Vous fournissez vos clés API MNO de manière sécurisée
+    - Nous routons les transactions via votre compte ou portefeuille provider
+    - Vous conservez vos tarifs négociés
+
+    Avantages :
+    - Frais plus faibles
+    - Conservation des relations providers
+    - Couverture combinée, vos contrats plus nos partenariats
+    - Dashboard unique pour tous vos APM
+
+    Pour l'activer, contactez [commercial@payfonte.com](mailto:commercial@payfonte.com).
+  </Accordion>
+
+  <Accordion title="Que se passe-t-il si un provider est indisponible ?" icon="server">
+    La technologie de routage intelligent de Payfonte fournit un failover automatique :
+
+    1. Si le provider principal échoue, nous essayons les rails de secours
+    2. L'intégration multi-PSP permet plusieurs providers par pays
+    3. Le monitoring temps réel détecte les incidents en quelques secondes
+    4. Le trafic est rerouté sans intervention du marchand
+
+    Exemple :
+    - Principal : intégration directe MTN MoMo
+    - Secours 1 : MTN via l'agrégateur
+    - Secours 2 : autre route mobile money disponible
+
+    <Note>
+      Vous pouvez aussi définir vos préférences de routage dans le dashboard pour prioriser certains providers selon le coût ou la performance.
+    </Note>
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Sécurité et conformité
+
+<AccordionGroup>
+  <Accordion title="Payfonte est-il conforme PCI DSS ?" icon="shield-halved">
+    Oui. Payfonte est conforme PCI DSS et fait l'objet d'évaluations de sécurité régulières :
+
+    - Conformité PCI DSS
+    - Scans ASV trimestriels
+    - Tests d'intrusion annuels
+    - Chiffrement de bout en bout, en transit et au repos
+
+    Vous pouvez demander nos certificats de conformité via [compliance@payfonte.com](mailto:compliance@payfonte.com).
+  </Accordion>
+
+  <Accordion title="Comment gérez-vous la confidentialité des données ?" icon="user-shield">
+    Nous appliquons des pratiques strictes de protection des données :
+
+    - Méthodes alignées GDPR
+    - Minimisation des données collectées
+    - Chiffrement de toutes les données sensibles
+    - Contrôles d'accès basés sur les rôles
+    - Politiques de rétention conformes
+
+    Données stockées :
+    - Numéros de téléphone
+    - Adresses e-mail
+    - Historique de transaction
+
+    Données non stockées :
+    - PIN mobile money
+    - CVV carte
+    - Soldes de portefeuille client
+  </Accordion>
+
+  <Accordion title="Quelles mesures anti-fraude sont en place ?" icon="magnifying-glass">
+    Payfonte intègre des mécanismes de détection :
+
+    - Contrôles de vélocité
+    - Device fingerprinting
+    - Analyse géographique
+    - Seuils configurables par marchand
+    - Gestion de blacklist
+
+    Vous pouvez aussi :
+    - Définir vos propres limites dans le dashboard
+    - Activer des vérifications supplémentaires pour les gros montants
+    - Consulter des analyses et rapports de fraude
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Dépannage
+
+<AccordionGroup>
+  <Accordion title="Pourquoi ma transaction reste-t-elle en pending ?" icon="hourglass">
+    Une transaction peut rester en attente pour plusieurs raisons :
+
+    | Cause | Résolution |
+    |-------|------------|
+    | Le client n'a pas encore autorisé | Attendre la saisie du PIN |
+    | Délai provider ou MNO | Se résout souvent en 5 à 15 minutes |
+    | Problème de connectivité | Le moteur de rapprochement finira la résolution |
+    | STK push non reçu | Le client peut avoir besoin de relancer |
+
+    Que faire :
+    1. Attendre 5 à 15 minutes
+    2. Vérifier le statut via l'API
+    3. Si le blocage dépasse 30 minutes, contacter le support
+  </Accordion>
+
+  <Accordion title="Pourquoi ai-je une erreur 401 Unauthorized ?" icon="lock">
+    Cette erreur signifie que vos identifiants API sont invalides :
+
+    Causes fréquentes :
+    - Identifiants sandbox utilisés avec l'URL production, ou inversement
+    - Faute de frappe dans `client-id` ou `client-secret`
+    - Les identifiants ont été régénérés
+    - Un en-tête requis est manquant
+
+    Solution :
+    1. Vérifiez l'environnement utilisé
+    2. Recopiez les identifiants depuis Dashboard -> Settings -> API Keys
+    3. Vérifiez les noms exacts des en-têtes : `client-id` et `client-secret`
+  </Accordion>
+
+  <Accordion title="Comment tester différents scénarios en sandbox ?" icon="flask-vial">
+    La sandbox permet de simuler plusieurs résultats à partir des numéros de téléphone de test.
+
+    Utilisez les scénarios documentés dans notre [guide de test](/fr/guides/introductions/testing) pour provoquer des transactions `success`, `failed` et `pending`.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Vous avez encore des questions ?
+
+<CardGroup cols={3}>
+  <Card title="Contacter le support" icon="headset" href="mailto:support@payfonte.com">
+    support@payfonte.com
+  </Card>
+  <Card title="Réserver une démo" icon="calendar" href="https://calendly.com/marc-payfonte/30min">
+    Planifier une démonstration
+  </Card>
+  <Card title="Référence API" icon="code" href="/fr/api-reference/introduction">
+    Documentation API complète
+  </Card>
+</CardGroup>

@@ -9,75 +9,168 @@
   },
   "favicon": "/payfonte-favicon.ico",
   "navigation": {
-    "tabs": [
+    "languages": [
       {
-        "tab": "Introduction",
-        "groups": [
+        "language": "en",
+        "default": true,
+        "tabs": [
           {
-            "group": "Getting Started",
-            "pages": [
-              "guides/introductions/overview",
-              "guides/introductions/products",
-              "guides/introductions/quick-start",
-              "guides/introductions/faq"
-            ]
-          },
-          {
-            "group": "Core Concepts",
-            "pages": [
-              "guides/introductions/platform-overview",
-              "guides/introductions/authorization",
-              "guides/introductions/environments",
-              "guides/introductions/amount-specification",
-              "guides/introductions/wallets"
-            ]
-          },
-          {
-            "group": "Providers & Coverage",
-            "pages": [
-              "guides/introductions/supported-providers"
-            ]
-          },
-          {
-            "group": "Development",
-            "pages": [
-              "guides/introductions/endpoint-specification",
-              "guides/introductions/testing",
-              "guides/introductions/error-codes"
-            ]
-          },
-          {
-            "group": "Collect Payment",
-            "pages": [
-              "guides/collections/overview",
-              "guides/collections/inline",
-              "guides/collections/standard",
-              "guides/collections/webhook",
+            "tab": "Introduction",
+            "groups": [
               {
-                "group": "Collections API - Direct",
-                "icon": "bolt",
+                "group": "Getting Started",
                 "pages": [
-                  "guides/collections/direct-charge-api",
-                  "guides/collections/direct-charge/mobile-money",
-                  "guides/collections/direct-charge/examples"
+                  "en/guides/introductions/overview",
+                  "en/guides/introductions/products",
+                  "en/guides/introductions/quick-start",
+                  "en/guides/introductions/faq"
+                ]
+              },
+              {
+                "group": "Core Concepts",
+                "pages": [
+                  "en/guides/introductions/platform-overview",
+                  "en/guides/introductions/authorization",
+                  "en/guides/introductions/environments",
+                  "en/guides/introductions/amount-specification",
+                  "en/guides/introductions/wallets"
+                ]
+              },
+              {
+                "group": "Providers & Coverage",
+                "pages": [
+                  "en/guides/introductions/supported-providers"
+                ]
+              },
+              {
+                "group": "Development",
+                "pages": [
+                  "en/guides/introductions/endpoint-specification",
+                  "en/guides/introductions/testing",
+                  "en/guides/introductions/error-codes"
+                ]
+              },
+              {
+                "group": "Collect Payment",
+                "pages": [
+                  "en/guides/collections/overview",
+                  "en/guides/collections/inline",
+                  "en/guides/collections/standard",
+                  "en/guides/collections/webhook",
+                  {
+                    "group": "Collections API - Direct",
+                    "icon": "bolt",
+                    "pages": [
+                      "en/guides/collections/direct-charge-api",
+                      "en/guides/collections/direct-charge/mobile-money",
+                      "en/guides/collections/direct-charge/examples"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Disbursements",
+                "pages": [
+                  "en/guides/disbursements/overview",
+                  "en/guides/disbursements/authorization-mode",
+                  "en/guides/disbursements/examples",
+                  "en/guides/disbursements/webhook"
                 ]
               }
             ]
           },
           {
-            "group": "Disbursements",
-            "pages": [
-              "guides/disbursements/overview",
-              "guides/disbursements/authorization-mode",
-              "guides/disbursements/examples",
-              "guides/disbursements/webhook"
-            ]
+            "tab": "API Reference",
+            "openapi": "api-reference/openapi-3.1.yml"
           }
         ]
       },
       {
-        "tab": "API Reference",
-        "openapi": "api-reference/openapi-3.1.yml"
+        "language": "fr",
+        "tabs": [
+          {
+            "tab": "Introduction",
+            "groups": [
+              {
+                "group": "Premiers pas",
+                "pages": [
+                  "fr/guides/introductions/overview",
+                  "fr/guides/introductions/products",
+                  "fr/guides/introductions/quick-start",
+                  "fr/guides/introductions/faq"
+                ]
+              },
+              {
+                "group": "Concepts clés",
+                "pages": [
+                  "fr/guides/introductions/platform-overview",
+                  "fr/guides/introductions/authorization",
+                  "fr/guides/introductions/environments",
+                  "fr/guides/introductions/amount-specification",
+                  "fr/guides/introductions/wallets"
+                ]
+              },
+              {
+                "group": "Prestataires et couverture",
+                "pages": [
+                  "fr/guides/introductions/supported-providers"
+                ]
+              },
+              {
+                "group": "Développement",
+                "pages": [
+                  "fr/guides/introductions/endpoint-specification",
+                  "fr/guides/introductions/testing",
+                  "fr/guides/introductions/error-codes"
+                ]
+              },
+              {
+                "group": "Encaisser des paiements",
+                "pages": [
+                  "fr/guides/collections/overview",
+                  "fr/guides/collections/inline",
+                  "fr/guides/collections/standard",
+                  "fr/guides/collections/webhook",
+                  {
+                    "group": "API de collecte - Direct",
+                    "icon": "bolt",
+                    "pages": [
+                      "fr/guides/collections/direct-charge-api",
+                      "fr/guides/collections/direct-charge/mobile-money",
+                      "fr/guides/collections/direct-charge/examples"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Décaissements",
+                "pages": [
+                  "fr/guides/disbursements/overview",
+                  "fr/guides/disbursements/authorization-mode",
+                  "fr/guides/disbursements/examples",
+                  "fr/guides/disbursements/webhook"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Référence API",
+            "openapi": "api-reference/openapi-3.1.yml"
+          }
+        ],
+        "navbar": {
+          "links": [
+            {
+              "label": "Assistance",
+              "href": "mailto:support@payfonte.com"
+            }
+          ],
+          "primary": {
+            "type": "button",
+            "label": "Tableau de bord",
+            "href": "https://app.payfonte.com"
+          }
+        }
       }
     ],
     "global": {

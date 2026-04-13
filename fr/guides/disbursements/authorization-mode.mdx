@@ -1,0 +1,112 @@
+---
+title: "Mode d'autorisation des décaissements"
+description: "Configurez une autorisation sécurisée des demandes de décaissement via le mode PIN ou le mode URL d'autorisation."
+icon: "key"
+---
+
+# Mode d'autorisation des décaissements
+
+Payfonte prend en charge deux modes d'autorisation pour les demandes de décaissement :
+
+- Autorisation par PIN
+- URL d'autorisation
+
+## Comparaison des modes
+
+| Mode | Fonctionnement | Recommandé pour |
+| --- | --- | --- |
+| Autorisation par PIN | Vous envoyez `pin` dans chaque demande de décaissement | Les équipes qui contrôlent strictement les décaissements depuis le backend |
+| URL d'autorisation | Payfonte appelle votre endpoint d'approbation à chaque demande ; le décaissement continue uniquement sur HTTP `200` | Les plateformes qui exigent des contrôles de politique ou de risque avant chaque décaissement |
+
+## 1) Autorisation par PIN
+
+Le mode PIN exige un code de décaissement sur les requêtes de décaissement.
+
+### Mise en place
+
+<Steps>
+  <Step title="Définir le PIN dans le dashboard">
+    Ouvrez une page Décaissements dans le dashboard et terminez la configuration du PIN lorsque vous y êtes invité.
+  </Step>
+  <Step title="Stocker le PIN de façon sécurisée">
+    Conservez le PIN uniquement dans un stockage secret backend. Ne l'exposez jamais côté frontend ou mobile.
+  </Step>
+  <Step title="Envoyer le PIN dans chaque requête">
+    Incluez le champ `pin` dans `POST /billing/v1/disbursements`.
+  </Step>
+</Steps>
+
+Exemple de requête avec PIN :
+
+```json
+{
+  "transferRecipientId": "6659692f019f6a143f7f90db",
+  "amount": 100000,
+  "reference": "disbursement-1001",
+  "narration": "Vendor settlement",
+  "pin": "1234"
+}
+```
+
+## 2) URL d'autorisation
+
+Le mode URL d'autorisation permet à votre système d'approuver ou de rejeter dynamiquement chaque tentative de décaissement.
+
+### Mise en place
+
+<Steps>
+  <Step title="Configurer l'URL d'autorisation">
+    Définissez votre endpoint sous `Disbursements -> Settings` dans le dashboard.
+  </Step>
+  <Step title="Implémenter la validation de requête">
+    Vérifiez l'authenticité de la requête entrante, hash ou signature, avant de répondre.
+  </Step>
+  <Step title="Renvoyer une décision stricte">
+    Retournez HTTP `200` pour approuver ; toute réponse non `200` bloque le décaissement.
+  </Step>
+</Steps>
+
+<Warning>
+  Le mode URL d'autorisation est strict : si votre endpoint est indisponible ou renvoie autre chose que `200`, le décaissement n'est pas traité.
+</Warning>
+
+## Contrôles de validation recommandés
+
+Lorsque Payfonte appelle votre URL d'autorisation, validez :
+
+- L'authenticité de la requête, signature ou hash
+- La conformité du montant et de la devise avec vos règles métier
+- L'éligibilité du bénéficiaire au décaissement
+- La disponibilité des soldes, si vous appliquez des règles internes de portefeuille
+- Les plafonds journaliers, politiques AML ou risque et seuils de vélocité
+
+## Checklist de sécurité
+
+<AccordionGroup>
+  <Accordion title="Conserver les secrets côté serveur" icon="lock" defaultOpen>
+    N'exposez jamais le PIN de décaissement ni les secrets d'autorisation dans du code navigateur ou mobile.
+  </Accordion>
+  <Accordion title="Utiliser des endpoints HTTPS" icon="shield-halved">
+    L'URL d'autorisation doit être accessible publiquement via HTTPS.
+  </Accordion>
+  <Accordion title="Échouer de manière fermée sur erreur de vérification" icon="triangle-exclamation">
+    Si les contrôles de signature ou de hash échouent, rejetez la demande d'autorisation.
+  </Accordion>
+  <Accordion title="Tracer chaque décision de décaissement" icon="database">
+    Journalisez les décisions approuvées comme rejetées, avec leur raison, pour la conformité et le dépannage.
+  </Accordion>
+</AccordionGroup>
+
+## Documentation associée
+
+<CardGroup cols={3}>
+  <Card title="Vue d'ensemble des décaissements" icon="money-bill-transfer" href="/fr/guides/disbursements/overview">
+    Flux de décaissement complet et utilisation des endpoints.
+  </Card>
+  <Card title="Webhooks de décaissement" icon="bell" href="/fr/guides/disbursements/webhook">
+    Traitez les mises à jour de statut asynchrones.
+  </Card>
+  <Card title="Exemples de décaissement" icon="code" href="/fr/guides/disbursements/examples">
+    Requêtes et réponses prêtes à copier.
+  </Card>
+</CardGroup>

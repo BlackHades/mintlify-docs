@@ -1,0 +1,103 @@
+---
+title: "Environnements"
+description: "Configurez les environnements sandbox et production, les URL de base de l'API et l'authentification avec client-id et client-secret."
+icon: "server"
+---
+
+# Environnements
+
+Payfonte propose deux environnements d'intégration :
+
+| Environnement | Cas d'usage | URL de base API | Dashboard |
+| --- | --- | --- | --- |
+| Sandbox | Développement et QA | `https://sandbox-api.payfonte.com` | https://sandbox-app.payfonte.com |
+| Production | Transactions réelles | `https://api.payfonte.com` | https://app.payfonte.com |
+
+<Warning>
+  N'utilisez pas d'identifiants live en sandbox. Séparez strictement les identifiants sandbox et production.
+</Warning>
+
+## Authentification API
+
+Tous les appels API requièrent ces en-têtes :
+
+- `client-id`
+- `client-secret`
+
+Vous les trouverez ici :
+
+`Dashboard -> Settings -> API Keys/Webhooks`
+
+## Exemple sandbox
+
+```bash
+curl --location 'https://sandbox-api.payfonte.com/payments/v1/checkouts' \
+  --header 'client-id: <your-sandbox-client-id>' \
+  --header 'client-secret: <your-sandbox-client-secret>' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "reference": "test-001",
+    "amount": 1000,
+    "currency": "NGN",
+    "country": "NG",
+    "user": {
+      "phoneNumber": "08012345678"
+    }
+  }'
+```
+
+## Checklist de mise en production
+
+<Steps>
+  <Step title="Terminer les tests en sandbox">
+    Validez les flux success, failed et pending, y compris les webhooks.
+  </Step>
+  <Step title="Terminer le KYB">
+    Soumettez les informations de votre entreprise via le [formulaire KYB](https://form.jotform.com/240038360690048).
+  </Step>
+  <Step title="Basculer les identifiants et l'URL de base">
+    Remplacez `client-id` et `client-secret` sandbox par les clés production, puis utilisez `https://api.payfonte.com`.
+  </Step>
+  <Step title="Vérifier les webhooks en production">
+    Confirmez que votre URL webhook de production est bien configurée dans `Settings -> API Keys/Webhooks`.
+  </Step>
+</Steps>
+
+## Configuration applicative recommandée
+
+Utilisez des variables d'environnement pour garder les secrets hors du code source :
+
+```bash
+# Sandbox
+PAYFONTE_SANDBOX_BASE_URL=https://sandbox-api.payfonte.com
+PAYFONTE_SANDBOX_CLIENT_ID=...
+PAYFONTE_SANDBOX_CLIENT_SECRET=...
+
+# Production
+PAYFONTE_PRODUCTION_BASE_URL=https://api.payfonte.com
+PAYFONTE_PRODUCTION_CLIENT_ID=...
+PAYFONTE_PRODUCTION_CLIENT_SECRET=...
+```
+
+```javascript
+const isProduction = process.env.NODE_ENV === "production";
+
+const config = isProduction
+  ? {
+      baseUrl: process.env.PAYFONTE_PRODUCTION_BASE_URL,
+      clientId: process.env.PAYFONTE_PRODUCTION_CLIENT_ID,
+      clientSecret: process.env.PAYFONTE_PRODUCTION_CLIENT_SECRET
+    }
+  : {
+      baseUrl: process.env.PAYFONTE_SANDBOX_BASE_URL,
+      clientId: process.env.PAYFONTE_SANDBOX_CLIENT_ID,
+      clientSecret: process.env.PAYFONTE_SANDBOX_CLIENT_SECRET
+    };
+```
+
+## Notes de sécurité
+
+- N'exposez jamais `client-secret` dans des applications frontend.
+- Ne versionnez jamais les identifiants dans git.
+- Faites tourner les clés immédiatement si vous suspectez une fuite.
+- Utilisez HTTPS pour l'API et les endpoints webhook.

@@ -1,0 +1,124 @@
+---
+title: "Webhooks et callbacks de décaissement"
+description: "Recevez, vérifiez et traitez les mises à jour de statut des décaissements en temps réel."
+icon: "bell"
+---
+
+Payfonte envoie des événements webhook lorsque le statut d'un décaissement change, par exemple `processing`, `success` ou `failed`.
+
+Utilisez les webhooks comme canal principal de mise à jour asynchrone des décaissements.
+
+## Champs du payload
+
+| Champ | Description |
+| --- | --- |
+| `event` | Type d'événement, par exemple `disbursement.status` |
+| `clientId` | Votre identifiant client Payfonte |
+| `data.status` | Statut du décaissement, `processing`, `success` ou `failed` |
+| `data.statusDescription` | Détail de statut côté provider ou plateforme |
+| `data.reference` | Référence Payfonte du décaissement |
+| `data.externalReference` | Référence fournie par le marchand |
+| `data.providersReference` | Référence côté provider |
+| `data.amount` | Montant du décaissement en sous-unités |
+| `data.charge` | Frais de décaissement appliqués |
+| `data.provider` | Slug provider utilisé |
+| `data.transferRecipientId` | Identifiant du bénéficiaire |
+| `data.transferRecipientLabel` | Libellé lisible du bénéficiaire |
+| `deliveryId` | Identifiant de livraison du webhook |
+
+Exemple de payload :
+
+```json disbursement.status
+{
+  "event": "disbursement.status",
+  "clientId": "payfusion",
+  "data": {
+    "clientId": "payfusion",
+    "type": "disbursement",
+    "status": "success",
+    "statusDescription": "Disbursement was successful",
+    "reference": "L20250614142024AAAAA",
+    "providersReference": "reference-from-mno",
+    "externalReference": "merchant-reference",
+    "currency": "XOF",
+    "country": "BJ",
+    "transferRecipientId": "684d561743dac722bcd43e9f",
+    "transferRecipientLabel": "MTN MoMo | 2290123456789",
+    "charge": 180,
+    "amount": 10000,
+    "provider": "mtn-momo-benin",
+    "providerLabel": "MTN MoMo",
+    "providerLogo": "https://payfonte.s3.amazonaws.com/mtn-momo.png",
+    "channel": "mobile-money",
+    "timestamp": "2025-06-14T14:20:25.023Z",
+    "narration": "disbursement narration here",
+    "completedAt": 1749910827
+  },
+  "deliveryId": "684d852b27e08e60f4d09103"
+}
+```
+
+## Vérification de signature
+
+Validez l'authenticité du webhook avant tout traitement.
+
+- En-tête : `x-webhook-signature`
+- Algorithme : HMAC `sha512` du corps de requête avec votre `client-secret`
+
+```javascript
+const crypto = require("crypto");
+
+app.post("/payfonte/disbursement-webhook", express.json({ type: "*/*" }), (req, res) => {
+  const secret = process.env.PAYFONTE_CLIENT_SECRET;
+  const payload = JSON.stringify(req.body);
+  const expected = crypto.createHmac("sha512", secret).update(payload).digest("hex");
+  const received = req.headers["x-webhook-signature"];
+
+  if (expected !== received) {
+    return res.status(401).send("Invalid signature");
+  }
+
+  res.status(200).send("OK");
+  processDisbursementWebhook(req.body);
+});
+```
+
+## Schéma de traitement sûr
+
+<Steps>
+  <Step title="Répondre rapidement">
+    Retournez HTTP `200` immédiatement après la validation de base.
+  </Step>
+  <Step title="Vérifier l'idempotence">
+    Dédupliquez via `reference` + `status`, ou `deliveryId`, avant toute action métier.
+  </Step>
+  <Step title="Mettre à jour l'état et le registre interne">
+    Ne marquez le décaissement comme final que pour les statuts terminaux et conservez `statusDescription`.
+  </Step>
+  <Step title="Vérifier les décaissements critiques">
+    Si besoin, confirmez l'état final via `GET /billing/v1/disbursements/verify/{reference}`.
+  </Step>
+</Steps>
+
+## Problèmes fréquents
+
+| Problème | Cause probable | Correctif |
+| --- | --- | --- |
+| Traitement webhook en double | Pas de gestion idempotente | Stockez les couples référence/statut déjà traités et ignorez les répétitions |
+| Signature invalide | Mauvais secret ou payload modifié | Utilisez le bon `client-secret` et hashez le corps exact |
+| Mises à jour manquées | Timeout ou réponse non 200 | Retournez vite `200` et déplacez la logique lourde vers un worker asynchrone |
+| État de décaissement incohérent | Traitement hors ordre | Comparez toujours l'état courant avant d'appliquer une mise à jour |
+
+## Documentation associée
+
+<CardGroup cols={3}>
+  <Card title="Vue d'ensemble des décaissements" icon="money-bill-transfer" href="/fr/guides/disbursements/overview">
+    Flux de décaissement complet et endpoints.
+  </Card>
+  <Card title="Exemples de décaissement" icon="code" href="/fr/guides/disbursements/examples">
+    Exemples de requêtes et réponses.
+  </Card>
+  <Card title="Mode d'autorisation" icon="key" href="/fr/guides/disbursements/authorization-mode">
+    Configuration PIN ou URL d'autorisation.
+  </Card>
+</CardGroup>

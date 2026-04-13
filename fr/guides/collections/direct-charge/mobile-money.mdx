@@ -1,0 +1,162 @@
+---
+title: "Flux Mobile Money Direct Charge"
+description: "Comprenez le comportement du direct charge mobile money selon les flux processing, redirect et pre-OTP."
+icon: "mobile-screen-button"
+---
+
+Quand vous appelez l'API Direct Charge pour le mobile money, le comportement du provider suit en general l'un de ces trois modeles :
+
+- `processing` : flux de prompt USSD ou STK
+- `redirect` : flux de finalisation heberge par le provider
+- `pre-otp` : code client requis avant la requete
+
+## 1) Flux processing, prompt USSD ou STK
+
+Le client recoit une demande d'autorisation sur son appareil mobile et confirme avec son PIN.
+
+### Ce qui se passe
+
+1. Vous initiez le direct charge.
+2. Le provider envoie un STK push ou un prompt USSD au client.
+3. Le client autorise sur son appareil.
+4. La transaction reste en attente jusqu'a la reponse finale du provider.
+
+### Comment le detecter
+
+`data.action` vaut `processing`.
+
+```json
+{
+  "data": {
+    "action": "processing",
+    "sessionId": "1031-4120-a98f-9357692945",
+    "provider": "safaricom-kenya",
+    "channel": "mobile-money",
+    "reference": "DDC20250812042317DIFMW",
+    "amount": 1000,
+    "status": "pending",
+    "charge": 5,
+    "statusDescription": "Awaiting Provider's Feedback"
+  },
+  "statusCode": 201
+}
+```
+
+### Traitement cote marchand
+
+- Affichez un etat en attente au client.
+- Ne livrez pas sur la reponse initiale.
+- Attendez le webhook ou verifiez par reference.
+
+## 2) Flux redirect
+
+Le provider renvoie un lien ; le client doit terminer le paiement sur la page ou l'application du provider.
+
+### Ce qui se passe
+
+1. Vous initiez le direct charge.
+2. L'API repond avec une URL de redirection.
+3. Le client finalise le paiement sur le canal du provider.
+4. Le client peut ensuite revenir vers votre application ou votre site.
+
+### Comment le detecter
+
+`data.action` vaut `redirect` et l'URL se trouve generalement dans `data.data.link`.
+
+```json
+{
+  "data": {
+    "action": "redirect",
+    "sessionId": "v1nadjww8lwfxxd7giumi3dyik7pzaxrxqmyvdeuunvixo25jhqf4o6wzuxhjdzg",
+    "provider": "orange-ivory-coast",
+    "channel": "mobile-money",
+    "reference": "DDC20250812042546ICXFC",
+    "amount": 10000,
+    "status": "pending",
+    "charge": 150,
+    "statusDescription": "Awaiting Provider's Feedback",
+    "data": {
+      "link": "https://mpayment.orange-money.com/sx/mpayment/abstract/...",
+      "message": "Click link to complete your payment",
+      "reference": "DDC20250812042546ICXFC"
+    }
+  },
+  "statusCode": 201
+}
+```
+
+### Traitement cote marchand
+
+- Redirigez l'utilisateur vers `data.data.link`.
+- Au retour, verifiez toujours le statut final cote serveur.
+- Ne marquez jamais le paiement comme reussi uniquement sur la redirection.
+
+## 3) Flux pre-OTP
+
+Certains providers demandent au client de generer un code provider ou OTP avant l'envoi de la requete de debit.
+
+### Ce qui se passe
+
+1. Le client genere un code via l'USSD du provider.
+2. Le client partage ce code avec le marchand.
+3. Le marchand envoie `customerInput.customerCode`.
+4. Le provider traite le debit.
+
+### Codes USSD frequents
+
+- Orange Ivory Coast : `#144*82#`
+- Orange Senegal : `#144#391#`
+- Orange Burkina Faso : `*144*4*6*Amount*PIN#`
+- Orange Mali : `#144#37#`
+
+### Exemple de requete
+
+```json
+{
+  "reference": "ORDER-1002",
+  "amount": 50000,
+  "provider": "orange-senegal",
+  "webhook": "https://yourapp.com/webhooks/payfonte",
+  "narration": "Direct charge test",
+  "customerInput": {
+    "phoneNumber": "786175702",
+    "customerCode": "758610"
+  }
+}
+```
+
+### Traitement cote marchand
+
+- Collectez explicitement l'OTP ou le code client.
+- Validez son format avant l'appel API.
+- Continuez ensuite avec le flux normal de finalisation via webhook ou verification.
+
+## Resume de decision des flux
+
+| Action | Etape suivante pour le client | Etape suivante pour le marchand |
+| --- | --- | --- |
+| `processing` | Approuver sur l'appareil, USSD ou STK | Attendre le webhook ou la verification |
+| `redirect` | Finaliser le paiement sur la page provider | Rediriger puis attendre le webhook ou la verification |
+| Mode de requete `pre-otp` | Generer et partager le code d'abord | Envoyer le code dans `customerInput.customerCode` |
+
+## Regles importantes
+
+<Warning>
+  Les valeurs de montant doivent etre des entiers en sous-unites. Les decimales ne sont pas prises en charge.
+</Warning>
+
+Voir [Specification des montants](/fr/guides/introductions/amount-specification).
+
+## Documentation associee
+
+<CardGroup cols={3}>
+  <Card title="API Direct Charge" icon="bolt" href="/fr/guides/collections/direct-charge-api">
+    Utilisation des endpoints et definition des champs de requete.
+  </Card>
+  <Card title="Exemples de payloads" icon="code" href="/fr/guides/collections/direct-charge/examples">
+    Modeles de payloads specifiques aux providers.
+  </Card>
+  <Card title="Webhooks" icon="bell" href="/fr/guides/collections/webhook">
+    Confirmez le resultat final de la transaction de maniere asynchrone.
+  </Card>
+</CardGroup>

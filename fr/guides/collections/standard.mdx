@@ -1,0 +1,140 @@
+---
+title: "Collecte - Checkout standard"
+description: "Redirigez les clients vers le checkout hébergé par Payfonte via une requête API côté serveur."
+icon: "arrow-up-right-from-square"
+---
+
+Le checkout standard est un flux par redirection :
+
+1. Votre backend crée une session de checkout.
+2. Payfonte renvoie une URL de checkout.
+3. Vous redirigez le client vers cette URL.
+4. Le client finalise le paiement et Payfonte notifie votre système via webhook.
+
+## Pourquoi utiliser le checkout standard ?
+
+<CardGroup cols={3}>
+  <Card title="Lancement le plus rapide" icon="rocket">
+    Complexité frontend minimale. Votre backend crée un checkout puis redirige l'utilisateur.
+  </Card>
+  <Card title="Expérience hébergée" icon="window-maximize">
+    Payfonte gère l'interface des moyens de paiement et les interactions spécifiques à chaque provider.
+  </Card>
+  <Card title="Mises à jour fiables" icon="bell">
+    Utilisez les événements webhook et la vérification de transaction pour connaître le résultat final.
+  </Card>
+</CardGroup>
+
+## Étapes d'intégration
+
+<Steps>
+  <Step title="Collecter les informations de paiement côté backend">
+    Préparez les champs requis comme `amount`, `currency`, `country` et les données client.
+  </Step>
+  <Step title="Créer une session de checkout">
+    Envoyez une requête à `POST /payments/v1/checkouts` avec votre `client-id` et votre `client-secret`.
+  </Step>
+  <Step title="Rediriger le client">
+    Redirigez l'utilisateur vers `data.shortURL` ou `data.url` renvoyé dans la réponse.
+  </Step>
+  <Step title="Confirmer le statut final">
+    Traitez les notifications webhook et vérifiez éventuellement le statut de transaction avant d'exécuter la commande.
+  </Step>
+</Steps>
+
+## Requête de création de checkout
+
+```bash
+curl --location 'https://sandbox-api.payfonte.com/payments/v1/checkouts' \
+  --header 'client-id: <client-id>' \
+  --header 'client-secret: <client-secret>' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "reference": "ORDER-1001",
+    "amount": 50000,
+    "currency": "NGN",
+    "country": "NG",
+    "redirectURL": "https://yourapp.com/payment/complete",
+    "webhook": "https://yourapp.com/webhooks/payfonte",
+    "user": {
+      "email": "customer@example.com",
+      "phoneNumber": "2348012345678",
+      "name": "John Doe"
+    }
+  }'
+```
+
+Exemple de réponse :
+
+```json
+{
+  "data": {
+    "url": "https://checkout-staging.payfonte.com/payfusion/66579afe04916ddcfcf73e7b",
+    "shortURL": "https://l.6bd.co/XXXXX",
+    "reference": "ORDER-1001",
+    "amount": 50000
+  }
+}
+```
+
+## Référence des paramètres
+
+| Champ | Type | Requis | Description |
+| --- | --- | --- | --- |
+| `reference` | string | Recommandé | Identifiant de transaction unique dans votre système |
+| `amount` | integer | Oui | Montant en sous-unités, sans décimales |
+| `currency` | string | Oui | Code devise ISO, par exemple `NGN` |
+| `country` | string | Oui | Code pays ISO, par exemple `NG` |
+| `user` | object | Oui | Objet client avec e-mail, téléphone et nom |
+| `redirectURL` | string | Non | URL de retour du client après le checkout |
+| `webhook` | string | Non | URL de webhook spécifique à cette transaction |
+| `metadata` | object | Non | Champs personnalisés pour votre suivi interne |
+
+## Règle de montant importante
+
+Payfonte ne prend pas en charge les montants API décimaux. Envoyez uniquement des valeurs entières en sous-unités.
+
+- `500.00 NGN` -> `50000`
+- `1250.75 NGN` -> `125075`
+
+Voir [Spécification des montants](/fr/guides/introductions/amount-specification) pour la règle complète.
+
+## Après la redirection et le paiement
+
+<AccordionGroup>
+  <Accordion title="Résultat de redirection client" icon="link" defaultOpen>
+    Après le checkout, le client est redirigé vers votre `redirectURL` avec des informations de contexte telles que `status` et `reference`.
+  </Accordion>
+  <Accordion title="Notification webhook" icon="bell">
+    Si les webhooks sont configurés, Payfonte envoie des mises à jour de statut à votre endpoint webhook.
+  </Accordion>
+  <Accordion title="Vérification de l'état final" icon="shield-check">
+    Pour les flux critiques, vérifiez le statut de transaction depuis votre backend avant l'expédition d'un bien ou le crédit d'un portefeuille.
+  </Accordion>
+  <Accordion title="Gestion des paiements échoués" icon="triangle-exclamation">
+    Si le paiement échoue, autorisez la relance et conservez votre commande dans un état en attente jusqu'à confirmation d'un succès final.
+  </Accordion>
+</AccordionGroup>
+
+## Bonnes pratiques de production
+
+| Pratique | Pourquoi c'est important |
+| --- | --- |
+| Générer les références côté serveur | Évite les doublons et améliore le rapprochement |
+| Traiter les webhooks de façon idempotente | Empêche les doubles exécutions sur retry |
+| Valider les paramètres de redirection | Protège contre les valeurs client altérées ou mal formées |
+| Utiliser la vérification backend | Garantit le statut final avant une action métier critique |
+
+## Documentation associée
+
+<CardGroup cols={3}>
+  <Card title="Checkout inline" icon="window-maximize" href="/fr/guides/collections/inline">
+    Alternative embarquée pour un paiement sur la page.
+  </Card>
+  <Card title="Webhooks" icon="bell" href="/fr/guides/collections/webhook">
+    Configurez et validez les callbacks d'événements de paiement.
+  </Card>
+  <Card title="Référence API" icon="file-code" href="/fr/api-reference/introduction">
+    Détails des endpoints et schémas pour les opérations de checkout.
+  </Card>
+</CardGroup>

@@ -1,0 +1,124 @@
+---
+title: "Testing"
+description: "Sandbox testing guide for Payfonte integrations, including provider simulators, webhook validation, and test scenarios."
+icon: "flask"
+---
+
+Use sandbox first for all integration validation before moving to production.
+
+## Sandbox Setup
+
+<Steps>
+  <Step title="Use sandbox base URL">
+    API base URL: `https://sandbox-api.payfonte.com`
+  </Step>
+  <Step title="Use sandbox credentials">
+    Get your `client-id` and `client-secret` from `Settings -> API Keys/Webhooks` in [sandbox-app.payfonte.com](https://sandbox-app.payfonte.com).
+  </Step>
+  <Step title="Set webhook endpoint">
+    Configure a test callback URL so you can validate async transaction updates.
+  </Step>
+</Steps>
+
+## What To Validate Before Go-Live
+
+<CardGroup cols={2}>
+  <Card title="Auth and Headers" icon="key">
+    Confirm all requests include `client-id` and `client-secret`.
+  </Card>
+  <Card title="Amount Format" icon="hashtag">
+    Confirm you send integer minor-unit values only. Decimals are not supported.
+  </Card>
+  <Card title="Status Lifecycle" icon="repeat">
+    Validate pending/processing to final states (`success` or `failed`) in your business flow.
+  </Card>
+  <Card title="Webhook Handling" icon="bell">
+    Verify signature validation, retries, idempotency, and response timing.
+  </Card>
+</CardGroup>
+
+## Core Test Scenarios
+
+| Scenario | Expected Result |
+| --- | --- |
+| Valid charge request | `201` response with transaction reference |
+| Invalid credentials | Authentication failure (`401`/`403`) |
+| Decimal amount sent | Validation/provider failure |
+| Duplicate reference | `409` with `DuplicateTransactionReference` |
+| Invalid provider slug | Error with `InvalidProvider` |
+| Webhook delivery | Callback received and processed once (idempotent) |
+
+## Simulate Success, Failed, and Pending Outcomes
+
+For both collections and disbursements in sandbox, you can control the expected transaction outcome by changing the mobile money phone number used in the request.
+
+| Phone Number Pattern | Expected Result | How To Use It |
+| --- | --- | --- |
+| Any other phone number | `success` | Sandbox treats all other phone numbers as successful transactions |
+| Number ending in `000000` | `failed` | Sandbox forces the transaction to fail |
+| Number ending in `111111` | `pending` | Sandbox keeps the transaction pending so you can test async handling |
+
+<Info>
+  Apply this rule to the phone number field you send for the transaction. For collections, use the customer's mobile money number. For disbursements, use the recipient phone number.
+</Info>
+
+When testing pending flows, do not treat the initial API response as final. Wait for webhook updates or verify the transaction status from your backend before marking the transaction as `success` or `failed`.
+
+## Provider-Specific Test Data
+
+<AccordionGroup>
+  <Accordion title="Orange Ivory Coast OTP simulator" icon="mobile-screen-button" defaultOpen>
+    For Orange Ivory Coast testing on Payfonte:
+
+    1. Open https://mpayment.orange-money.com/mpayment-otp/login
+    2. Sign in with:
+       - Username: `7701901040`
+       - Password: `MerchantWP01040`
+    3. Generate OTP with:
+       - Phone Number: `7701101040` (usually pre-loaded)
+       - PIN: `1791`
+    4. Use the generated OTP on the payment platform.
+  </Accordion>
+  <Accordion title="Safaricom / Equitel / T-Kash / Telkom" icon="phone">
+    - Success example: `254700123456`
+    - Failed example: `254700000000`
+    - Pending example: `254711111111`
+  </Accordion>
+  <Accordion title="Airtel / Telecel / MTN (Ghana)" icon="phone">
+    - Success example: `233242426222`
+    - Failed example: `233240000000`
+    - Pending example: `233241111111`
+  </Accordion>
+</AccordionGroup>
+
+## Quick Sandbox Request
+
+```bash
+curl --location 'https://sandbox-api.payfonte.com/payments/v1/checkouts' \
+  --header 'client-id: <your-client-id>' \
+  --header 'client-secret: <your-client-secret>' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "reference": "test-001",
+    "amount": 10000,
+    "currency": "NGN",
+    "country": "NG",
+    "user": {
+      "phoneNumber": "08012345678"
+    }
+  }'
+```
+
+## Related Docs
+
+<CardGroup cols={3}>
+  <Card title="Environments" icon="server" href="/en/guides/introductions/environments">
+    Sandbox and production URLs and credential setup.
+  </Card>
+  <Card title="Webhooks" icon="bell" href="/en/guides/collections/webhook">
+    Verify callback payloads and signature handling.
+  </Card>
+  <Card title="Error Codes" icon="triangle-exclamation" href="/en/guides/introductions/error-codes">
+    Troubleshoot failed test requests quickly.
+  </Card>
+</CardGroup>

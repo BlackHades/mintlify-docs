@@ -1,0 +1,94 @@
+---
+title: "Exemples de payloads Direct Charge"
+description: "Payloads Direct Charge prets a l'emploi pour les flux mobile money standards, Bank Transfer et Orange pre-OTP."
+icon: "code"
+---
+
+Utilisez ces modeles de payload lorsque vous appelez :
+
+`POST /payments/v1/payments/direct-charge`
+
+## Payload commun, la plupart des providers
+
+```json
+{
+  "reference": "ORDER-1001",
+  "amount": 10000,
+  "provider": "mtn-momo-ivory-coast",
+  "webhook": "https://yourapp.com/webhooks/payfonte",
+  "narration": "Order payment",
+  "customerInput": {
+    "phoneNumber": "2250512345678"
+  }
+}
+```
+
+## Payload Orange pre-OTP
+
+Les providers Orange peuvent exiger un code genere par le client avant l'envoi de la requete.
+
+### Indications USSD
+
+- Orange Senegal : `#144#391#`
+- Orange Mali : `#144#77#`
+- Orange Burkina Faso : `*144*4*6*amount#`
+
+En sandbox, n'importe quel code aleatoire a 6 chiffres peut etre utilise pour les tests.
+
+```json
+{
+  "reference": "ORDER-1003",
+  "amount": 10000,
+  "provider": "orange-senegal",
+  "webhook": "https://yourapp.com/webhooks/payfonte",
+  "narration": "Order payment",
+  "customerInput": {
+    "phoneNumber": "786175702",
+    "customerCode": "<6-digit-code>"
+  }
+}
+```
+
+## Reference des champs
+
+| Champ | Type | Requis | Notes |
+| --- | --- | --- | --- |
+| `reference` | string | Recommande | Doit etre unique par transaction |
+| `amount` | integer | Oui | Valeur en sous-unites uniquement |
+| `provider` | string | Oui | Utilisez le slug provenant des providers pris en charge |
+| `webhook` | string | Non | Surcharge de webhook par requete |
+| `narration` | string | Non | Note de transaction lisible par humain |
+| `customerInput.phoneNumber` | string | Generalement oui | Format selon le provider et le pays |
+| `customerInput.network` | string | Specifique au provider | Requis pour certains flux comme le bank transfer |
+| `customerInput.customerCode` | string | Specifique au provider | Requis pour les flux Orange pre-OTP |
+
+## Checklist de validation avant l'envoi
+
+<AccordionGroup>
+  <Accordion title="Format du montant" icon="hashtag" defaultOpen>
+    Envoyez uniquement des montants entiers en sous-unites. Les decimales ne sont pas prises en charge.
+  </Accordion>
+  <Accordion title="Slug provider" icon="tag">
+    Assurez-vous que `provider` correspond a un slug valide de [Providers pris en charge](/fr/guides/introductions/supported-providers).
+  </Accordion>
+  <Accordion title="Champs `customerInput` requis" icon="list-check">
+    Confirmez la presence des champs specifiques au provider, comme `phoneNumber`, `network` ou `customerCode`, avant d'envoyer la requete.
+  </Accordion>
+  <Accordion title="Unicite de la reference" icon="fingerprint">
+    Generez des references uniques afin d'eviter les erreurs de transaction en double.
+  </Accordion>
+</AccordionGroup>
+
+## Documentation associee
+
+<CardGroup cols={3}>
+  <Card title="API Direct Charge" icon="bolt" href="/fr/guides/collections/direct-charge-api">
+    Flux de requete et gestion des reponses et actions.
+  </Card>
+  <Card title="Flux Mobile Money" icon="mobile-screen-button" href="/fr/guides/collections/direct-charge/mobile-money">
+    Comportements processing, redirect et pre-OTP.
+  </Card>
+  <Card title="Specification des montants" icon="hashtag" href="/fr/guides/introductions/amount-specification">
+    Regles de conversion en sous-unites pour tous les montants.
+  </Card>
+</CardGroup>

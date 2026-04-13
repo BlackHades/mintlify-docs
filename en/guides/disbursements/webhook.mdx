@@ -1,0 +1,124 @@
+---
+title: "Disbursement Webhooks and Callbacks"
+description: "Receive, verify, and process real-time disbursement status updates."
+icon: "bell"
+---
+
+Payfonte sends webhook events when disbursement status changes (for example `processing`, `success`, `failed`).
+
+Use webhooks as your primary asynchronous disbursement update channel.
+
+## Payload Fields
+
+| Field | Description |
+| --- | --- |
+| `event` | Event type (for example `disbursement.status`) |
+| `clientId` | Your Payfonte client ID |
+| `data.status` | disbursement status (`processing`, `success`, `failed`) |
+| `data.statusDescription` | Provider/platform status detail |
+| `data.reference` | Payfonte disbursement reference |
+| `data.externalReference` | Merchant-provided reference |
+| `data.providersReference` | Provider reference |
+| `data.amount` | disbursement amount in minor units |
+| `data.charge` | Applied disbursement charge |
+| `data.provider` | Provider slug used |
+| `data.transferRecipientId` | Recipient identifier |
+| `data.transferRecipientLabel` | Human-readable recipient label |
+| `deliveryId` | Webhook delivery identifier |
+
+Sample payload:
+
+```json disbursement.status
+{
+  "event": "disbursement.status",
+  "clientId": "payfusion",
+  "data": {
+    "clientId": "payfusion",
+    "type": "disbursement",
+    "status": "success",
+    "statusDescription": "Disbursement was successful",
+    "reference": "L20250614142024AAAAA",
+    "providersReference": "reference-from-mno",
+    "externalReference": "merchant-reference",
+    "currency": "XOF",
+    "country": "BJ",
+    "transferRecipientId": "684d561743dac722bcd43e9f",
+    "transferRecipientLabel": "MTN MoMo | 2290123456789",
+    "charge": 180,
+    "amount": 10000,
+    "provider": "mtn-momo-benin",
+    "providerLabel": "MTN MoMo",
+    "providerLogo": "https://payfonte.s3.amazonaws.com/mtn-momo.png",
+    "channel": "mobile-money",
+    "timestamp": "2025-06-14T14:20:25.023Z",
+    "narration": "disbursement narration here",
+    "completedAt": 1749910827
+  },
+  "deliveryId": "684d852b27e08e60f4d09103"
+}
+```
+
+## Signature Verification
+
+Validate webhook authenticity before processing.
+
+- Header: `x-webhook-signature`
+- Algorithm: `sha512` HMAC of request body using your `client-secret`
+
+```javascript
+const crypto = require("crypto");
+
+app.post("/payfonte/disbursement-webhook", express.json({ type: "*/*" }), (req, res) => {
+  const secret = process.env.PAYFONTE_CLIENT_SECRET;
+  const payload = JSON.stringify(req.body);
+  const expected = crypto.createHmac("sha512", secret).update(payload).digest("hex");
+  const received = req.headers["x-webhook-signature"];
+
+  if (expected !== received) {
+    return res.status(401).send("Invalid signature");
+  }
+
+  res.status(200).send("OK");
+  processDisbursementWebhook(req.body);
+});
+```
+
+## Safe Processing Pattern
+
+<Steps>
+  <Step title="Acknowledge quickly">
+    Return HTTP `200` immediately after basic validation.
+  </Step>
+  <Step title="Check idempotency">
+    Deduplicate by `reference` + `status` (or `deliveryId`) before applying business actions.
+  </Step>
+  <Step title="Update internal ledger/state">
+    Mark disbursement as final only for terminal statuses and save `statusDescription`.
+  </Step>
+  <Step title="Verify for critical disbursements">
+    Optionally confirm final state using `GET /billing/v1/disbursements/verify/{reference}`.
+  </Step>
+</Steps>
+
+## Common Issues
+
+| Issue | Likely Cause | Fix |
+| --- | --- | --- |
+| Duplicate webhook processing | No idempotency handling | Store processed reference/status and skip repeats |
+| Signature mismatch | Wrong secret or mutated payload | Use correct `client-secret` and hash exact request body |
+| Missed status updates | Timeout/non-200 responses | Return 200 quickly; move heavy logic to async worker |
+| Conflicting disbursement state | Out-of-order processing | Always compare current state before applying updates |
+
+## Related Docs
+
+<CardGroup cols={3}>
+  <Card title="Disbursements Overview" icon="money-bill-transfer" href="/en/guides/disbursements/overview">
+    End-to-end disbursement flow and endpoints.
+  </Card>
+  <Card title="Disbursement Examples" icon="code" href="/en/guides/disbursements/examples">
+    Request/response payload samples.
+  </Card>
+  <Card title="Authorization Mode" icon="key" href="/en/guides/disbursements/authorization-mode">
+    PIN vs Authorization URL configuration.
+  </Card>
+</CardGroup>

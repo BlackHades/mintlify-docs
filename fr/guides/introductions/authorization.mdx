@@ -1,0 +1,121 @@
+---
+title: "Autorisation"
+description: "Authentifiez les requêtes API Payfonte avec les en-têtes client-id et client-secret."
+icon: "key"
+---
+
+Chaque requête API Payfonte est authentifiée via deux en-têtes :
+
+- `client-id`
+- `client-secret`
+
+<Danger>
+  N'exposez jamais `client-secret` dans des applications frontend, mobiles, dans le stockage navigateur ou dans des dépôts publics.
+</Danger>
+
+## Modèle d'authentification
+
+<CardGroup cols={2}>
+  <Card title="client-id" icon="fingerprint">
+    Identifiant public de votre compte et de votre environnement.
+  </Card>
+  <Card title="client-secret" icon="lock">
+    Clé secrète utilisée pour autoriser les requêtes. Stockez-la uniquement sur des systèmes backend de confiance.
+  </Card>
+  <Card title="Auth basée sur les en-têtes" icon="server">
+    Envoyez les deux identifiants dans les en-têtes de chaque appel API.
+  </Card>
+  <Card title="Clés propres à l'environnement" icon="flask">
+    Sandbox et production utilisent des identifiants différents. Ne les mélangez pas.
+  </Card>
+</CardGroup>
+
+## Où récupérer vos clés
+
+<Steps>
+  <Step title="Se connecter au dashboard">
+    Utilisez [sandbox-app.payfonte.com](https://sandbox-app.payfonte.com) pour les tests ou [app.payfonte.com](https://app.payfonte.com) pour les opérations live.
+  </Step>
+  <Step title="Ouvrir les paramètres des clés API">
+    Accédez à `Settings -> API Keys/Webhooks`.
+  </Step>
+  <Step title="Copier les identifiants de manière sécurisée">
+    Enregistrez `client-id` et `client-secret` dans des variables d'environnement côté serveur.
+  </Step>
+</Steps>
+
+## Exemple de requête
+
+<CodeGroup>
+```bash cURL
+curl --location 'https://sandbox-api.payfonte.com/payments/v1/checkouts' \
+  --header 'client-id: <your-client-id>' \
+  --header 'client-secret: <your-client-secret>' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "reference": "test-001",
+    "amount": 1000,
+    "currency": "NGN",
+    "country": "NG",
+    "user": {
+      "phoneNumber": "08012345678"
+    }
+  }'
+```
+
+```javascript Node.js (fetch)
+await fetch("https://sandbox-api.payfonte.com/payments/v1/checkouts", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "client-id": process.env.PAYFONTE_SANDBOX_CLIENT_ID,
+    "client-secret": process.env.PAYFONTE_SANDBOX_CLIENT_SECRET
+  },
+  body: JSON.stringify({
+    reference: "test-001",
+    amount: 1000,
+    currency: "NGN",
+    country: "NG",
+    user: { phoneNumber: "08012345678" }
+  })
+});
+```
+</CodeGroup>
+
+## Erreurs fréquentes
+
+<AccordionGroup>
+  <Accordion title="Utiliser des clés production en sandbox" icon="triangle-exclamation">
+    Sandbox et production sont deux environnements distincts. Utilisez toujours l'URL de base et les identifiants correspondants ensemble.
+  </Accordion>
+  <Accordion title="Placer client-secret dans du code frontend" icon="shield-halved">
+    Le code frontend est visible par l'utilisateur final. Gardez tous les appels API Payfonte authentifiés sur votre backend.
+  </Accordion>
+  <Accordion title="Oublier un en-tête requis" icon="circle-info">
+    Les requêtes sans `client-id` ou `client-secret` échouent à l'authentification.
+  </Accordion>
+  <Accordion title="Coder en dur des secrets dans le dépôt" icon="code">
+    Chargez toujours les identifiants depuis des variables d'environnement ou un gestionnaire de secrets sécurisé.
+  </Accordion>
+</AccordionGroup>
+
+## Checklist de sécurité
+
+- Conservez `client-secret` uniquement côté backend.
+- Utilisez HTTPS pour l'API et les endpoints webhook.
+- Faites tourner les identifiants si vous suspectez une fuite.
+- Restreignez l'accès interne aux secrets de production.
+
+## Documentation associée
+
+<CardGroup cols={3}>
+  <Card title="Environnements" icon="server" href="/fr/guides/introductions/environments">
+    Configuration des URL et clés sandbox et production.
+  </Card>
+  <Card title="Premiers pas" icon="flag-checkered" href="/fr/guides/introductions/getting-started">
+    Réussir votre premier appel API.
+  </Card>
+  <Card title="Référence API" icon="file-code" href="/fr/api-reference/introduction">
+    Détails complets des endpoints et schémas.
+  </Card>
+</CardGroup>

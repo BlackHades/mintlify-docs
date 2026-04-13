@@ -1,0 +1,144 @@
+---
+title: "Webhooks et callbacks"
+description: "Recevez et vérifiez les mises à jour de paiement de collecte en temps réel depuis Payfonte."
+icon: "bell"
+---
+
+Payfonte envoie des événements webhook vers votre endpoint configuré lorsque l'état d'un paiement change.
+
+Utilisez les webhooks comme source de vérité principale pour les résultats de paiement asynchrones.
+
+## Pourquoi les webhooks sont importants
+
+<CardGroup cols={3}>
+  <Card title="Mises à jour en temps réel" icon="bolt">
+    Recevez l'état des paiements sans interroger chaque transaction en continu.
+  </Card>
+  <Card title="Finalisation fiable" icon="check-double">
+    Confirmez le statut final, `success` ou `failed`, avant d'exécuter une commande.
+  </Card>
+  <Card title="Sécurité opérationnelle" icon="repeat">
+    Gérez les retries de manière idempotente pour éviter les doubles traitements.
+  </Card>
+</CardGroup>
+
+## Champs du payload webhook
+
+| Champ | Description |
+| --- | --- |
+| `event` | Type d'événement, par exemple `payment.completed` ou `payment.failed` |
+| `clientId` | Votre identifiant client Payfonte |
+| `data.status` | Statut de transaction, `success`, `failed` ou `pending` |
+| `data.reference` | Référence de transaction Payfonte |
+| `data.externalReference` | Référence fournie par le marchand, si elle existe |
+| `data.amount` | Montant de transaction en sous-unités |
+| `data.charge` | Frais de transaction appliqués |
+| `data.provider` | Slug ou nom du provider utilisé |
+| `data.channel` | Canal de paiement, par exemple `card` ou `mobile-money` |
+| `data.user` | Métadonnées client, nom, e-mail, téléphone si disponibles |
+
+Exemple de payload :
+
+```json payment.completed
+{
+  "event": "payment.completed",
+  "clientId": "payfonte",
+  "data": {
+    "clientId": "payfonte",
+    "reference": "ORDER-1001",
+    "externalReference": "ORDER-1001",
+    "platformReference": "644ec09c4c2604002fac9d17",
+    "amount": 10000,
+    "provider": "mtn-momo-nigeria",
+    "channel": "mobile-money",
+    "status": "success",
+    "charge": 0,
+    "chargeFee": 0,
+    "user": {
+      "name": "John Doe",
+      "email": "john@example.com"
+    },
+    "paidAt": 1682883430
+  }
+}
+```
+
+## Vérification de signature, obligatoire
+
+Chaque webhook inclut :
+
+- L'en-tête `x-webhook-signature`
+- Une valeur HMAC `sha512` du corps brut de la requête, signée avec votre `client-secret`
+
+Utilisez votre `client-secret` depuis `Settings -> API Keys/Webhooks`.
+
+```javascript
+const crypto = require("crypto");
+
+app.post("/payfonte/webhook", express.json({ type: "*/*" }), (req, res) => {
+  const secret = process.env.PAYFONTE_CLIENT_SECRET;
+  const payload = JSON.stringify(req.body);
+  const expected = crypto.createHmac("sha512", secret).update(payload).digest("hex");
+  const received = req.headers["x-webhook-signature"];
+
+  if (expected !== received) {
+    return res.status(401).send("Invalid signature");
+  }
+
+  // Acquittez rapidement puis traitez de façon asynchrone.
+  res.status(200).send("OK");
+  processWebhook(req.body);
+});
+```
+
+<Warning>
+  Si la validation de signature échoue, ne traitez pas l'événement.
+</Warning>
+
+## Modèle de traitement idempotent
+
+<Steps>
+  <Step title="Répondre rapidement">
+    Retournez un HTTP `200` rapidement afin d'éviter des retries inutiles.
+  </Step>
+  <Step title="Détecter les doublons">
+    Utilisez `reference` + `status`, ou un identifiant de livraison si disponible, pour identifier les événements déjà traités.
+  </Step>
+  <Step title="Vérifier la transaction si nécessaire">
+    Pour les flux critiques, vérifiez le statut du paiement depuis votre backend avant la finalisation.
+  </Step>
+  <Step title="Appliquer la transition d'état sans risque">
+    Garantissez que les actions métier, comme l'exécution de commande, ne s'exécutent qu'une fois par succès final.
+  </Step>
+</Steps>
+
+## Priorité des URL webhook
+
+Payfonte utilise les URL webhook dans cet ordre :
+
+1. L'URL passée dans la requête checkout ou direct-charge via `webhook`
+2. L'URL webhook configurée sur l'intégration provider
+3. L'URL webhook configurée dans les paramètres du dashboard
+
+## Problèmes fréquents
+
+| Problème | Cause probable | Correctif |
+| --- | --- | --- |
+| Traitement webhook en double | Pas de garde idempotente | Stockez `reference` + `status` déjà traités et ignorez les répétitions |
+| Signature invalide | Mauvais secret ou corps modifié | Utilisez le bon `client-secret` et hashez le corps exact reçu |
+| Mises à jour manquées | Timeout de l'endpoint ou réponse non 200 | Répondez vite avec `200` et déplacez la logique lourde vers un worker asynchrone |
+| Événements du mauvais environnement | Configuration sandbox et production mélangée | Utilisez les bons endpoints et identifiants pour chaque environnement |
+
+## Documentation associée
+
+<CardGroup cols={3}>
+  <Card title="Checkout standard" icon="arrow-up-right-from-square" href="/fr/guides/collections/standard">
+    Flux par redirection avec finalisation webhook.
+  </Card>
+  <Card title="API Direct Charge" icon="bolt" href="/fr/guides/collections/direct-charge-api">
+    Flux de direct charge et gestion des actions.
+  </Card>
+  <Card title="Autorisation" icon="key" href="/fr/guides/introductions/authorization">
+    Exigences sur les identifiants et les en-têtes.
+  </Card>
+</CardGroup>

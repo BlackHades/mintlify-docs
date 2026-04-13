@@ -1,0 +1,123 @@
+---
+title: "Spécification des endpoints"
+description: "Conventions de requête et de réponse des API Payfonte, notamment l'authentification, la pagination, le filtrage et les enveloppes d'erreur."
+icon: "diagram-project"
+---
+
+Cette page définit les schémas communs de requête et de réponse utilisés dans les API Payfonte.
+
+## Conventions de requête
+
+<CardGroup cols={3}>
+  <Card title="Transport" icon="server">
+    Utilisez des endpoints HTTPS et des payloads JSON pour les requêtes API.
+  </Card>
+  <Card title="Authentification" icon="key">
+    Envoyez les en-têtes `client-id` et `client-secret` sur chaque requête.
+  </Card>
+  <Card title="Montants" icon="hashtag">
+    Envoyez uniquement des montants entiers en sous-unités. Les décimales ne sont pas prises en charge.
+  </Card>
+</CardGroup>
+
+## En-têtes requis
+
+```bash
+client-id: <your-client-id>
+client-secret: <your-client-secret>
+Content-Type: application/json
+```
+
+## URL de base
+
+| Environnement | URL de base |
+| --- | --- |
+| Sandbox | `https://sandbox-api.payfonte.com` |
+| Production | `https://api.payfonte.com` |
+
+## Structure des réponses
+
+### Réponses de succès, 2xx
+
+La plupart des réponses de succès suivent ce format :
+
+```json
+{
+  "data": {}
+}
+```
+
+Certains endpoints de liste renvoient aussi des métadonnées de pagination :
+
+```json
+{
+  "statusCode": 200,
+  "total": 1253,
+  "page": 1,
+  "pages": 314,
+  "limit": 4,
+  "data": []
+}
+```
+
+### Réponses d'erreur, 4xx ou 5xx
+
+```json
+{
+  "error": "Validation failed",
+  "errorCode": "ValidationError"
+}
+```
+
+<Warning>
+  Basez toujours votre logique de traitement à la fois sur le code HTTP et sur `errorCode`.
+</Warning>
+
+## Pagination et filtrage
+
+Les endpoints de liste comme `GET /payments/v1/checkouts` et `GET /billing/v1/disbursements` prennent en charge :
+
+- `page`, valeur par défaut `1`
+- `limit`, valeur par défaut `4`, max `100`
+- `dateFrom`, optionnel, format `YYYY-MM-DD`
+- `dateTo`, optionnel, format `YYYY-MM-DD`
+
+Exemple :
+
+```bash
+curl --location 'https://sandbox-api.payfonte.com/payments/v1/checkouts?page=1&limit=20&dateFrom=2025-01-01&dateTo=2025-01-31' \
+  --header 'client-id: <your-client-id>' \
+  --header 'client-secret: <your-client-secret>'
+```
+
+## Champs de surcharge webhook
+
+Certains endpoints autorisent une surcharge du webhook à l'échelle de la requête :
+
+- Les endpoints de collecte utilisent `webhook`
+- La demande de décaissement utilise `webhookURL`
+
+Utilisez-les uniquement lorsque vous avez besoin d'un callback différent de celui défini par défaut dans le dashboard.
+
+## Règle de formatage des montants
+
+Payfonte ne prend pas en charge les montants décimaux dans les requêtes API.
+
+- Incorrect : `"amount": 1250.75`
+- Correct : `"amount": 125075`
+
+Voir [Spécification des montants](/fr/guides/introductions/amount-specification) pour la règle de conversion.
+
+## Documentation associée
+
+<CardGroup cols={3}>
+  <Card title="Autorisation" icon="key" href="/fr/guides/introductions/authorization">
+    En-têtes requis et gestion sécurisée des identifiants.
+  </Card>
+  <Card title="Codes d'erreur" icon="triangle-exclamation" href="/fr/guides/introductions/error-codes">
+    Dépanner les erreurs API courantes.
+  </Card>
+  <Card title="Référence API" icon="file-code" href="/fr/api-reference/introduction">
+    Détails opération par opération et schémas.
+  </Card>
+</CardGroup>

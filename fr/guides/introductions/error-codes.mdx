@@ -1,0 +1,80 @@
+---
+title: "Codes d'erreur"
+description: "Codes d'erreur API courants de Payfonte, leur signification et les correctifs recommandés pour les flux de collecte et de décaissement."
+icon: "triangle-exclamation"
+---
+
+Toutes les réponses non 2xx incluent des détails d'erreur sous ce format :
+
+```json
+{
+  "error": "Human-readable message",
+  "errorCode": "MachineReadableCode"
+}
+```
+
+Utilisez à la fois le statut HTTP et `errorCode` dans votre logique de traitement.
+
+## Erreurs de collecte
+
+| Statut | Error Code | Signification | Action recommandée |
+| --- | --- | --- | --- |
+| `404` | `CurrencyExchangeValueNotFound` | La valeur de change nécessaire à la conversion est indisponible. | Réessayez plus tard ou utilisez une combinaison devise/pays prise en charge. |
+
+## Erreurs de décaissement
+
+| Statut | Error Code | Signification | Action recommandée |
+| --- | --- | --- | --- |
+| `404` | `TransferRecipientNotFound` | Le bénéficiaire n'existe pas, ou a été supprimé. | Revalidez puis recréez le bénéficiaire avant de réessayer. |
+| `500` | `InActiveWallet` | Le portefeuille de décaissement est inactif ou en post-no-debit, PND. | Vérifiez l'état du portefeuille dans le dashboard avant de réessayer. |
+| `500` | `InsufficientBalance` | Le solde du portefeuille est insuffisant pour le décaissement. | Alimentez le portefeuille de décaissement puis réessayez. |
+| `500` | `InvalidDisbursementConfiguration` | La configuration de décaissement est incomplète ou invalide. | Revoyez les paramètres de décaissement dans le dashboard. |
+| `400` | `InvalidDisbursementPin` | Le PIN de décaissement est absent ou incorrect. | Définissez ou réinitialisez le PIN puis réessayez. |
+| `403` | `InvalidDisbursementWhitelistedIP` | L'adresse IP appelante n'est pas autorisée pour les décaissements. | Ajoutez l'IP à la liste blanche ou routez l'appel via une IP approuvée. |
+| `409` | `TransferRecipientExists` | Le bénéficiaire existe déjà. | Réutilisez le bénéficiaire existant au lieu d'en créer un nouveau. |
+| `400` | `TransferRecipientBlacklisted` | Le bénéficiaire est blacklisté. | Utilisez un autre bénéficiaire éligible. |
+| `422` | `ValidateAuthorizationURLError` | La validation de l'URL d'autorisation a échoué pour le flux de décaissement. | Vérifiez la disponibilité et le comportement de l'endpoint d'autorisation. |
+| `400` | `RecipientDailyLimitReached` | Le plafond journalier du bénéficiaire a été atteint. | Réessayez plus tard ou réduisez le montant si possible. |
+| `400` | `DuplicateDisbursementDetected` | Même montant vers le même bénéficiaire détecté sur une courte période. | Utilisez des références uniques et une stratégie de retry idempotente. |
+
+## Erreurs générales
+
+| Statut | Error Code | Signification | Action recommandée |
+| --- | --- | --- | --- |
+| `409` | `DuplicateTransactionReference` | Une requête a réutilisé une valeur de référence déjà employée. | Générez des références uniques par transaction. |
+| `422` | `ValidationError` | Un ou plusieurs champs de requête sont invalides. | Corrigez les types ou valeurs puis réessayez. |
+| `404` | `IntegrationNotFound` | L'intégration provider demandée n'est pas configurée ou active. | Activez l'intégration dans le dashboard. |
+| `404` | `ResourceNotFound` | La ressource demandée n'existe pas. | Vérifiez le chemin de l'endpoint et les identifiants. |
+| `500` | `InvalidProvider` | Un slug provider non pris en charge a été envoyé. | Utilisez un slug valide depuis les providers pris en charge. |
+| `500` | `InternalServerError` | Échec inattendu côté serveur. | Réessayez avec backoff et contactez le support si le problème persiste. |
+
+## Flux rapide de dépannage
+
+<Steps>
+  <Step title="Vérifier le statut HTTP et errorCode">
+    Analysez d'abord les deux valeurs pour distinguer un problème d'authentification, de validation, de configuration ou de traitement.
+  </Step>
+  <Step title="Vérifier les éléments de base de la requête">
+    Confirmez `client-id`, `client-secret`, le slug provider, l'unicité de la référence et le format entier en sous-unités du `amount`.
+  </Step>
+  <Step title="Contrôler l'état dans le dashboard">
+    Vérifiez l'état du portefeuille, l'état des intégrations, le PIN de décaissement, la configuration webhook et la liste blanche d'IP.
+  </Step>
+  <Step title="Réessayer de manière sûre">
+    Utilisez des retries idempotents avec backoff exponentiel pour les échecs transitoires.
+  </Step>
+</Steps>
+
+## Documentation associée
+
+<CardGroup cols={3}>
+  <Card title="Spécification des endpoints" icon="diagram-project" href="/fr/guides/introductions/endpoint-specification">
+    Format des réponses, filtrage et conventions API.
+  </Card>
+  <Card title="Providers pris en charge" icon="globe-africa" href="/fr/guides/introductions/supported-providers">
+    Vérifiez les slugs provider et la couverture par marché.
+  </Card>
+  <Card title="Tests" icon="flask" href="/fr/guides/introductions/testing">
+    Reproduisez et validez les scénarios d'erreur en sandbox.
+  </Card>
+</CardGroup>

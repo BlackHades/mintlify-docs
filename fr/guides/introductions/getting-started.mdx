@@ -1,0 +1,123 @@
+---
+title: "Premiers pas"
+description: "Bienvenue sur Payfonte, la plateforme d'orchestration de paiement pour l'Afrique qui permet d'encaisser et de décaisser sur plusieurs marchés via une seule API."
+---
+
+<Badge color="blue" icon="circle">Africa Tech Summit Nairobi 2025</Badge>
+
+# Bienvenue sur Payfonte
+
+La principale **plateforme d'orchestration de paiement** d'Afrique, qui permet aux entreprises d'encaisser et de décaisser sur **plus de 14 marchés africains** grâce à une intégration API unifiée.
+
+<Columns cols={4}>
+  <Card title="14+">
+    Marchés africains
+  </Card>
+  <Card title="$100M+">
+    Volume traité
+  </Card>
+  <Card title="99.99%">
+    Disponibilité système
+  </Card>
+  <Card title="T+1-3">
+    Règlement
+  </Card>
+</Columns>
+
+## Qu'est-ce que Payfonte ?
+
+Payfonte est une plateforme unifiée d'orchestration de paiement qui aide les entreprises à collecter et à décaisser via plusieurs providers et marchés depuis un seul dashboard et une seule API. Nous simplifions la gestion des passerelles, le routage, le rapprochement, le reporting et l'intégration afin que votre équipe se concentre sur la croissance plutôt que sur la complexité de l'infrastructure de paiement.
+
+## Pourquoi Payfonte ?
+
+<AccordionGroup>
+  <Accordion title="Orchestration hybride" icon="shuffle" defaultOpen>
+    Utilisez **vos contrats MNO existants** lorsque vos tarifs sont meilleurs, ou appuyez-vous sur **les partenariats directs de Payfonte**. Combinez les deux pour obtenir la meilleure couverture et le meilleur coût.
+  </Accordion>
+  <Accordion title="Efficacité de coût" icon="money-bill-1-wave">
+    Éliminez le coût de développement et de maintenance des intégrations MNO. Pas d'hébergement serveur spécifique, pas de support technique continu. Nous gérons l'infrastructure.
+  </Accordion>
+  <Accordion title="Routage intelligent" icon="bolt-lightning">
+    Le basculement automatique et les rails de secours maximisent le taux de succès des transactions. Notre moteur de routage choisit le meilleur chemin pour chaque transaction.
+  </Accordion>
+  <Accordion title="Dashboard unifié" icon="chart-bar">
+    Un seul dashboard pour tous les marchés, moyens de paiement et MNO. Vous simplifiez les opérations, le rapprochement financier et le reporting temps réel.
+  </Accordion>
+  <Accordion title="Rapprochement intelligent" icon="arrows-rotate">
+    Le moteur de rapprochement intégré garantit une résolution à 100 % vers un état final. Aucune transaction manquante ou bloquée.
+  </Accordion>
+  <Accordion title="Solutions en marque blanche" icon="palette">
+    Pages de checkout entièrement personnalisables avec votre identité visuelle, ou infrastructure de paiement complète pour fintechs et entreprises.
+  </Accordion>
+</AccordionGroup>
+
+## Nos produits
+
+<Columns cols={2}>
+  <Card title="Payment Orchestration / IaaS" icon="server">
+    **Pour les fintechs et les entreprises**
+
+    Infrastructure de paiement complète sur vos propres contrats MNO. Nous fournissons la technologie pendant que vous gardez la relation provider.
+
+    - Utilisez vos contrats MNO ou PSP
+    - Dashboard et checkout en marque blanche
+    - Accès API complet
+    - Règles de routage personnalisées
+  </Card>
+
+  <Card title="Payment Aggregation" icon="box">
+    **Pour les marchands et les entreprises**
+
+    Commencez à accepter les paiements immédiatement grâce aux partenariats agrégés de Payfonte. Aucun contrat direct requis.
+
+    - Mise en service rapide
+    - Tarifs MNO pré-négociés
+    - Onboarding simplifié
+    - Conformité gérée
+  </Card>
+</Columns>
+
+## Guide de démarrage rapide
+
+<Steps>
+  <Step title="Créer votre compte sandbox">
+    Inscrivez-vous sur [sandbox-app.payfonte.com](https://sandbox-app.payfonte.com) pour accéder à votre environnement de test.
+  </Step>
+  <Step title="Récupérer vos identifiants API">
+    Ouvrez **Settings -> API Keys/Webhooks** dans votre dashboard pour récupérer `client-id` et `client-secret`.
+  </Step>
+  <Step title="Faire votre premier appel API">
+    Utilisez l'URL de base sandbox pour tester votre intégration :
+
+    ```bash
+    curl --location 'https://sandbox-api.payfonte.com/payments/v1/checkouts' \
+      --header 'client-id: <your-client-id>' \
+      --header 'client-secret: <your-client-secret>' \
+      --header 'Content-Type: application/json' \
+      --data '{
+        "reference": "test-001",
+        "amount": 1000,
+        "currency": "NGN",
+        "country": "NG"
+      }'
+    ```
+  </Step>
+</Steps>
+
+<Check>
+  **Prêt pour la production ?** Terminez le processus KYB via notre [formulaire d'onboarding](https://form.jotform.com/240038360690048) et passez en live sous 1 à 5 jours ouvrés.
+</Check>
+
+## Besoin d'aide ?
+
+<Columns cols={3}>
+  <Card title="Référence API" icon="file-code" href="/fr/api-reference/introduction">
+    Documentation API complète.
+  </Card>
+  <Card title="Contacter le support" icon="headset" href="mailto:support@payfonte.com">
+    support@payfonte.com
+  </Card>
+  <Card title="Réserver une démo" icon="calendar" href="https://calendly.com/marc-payfonte/30min">
+    Planifiez une démonstration avec notre équipe.
+  </Card>
+</Columns>

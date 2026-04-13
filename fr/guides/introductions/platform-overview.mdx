@@ -1,0 +1,80 @@
+---
+title: "Vue d'ensemble de la plateforme"
+description: "Comprenez comment intégrer Payfonte avec le dashboard, les API, les webhooks et les flux de checkout hébergés."
+icon: "diagram-project"
+---
+
+Payfonte vous offre plusieurs chemins d'intégration pour commencer rapidement, puis aller vers un contrôle API plus fin lorsque votre équipe en a besoin.
+
+## Écosystème en un coup d'œil
+
+<CardGroup cols={3}>
+  <Card title="Dashboard" icon="gauge-high">
+    Configurez les providers, surveillez les transactions, gérez les décaissements et contrôlez les accès équipe depuis une seule interface.
+  </Card>
+  <Card title="API et webhooks" icon="code">
+    Construisez des flux serveur à serveur pour les paiements et décaissements, avec automatisation complète et callbacks d'événements.
+  </Card>
+  <Card title="Checkout hébergé" icon="window-maximize">
+    Envoyez vos clients vers une page de paiement hébergée Payfonte avec des moyens de paiement locaux et peu d'effort d'intégration.
+  </Card>
+</CardGroup>
+
+## Comment les développeurs utilisent Payfonte
+
+<AccordionGroup>
+  <Accordion title="Commencer avec le dashboard" icon="rocket" defaultOpen>
+    Le dashboard est la manière la plus rapide de démarrer. Vous pouvez créer votre compte, configurer des providers de collecte ou de décaissement, définir des URL webhook et inviter vos collègues avec des rôles et permissions.
+
+    C'est idéal pour aller en production rapidement sans tout construire from scratch.
+  </Accordion>
+  <Accordion title="Monter en puissance avec l'intégration API" icon="server">
+    Les API Payfonte vous permettent de contrôler la création de checkout, le direct charge, la vérification des transactions, les décaissements et les opérations sur portefeuille depuis votre backend.
+
+    Choisissez cette voie lorsque vous avez besoin d'un contrôle avancé, de logique métier personnalisée ou d'une intégration étroite avec vos systèmes internes.
+  </Accordion>
+  <Accordion title="Encaisser avec le checkout hébergé" icon="credit-card">
+    Le checkout hébergé est compatible PCI et prend en charge plusieurs moyens de paiement africains prêts à l'emploi. Vous créez une session de checkout puis redirigez votre client vers la page de paiement.
+
+    Vous continuez à recevoir des événements webhook et pouvez rapprocher vos données via l'API ou le dashboard.
+  </Accordion>
+</AccordionGroup>
+
+## Parcours d'intégration
+
+| Parcours | Idéal pour | Effort |
+| --- | --- | --- |
+| Dashboard d'abord | Mise en place et opérations rapides | Faible |
+| Checkout hébergé + webhooks | Lancement rapide avec mises à jour asynchrones | Faible à moyen |
+| Intégration API complète | Personnalisation et automatisation avancées | Moyen à élevé |
+
+## Déploiement recommandé
+
+<Steps>
+  <Step title="Configurer un compte sandbox">
+    Créez votre compte puis configurez vos providers de test et webhooks en sandbox.
+  </Step>
+  <Step title="Choisir votre méthode de collecte">
+    Commencez avec le checkout hébergé ou le flux inline, puis passez au direct charge ou à l'API si nécessaire.
+  </Step>
+  <Step title="Implémenter les mises à jour pilotées par webhook">
+    Traitez les événements webhook comme source de vérité pour le cycle de vie des transactions.
+  </Step>
+  <Step title="Passer en production avec les identifiants live">
+    Terminez le KYB, changez l'URL de base et les clés, puis surveillez vos premières transactions live dans le dashboard.
+  </Step>
+</Steps>
+
+## Où aller ensuite
+
+<CardGroup cols={3}>
+  <Card title="Premiers pas" icon="flag-checkered" href="/fr/guides/introductions/getting-started">
+    Réussir votre premier appel API.
+  </Card>
+  <Card title="Encaisser des paiements" icon="credit-card" href="/fr/guides/collections/overview">
+    Comparez les méthodes inline, standard et direct charge.
+  </Card>
+  <Card title="Référence API" icon="file-code" href="/fr/api-reference/introduction">
+    Explorez les endpoints, schémas et exemples de requêtes.
+  </Card>
+</CardGroup>
