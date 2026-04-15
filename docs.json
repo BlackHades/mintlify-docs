@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "willow",
+  "theme": "palm",
   "name": "Payfonte",
   "colors": {
     "primary": "#0033C7",
@@ -13,6 +13,20 @@
       {
         "language": "en",
         "default": true,
+        "global": {
+          "anchors": [
+            {
+              "anchor": "Website",
+              "icon": "house",
+              "href": "https://payfonte.com"
+            },
+            {
+              "anchor": "Book a Demo",
+              "icon": "calendar",
+              "href": "https://calendly.com/payfonte-onboarding/30min"
+            }
+          ]
+        },
         "tabs": [
           {
             "tab": "Introduction",
@@ -87,6 +101,20 @@
       },
       {
         "language": "fr",
+        "global": {
+          "anchors": [
+            {
+              "anchor": "Site web",
+              "icon": "house",
+              "href": "https://payfonte.com"
+            },
+            {
+              "anchor": "Réserver une démo",
+              "icon": "calendar",
+              "href": "https://calendly.com/payfonte-onboarding/30min"
+            }
+          ]
+        },
         "tabs": [
           {
             "tab": "Introduction",
@@ -172,21 +200,7 @@
           }
         }
       }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Website",
-          "icon": "house",
-          "href": "https://payfonte.com"
-        },
-        {
-          "anchor": "Book a Demo",
-          "icon": "calendar",
-          "href": "https://calendly.com/payfonte-onboarding/30min"
-        }
-      ]
-    }
+    ]
   },
   "logo": {
     "light": "/logo/light.svg",
