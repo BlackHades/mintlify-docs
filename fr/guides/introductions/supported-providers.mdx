@@ -1,35 +1,35 @@
 ---
-title: "Fournisseur prise en charge par pays"
-description: "Référence de la couverture provider Payfonte par pays, slug provider, type de transaction, devise, besoin de fetch-properties et limites de montant publiées."
+title: "Fournisseurs pris en charge par pays"
+description: "Référence de la couverture provider Payfonte par pays, slug provider, flux pris en charge, devise, besoin de fetch-properties et limites de montant publiées."
 icon: "list-check"
 seo:
-  title: "Providers pris en charge par pays | Payfonte"
-  description: "Parcourez la couverture provider de Payfonte par pays avec les slugs providers, types de transaction, devises, exigences fetch-properties et limites disponibles."
+  title: "Fournisseurs pris en charge par pays | Payfonte"
+  description: "Parcourez la couverture provider de Payfonte par pays avec les slugs provider, flux pris en charge, devises, exigences fetch-properties et limites disponibles."
   keywords: "providers pris en charge Payfonte, slug provider, providers mobile money Afrique, providers collecte, providers décaissement, limites provider, couverture provider par pays"
 ---
 
-<Badge color="green" icon="circle">Dernière mise à jour : 13 avril 2026</Badge>
+<Badge color="green" icon="circle">Dernière mise à jour : 16 avril 2026</Badge>
 
-Utilisez cette page pour choisir le bon slug provider selon le pays, le type de transaction et la devise de votre intégration.
+Utilisez cette page pour choisir le bon slug provider selon le pays, le flux pris en charge et la devise de votre intégration.
 
 <Info>
-  Cette page est la source de vérité pour la couverture provider, les slugs, les devises prises en charge, les exigences fetch-properties et les limites min/max publiées.
+  Cette page est la source de vérité pour la couverture provider, les slugs provider, les devises prises en charge, les exigences fetch-properties et les limites min/max publiées.
 </Info>
 
-## En un coup d'œil
+## En un coup d'oeil
 
 <CardGroup cols={2}>
   <Card title="14 marchés" icon="globe-africa">
     La couverture provider est actuellement publiée pour 14 pays d'Afrique de l'Ouest, de l'Est, centrale et australe.
   </Card>
-  <Card title="43 slugs provider" icon="fingerprint">
+  <Card title="42 slugs provider" icon="fingerprint">
     Envoyez la valeur exacte du `Slug` dans vos payloads API lorsque vous renseignez le champ `provider`.
   </Card>
-  <Card title="37 slugs double flux" icon="right-left">
-    La plupart des slugs prennent en charge à la fois la `Collecte` et le `Décaissement`, avec quelques exceptions selon le marché.
+  <Card title="36 slugs double flux" icon="right-left">
+    La plupart des slugs provider prennent en charge à la fois la `Collecte` et le `Décaissement`, avec quelques exceptions selon le marché.
   </Card>
   <Card title="1 fetch requis" icon="sliders">
-    `bank-transfer-nigeria` est actuellement le seul provider listé qui requiert un appel fetch-properties.
+    `bank-transfer-nigeria` est actuellement le seul provider listé qui requiert la prise en charge de fetch-properties.
   </Card>
 </CardGroup>
 
@@ -38,17 +38,17 @@ Utilisez cette page pour choisir le bon slug provider selon le pays, le type de 
 </Warning>
 
 <Note>
-  Un `—` dans les colonnes min/max signifie qu'aucune limite n'est actuellement publiée sur cette page. Les limites réelles sont généralement fixées par le provider ou le MNO et peuvent varier selon le niveau de compte de l'utilisateur final ; ne considérez donc pas `—` comme une garantie d'absence de restriction.
+  Un `—` dans n'importe quelle colonne de limite de flux signifie qu'aucune limite n'est actuellement publiée sur cette page. Les limites réelles sont généralement fixées par le provider ou le MNO et peuvent varier selon le niveau de compte de l'utilisateur final ; ne considérez donc pas `—` comme une garantie d'absence de restriction.
 </Note>
 
 ## Comment utiliser cette page
 
 <CardGroup cols={3}>
   <Card title="Commencer par le marché" icon="location-dot">
-    Trouvez d'abord votre pays puis confirmez les options disponibles en collecte et en décaissement.
+    Trouvez d'abord votre pays puis confirmez si chaque slug prend en charge la collecte, le décaissement ou les deux.
   </Card>
   <Card title="Copier le slug exact" icon="tag">
-    La colonne `Slug` contient la valeur machine-readable que votre requête API doit envoyer.
+    La colonne `Slug` contient la valeur lisible par machine que votre requête API doit envoyer.
   </Card>
   <Card title="Valider les limites" icon="scale-balanced">
     Vérifiez la devise et les contraintes de montant avant le go-live afin d'éviter des erreurs prévisibles.
@@ -74,45 +74,26 @@ Utilisez cette page pour choisir le bon slug provider selon le pays, le type de 
     | [Nigeria](#nigeria) | `NGN` | Bank Transfer, Opay, Airtel Smartcash, MTN MoMo, PalmPay | Bank Transfer, Opay Wallet, Airtel Smartcash, MTN MoMo | Bank Transfer requiert fetch-properties |
     | [Sénégal](#senegal) | `XOF` | Orange, Wave | Orange, Wave | 2 providers prennent en charge les deux flux |
     | [Togo](#togo) | `XOF` | Moov, Togocel | Togocel, Moov | 2 providers prennent en charge les deux flux |
-    | [Tanzanie](#tanzania) | `TZS` | Airtel, Halopesa, Mixx by Yas, T-Pesa, M-Pesa | Airtel, Halopesa, Mixx by Yas, T-Pesa, M-Pesa | Plusieurs montants minimums publiés sont disponibles |
+    | [Tanzanie](#tanzania) | `TZS` | Airtel, Halopesa, Mixx by Yas, M-Pesa | Airtel, Halopesa, Mixx by Yas, M-Pesa | Plusieurs montants minimums publiés sont disponibles |
   </Tab>
 
-  <Tab title="Collecte">
-    | Marché | Devise | Slugs provider pris en charge |
-    | :--- | :--- | :--- |
-    | Angola | `AOA` | `bank-transfer-angola`, `multicaixa-angola` |
-    | Burkina Faso | `XOF` | `orange-burkina-faso`, `wave-burkina-faso`, `moov-burkina-faso` |
-    | Bénin | `XOF` | `moov-benin`, `mtn-momo-benin` |
-    | Côte d'Ivoire | `XOF` | `wave-ivory-coast`, `orange-ivory-coast`, `mtn-momo-ivory-coast`, `moov-ivory-coast` |
-    | Cameroun | `XAF` | `orange-cameroon`, `mtn-momo-cameroon` |
-    | RDC | `CDF` | `airtel-dr-congo`, `afrimoney-dr-congo`, `orange-dr-congo`, `mpesa-dr-congo` |
-    | Ghana | `GHS` | `mtn-momo-ghana`, `airtel-ghana`, `telecel-ghana` |
-    | Gambie | `GMD` | `afrimoney-gambia`, `qmoney-gambia`, `wave-gambia` |
-    | Kenya | `KES` | `safaricom-kenya`, `airtel-kenya` |
-    | Mozambique | `MZN` | `mpesa-mozambique`, `emola-mozambique` |
-    | Nigeria | `NGN` | `bank-transfer-nigeria`, `opay-nigeria`, `airtel-smartcash-ng`, `mtn-momo-nigeria`, `palmpay-nigeria` |
-    | Sénégal | `XOF` | `orange-senegal`, `wave-senegal` |
-    | Togo | `XOF` | `moov-togo`, `togocel-togo` |
-    | Tanzanie | `TZS` | `airtel-tanzania`, `halopesa-tanzania`, `yas-tanzania`, `tpesa-tanzania`, `mpesa-tanzania` |
-  </Tab>
-
-  <Tab title="Décaissement">
-    | Marché | Devise | Slugs provider pris en charge |
-    | :--- | :--- | :--- |
-    | Angola | `AOA` | `—` |
-    | Burkina Faso | `XOF` | `orange-burkina-faso`, `wave-burkina-faso`, `moov-burkina-faso` |
-    | Bénin | `XOF` | `moov-benin`, `mtn-momo-benin` |
-    | Côte d'Ivoire | `XOF` | `mtn-momo-ivory-coast`, `wave-ivory-coast`, `wave-b2b-ivory-coast`, `orange-ivory-coast`, `moov-ivory-coast` |
-    | Cameroun | `XAF` | `mtn-momo-cameroon`, `orange-cameroon` |
-    | RDC | `CDF` | `airtel-dr-congo`, `afrimoney-dr-congo`, `orange-dr-congo`, `mpesa-dr-congo` |
-    | Ghana | `GHS` | `mtn-momo-ghana`, `airtel-ghana`, `telecel-ghana` |
-    | Gambie | `GMD` | `afrimoney-gambia`, `qmoney-gambia`, `wave-gambia` |
-    | Kenya | `KES` | `safaricom-kenya`, `airtel-kenya` |
-    | Mozambique | `MZN` | `mpesa-mozambique`, `emola-mozambique` |
-    | Nigeria | `NGN` | `bank-transfer-nigeria`, `opay-wallet-nigeria`, `airtel-smartcash-ng`, `mtn-momo-nigeria` |
-    | Sénégal | `XOF` | `orange-senegal`, `wave-senegal` |
-    | Togo | `XOF` | `togocel-togo`, `moov-togo` |
-    | Tanzanie | `TZS` | `airtel-tanzania`, `halopesa-tanzania`, `yas-tanzania`, `tpesa-tanzania`, `mpesa-tanzania` |
+  <Tab title="Slugs provider">
+    | Marché | Devise | Slugs double flux | Slugs collecte uniquement | Slugs décaissement uniquement |
+    | :--- | :--- | :--- | :--- | :--- |
+    | Angola | `AOA` | `—` | `bank-transfer-angola`, `multicaixa-angola` | `—` |
+    | Burkina Faso | `XOF` | `orange-burkina-faso`, `wave-burkina-faso`, `moov-burkina-faso` | `—` | `—` |
+    | Bénin | `XOF` | `moov-benin`, `mtn-momo-benin` | `—` | `—` |
+    | Côte d'Ivoire | `XOF` | `wave-ivory-coast`, `orange-ivory-coast`, `mtn-momo-ivory-coast`, `moov-ivory-coast` | `—` | `wave-b2b-ivory-coast` |
+    | Cameroun | `XAF` | `orange-cameroon`, `mtn-momo-cameroon` | `—` | `—` |
+    | RDC | `CDF` | `airtel-dr-congo`, `afrimoney-dr-congo`, `orange-dr-congo`, `mpesa-dr-congo` | `—` | `—` |
+    | Ghana | `GHS` | `mtn-momo-ghana`, `airtel-ghana`, `telecel-ghana` | `—` | `—` |
+    | Gambie | `GMD` | `afrimoney-gambia`, `qmoney-gambia`, `wave-gambia` | `—` | `—` |
+    | Kenya | `KES` | `safaricom-kenya`, `airtel-kenya` | `—` | `—` |
+    | Mozambique | `MZN` | `mpesa-mozambique`, `emola-mozambique` | `—` | `—` |
+    | Nigeria | `NGN` | `bank-transfer-nigeria`, `airtel-smartcash-ng`, `mtn-momo-nigeria` | `opay-nigeria`, `palmpay-nigeria` | `opay-wallet-nigeria` |
+    | Sénégal | `XOF` | `orange-senegal`, `wave-senegal` | `—` | `—` |
+    | Togo | `XOF` | `moov-togo`, `togocel-togo` | `—` | `—` |
+    | Tanzanie | `TZS` | `airtel-tanzania`, `halopesa-tanzania`, `yas-tanzania`, `mpesa-tanzania` | `—` | `—` |
   </Tab>
 </Tabs>
 
@@ -123,20 +104,21 @@ Utilisez cette page pour choisir le bon slug provider selon le pays, le type de 
     Nom lisible du provider, comme MTN MoMo, Orange, Wave, Bank Transfer ou M-Pesa.
   </Accordion>
   <Accordion title="Slug" icon="tag">
-    Identifiant provider machine-readable utilisé dans les appels API, par exemple `mtn-momo-ghana`.
+    Identifiant provider lisible par machine utilisé dans les appels API, par exemple `mtn-momo-ghana`.
   </Accordion>
   <Accordion title="Devise" icon="coins">
     Devise de transaction attendue pour le pays et la ligne provider concernés.
   </Accordion>
-  <Accordion title="Type" icon="right-left">
-    - `Collecte` : flux de collecte ou de débit
-    - `Décaissement` : flux de payout ou de transfert
+  <Accordion title="Flux pris en charge" icon="right-left">
+    - `Collecte` : flux de collecte ou de débit uniquement
+    - `Décaissement` : flux de payout ou de transfert uniquement
+    - `Collecte, Décaissement` : le même slug provider prend en charge les deux flux
   </Accordion>
   <Accordion title="Fetch Properties" icon="sliders">
     `Yes` signifie qu'il peut être nécessaire d'appeler un endpoint provider-properties avant d'initier la requête.
   </Accordion>
-  <Accordion title="Min. Amount / Max. Amount" icon="hashtag">
-    Seuils de transaction publiés lorsqu'ils sont définis. Les valeurs suivent les règles de sous-unités décrites dans [Spécification des montants](/fr/guides/introductions/amount-specification).
+  <Accordion title="Limites par flux" icon="hashtag">
+    Les limites de collecte et de décaissement sont affichées dans des colonnes distinctes afin que chaque slug provider n'apparaisse qu'une seule fois. Les valeurs suivent les règles de sous-unités décrites dans [Spécification des montants](/fr/guides/introductions/amount-specification).
   </Accordion>
 </AccordionGroup>
 
@@ -148,184 +130,201 @@ Utilisez cette page pour choisir le bon slug provider selon le pays, le type de 
 
 Aller à : [Angola](#angola) | [Burkina Faso](#burkina-faso) | [Bénin](#benin) | [Cameroun](#cameroon) | [RDC](#dr-congo) | [Gambie](#gambia) | [Ghana](#ghana) | [Côte d'Ivoire](#ivory-coast) | [Kenya](#kenya) | [Mozambique](#mozambique) | [Nigeria](#nigeria) | [Sénégal](#senegal) | [Togo](#togo) | [Tanzanie](#tanzania)
 
+Survolez un titre de marché pour copier un lien direct vers cette section.
+
+### Angola
+
 <AccordionGroup>
-  <Accordion title="🇦🇴 Angola - 2 providers" id="angola">
+  <Accordion title="🇦🇴 Angola - 2 providers">
     2 slugs provider sont disponibles. Les deux prennent en charge la collecte uniquement. Devise : `AOA`.
 
-    | **Provider** | **Slug** | **Devise** | **Type** | **Fetch Properties** | **Montant min.** | **Montant max.** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Bank Transfer | bank-transfer-angola | AOA | Collecte | No | — | — |
-    | Multicaixa | multicaixa-angola | AOA | Collecte | No | — | — |
+    | **Provider** | **Slug** | **Devise** | **Flux pris en charge** | **Fetch Properties** | **Min collecte** | **Max collecte** | **Min décaissement** | **Max décaissement** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | Bank Transfer | bank-transfer-angola | AOA | Collecte | No | — | — | — | — |
+    | Multicaixa | multicaixa-angola | AOA | Collecte | No | — | — | — | — |
   </Accordion>
+</AccordionGroup>
 
-  <Accordion title="🇧🇫 Burkina Faso - 3 providers" id="burkina-faso" defaultOpen>
+### Burkina Faso
+
+<AccordionGroup>
+  <Accordion title="🇧🇫 Burkina Faso - 3 providers" defaultOpen>
     3 slugs provider sont disponibles. Les 3 prennent en charge la collecte et le décaissement. Devise : `XOF`.
 
-    | **Provider** | **Slug** | **Devise** | **Type** | **Fetch Properties** | **Montant min.** | **Montant max.** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Orange | orange-burkina-faso | XOF | Collecte | No | — | — |
-    | Orange | orange-burkina-faso | XOF | Décaissement | No | 100 | 1,000,000 |
-    | Wave | wave-burkina-faso | XOF | Collecte | No | — | — |
-    | Wave | wave-burkina-faso | XOF | Décaissement | No | — | — |
-    | Moov | moov-burkina-faso | XOF | Collecte | No | — | — |
-    | Moov | moov-burkina-faso | XOF | Décaissement | No | — | — |
+    | **Provider** | **Slug** | **Devise** | **Flux pris en charge** | **Fetch Properties** | **Min collecte** | **Max collecte** | **Min décaissement** | **Max décaissement** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | Orange | orange-burkina-faso | XOF | Collecte, Décaissement | No | — | — | 100 | 1,000,000 |
+    | Wave | wave-burkina-faso | XOF | Collecte, Décaissement | No | — | — | — | — |
+    | Moov | moov-burkina-faso | XOF | Collecte, Décaissement | No | — | — | — | — |
   </Accordion>
+</AccordionGroup>
 
-  <Accordion title="🇧🇯 Bénin - 2 providers" id="benin">
+### Bénin
+
+<AccordionGroup>
+  <Accordion title="🇧🇯 Bénin - 2 providers">
     2 slugs provider sont disponibles. Les deux prennent en charge la collecte et le décaissement. Devise : `XOF`.
 
-    | **Provider** | **Slug** | **Devise** | **Type** | **Fetch Properties** | **Montant min.** | **Montant max.** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Moov | moov-benin | XOF | Collecte | No | 100 | 3,000,000 |
-    | Moov | moov-benin | XOF | Décaissement | No | — | — |
-    | MTN MoMo | mtn-momo-benin | XOF | Collecte | No | 100 | 3,000,000 |
-    | MTN MoMo | mtn-momo-benin | XOF | Décaissement | No | — | — |
+    | **Provider** | **Slug** | **Devise** | **Flux pris en charge** | **Fetch Properties** | **Min collecte** | **Max collecte** | **Min décaissement** | **Max décaissement** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | Moov | moov-benin | XOF | Collecte, Décaissement | No | 100 | 3,000,000 | — | — |
+    | MTN MoMo | mtn-momo-benin | XOF | Collecte, Décaissement | No | 100 | 3,000,000 | — | — |
   </Accordion>
+</AccordionGroup>
 
-  <Accordion title="🇨🇮 Côte d'Ivoire - 5 providers" id="ivory-coast">
+### Côte d'Ivoire
+
+<AccordionGroup>
+  <Accordion title="🇨🇮 Côte d'Ivoire - 5 providers">
     5 slugs provider sont disponibles. 4 prennent en charge la collecte et 5 le décaissement. Devise : `XOF`.
 
-    | **Provider** | **Slug** | **Devise** | **Type** | **Fetch Properties** | **Montant min.** | **Montant max.** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | MTN MoMo | mtn-momo-ivory-coast | XOF | Décaissement | No | — | — |
-    | Wave | wave-ivory-coast | XOF | Collecte | No | — | — |
-    | Orange | orange-ivory-coast | XOF | Collecte | No | — | — |
-    | MTN MoMo | mtn-momo-ivory-coast | XOF | Collecte | No | — | — |
-    | Wave | wave-ivory-coast | XOF | Décaissement | No | — | — |
-    | Wave B2B | wave-b2b-ivory-coast | XOF | Décaissement | No | — | — |
-    | Orange | orange-ivory-coast | XOF | Décaissement | No | 200 | 1,500,000 |
-    | Moov | moov-ivory-coast | XOF | Décaissement | No | 500 | 2,000,000 |
-    | Moov | moov-ivory-coast | XOF | Collecte | No | — | — |
+    | **Provider** | **Slug** | **Devise** | **Flux pris en charge** | **Fetch Properties** | **Min collecte** | **Max collecte** | **Min décaissement** | **Max décaissement** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | MTN MoMo | mtn-momo-ivory-coast | XOF | Collecte, Décaissement | No | — | — | — | — |
+    | Wave | wave-ivory-coast | XOF | Collecte, Décaissement | No | — | — | — | — |
+    | Orange | orange-ivory-coast | XOF | Collecte, Décaissement | No | — | — | 200 | 1,500,000 |
+    | Wave B2B | wave-b2b-ivory-coast | XOF | Décaissement | No | — | — | — | — |
+    | Moov | moov-ivory-coast | XOF | Collecte, Décaissement | No | — | — | 500 | 2,000,000 |
   </Accordion>
+</AccordionGroup>
 
-  <Accordion title="🇨🇲 Cameroun - 2 providers" id="cameroon">
+### Cameroun
+
+<AccordionGroup>
+  <Accordion title="🇨🇲 Cameroun - 2 providers">
     2 slugs provider sont disponibles. Les deux prennent en charge la collecte et le décaissement. Devise : `XAF`.
 
-    | **Provider** | **Slug** | **Devise** | **Type** | **Fetch Properties** | **Montant min.** | **Montant max.** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Orange | orange-cameroon | XAF | Collecte | No | 500 | 500,000 |
-    | MTN MoMo | mtn-momo-cameroon | XAF | Collecte | No | 500 | 500,000 |
-    | MTN MoMo | mtn-momo-cameroon | XAF | Décaissement | No | 500 | 500,000 |
-    | Orange | orange-cameroon | XAF | Décaissement | No | 500 | 500,000 |
+    | **Provider** | **Slug** | **Devise** | **Flux pris en charge** | **Fetch Properties** | **Min collecte** | **Max collecte** | **Min décaissement** | **Max décaissement** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | Orange | orange-cameroon | XAF | Collecte, Décaissement | No | 500 | 500,000 | 500 | 500,000 |
+    | MTN MoMo | mtn-momo-cameroon | XAF | Collecte, Décaissement | No | 500 | 500,000 | 500 | 500,000 |
   </Accordion>
+</AccordionGroup>
 
-  <Accordion title="🇨🇩 RDC, Congo Kinshasa - 4 providers" id="dr-congo">
+### RD Congo
+
+<AccordionGroup>
+  <Accordion title="🇨🇩 RDC (Congo Kinshasa) - 4 providers">
     4 slugs provider sont disponibles. Les 4 prennent en charge la collecte et le décaissement. Devise : `CDF`.
 
-    | **Provider** | **Slug** | **Devise** | **Type** | **Fetch Properties** | **Montant min.** | **Montant max.** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Airtel | airtel-dr-congo | CDF | Collecte | No | — | — |
-    | Airtel | airtel-dr-congo | CDF | Décaissement | No | — | — |
-    | Afrimoney | afrimoney-dr-congo | CDF | Collecte | No | — | — |
-    | Afrimoney | afrimoney-dr-congo | CDF | Décaissement | No | — | — |
-    | Orange | orange-dr-congo | CDF | Collecte | No | — | — |
-    | Orange | orange-dr-congo | CDF | Décaissement | No | — | — |
-    | M-Pesa | mpesa-dr-congo | CDF | Collecte | No | — | — |
-    | M-Pesa | mpesa-dr-congo | CDF | Décaissement | No | — | — |
+    | **Provider** | **Slug** | **Devise** | **Flux pris en charge** | **Fetch Properties** | **Min collecte** | **Max collecte** | **Min décaissement** | **Max décaissement** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | Airtel | airtel-dr-congo | CDF | Collecte, Décaissement | No | — | — | — | — |
+    | Afrimoney | afrimoney-dr-congo | CDF | Collecte, Décaissement | No | — | — | — | — |
+    | Orange | orange-dr-congo | CDF | Collecte, Décaissement | No | — | — | — | — |
+    | M-Pesa | mpesa-dr-congo | CDF | Collecte, Décaissement | No | — | — | — | — |
   </Accordion>
+</AccordionGroup>
 
-  <Accordion title="🇬🇭 Ghana - 3 providers" id="ghana">
+### Ghana
+
+<AccordionGroup>
+  <Accordion title="🇬🇭 Ghana - 3 providers">
     3 slugs provider sont disponibles. Les 3 prennent en charge la collecte et le décaissement. Devise : `GHS`.
 
-    | **Provider** | **Slug** | **Devise** | **Type** | **Fetch Properties** | **Montant min.** | **Montant max.** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | MTN MoMo | mtn-momo-ghana | GHS | Collecte | No | — | — |
-    | MTN MoMo | mtn-momo-ghana | GHS | Décaissement | No | — | — |
-    | AirtelTigo | airtel-ghana | GHS | Collecte | No | — | — |
-    | AirtelTigo | airtel-ghana | GHS | Décaissement | No | — | — |
-    | Telecel (formerly Vodafone) | telecel-ghana | GHS | Décaissement | No | — | — |
-    | Telecel (formerly Vodafone) | telecel-ghana | GHS | Collecte | No | — | — |
+    | **Provider** | **Slug** | **Devise** | **Flux pris en charge** | **Fetch Properties** | **Min collecte** | **Max collecte** | **Min décaissement** | **Max décaissement** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | MTN MoMo | mtn-momo-ghana | GHS | Collecte, Décaissement | No | — | — | — | — |
+    | AirtelTigo | airtel-ghana | GHS | Collecte, Décaissement | No | — | — | — | — |
+    | Telecel (formerly Vodafone) | telecel-ghana | GHS | Collecte, Décaissement | No | — | — | — | — |
   </Accordion>
+</AccordionGroup>
 
-  <Accordion title="🇬🇲 Gambie - 3 providers" id="gambia">
+### Gambie
+
+<AccordionGroup>
+  <Accordion title="🇬🇲 Gambie - 3 providers">
     3 slugs provider sont disponibles. Les 3 prennent en charge la collecte et le décaissement. Devise : `GMD`.
 
-    | **Provider** | **Slug** | **Devise** | **Type** | **Fetch Properties** | **Montant min.** | **Montant max.** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Afrimoney | afrimoney-gambia | GMD | Collecte | No | — | — |
-    | Afrimoney | afrimoney-gambia | GMD | Décaissement | No | — | — |
-    | QMoney | qmoney-gambia | GMD | Collecte | No | — | — |
-    | QMoney | qmoney-gambia | GMD | Décaissement | No | — | — |
-    | Wave | wave-gambia | GMD | Collecte | No | — | — |
-    | Wave | wave-gambia | GMD | Décaissement | No | — | — |
+    | **Provider** | **Slug** | **Devise** | **Flux pris en charge** | **Fetch Properties** | **Min collecte** | **Max collecte** | **Min décaissement** | **Max décaissement** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | Afrimoney | afrimoney-gambia | GMD | Collecte, Décaissement | No | — | — | — | — |
+    | QMoney | qmoney-gambia | GMD | Collecte, Décaissement | No | — | — | — | — |
+    | Wave | wave-gambia | GMD | Collecte, Décaissement | No | — | — | — | — |
   </Accordion>
+</AccordionGroup>
 
-  <Accordion title="🇰🇪 Kenya - 2 providers" id="kenya">
+### Kenya
+
+<AccordionGroup>
+  <Accordion title="🇰🇪 Kenya - 2 providers">
     2 slugs provider sont disponibles. Les deux prennent en charge la collecte et le décaissement. Devise : `KES`.
 
-    | **Provider** | **Slug** | **Devise** | **Type** | **Fetch Properties** | **Montant min.** | **Montant max.** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | M-Pesa (Safaricom) | safaricom-kenya | KES | Collecte | No | — | — |
-    | M-Pesa (Safaricom) | safaricom-kenya | KES | Décaissement | No | — | — |
-    | Airtel | airtel-kenya | KES | Collecte | No | — | — |
-    | Airtel | airtel-kenya | KES | Décaissement | No | — | — |
+    | **Provider** | **Slug** | **Devise** | **Flux pris en charge** | **Fetch Properties** | **Min collecte** | **Max collecte** | **Min décaissement** | **Max décaissement** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | M-Pesa (Safaricom) | safaricom-kenya | KES | Collecte, Décaissement | No | — | — | — | — |
+    | Airtel | airtel-kenya | KES | Collecte, Décaissement | No | — | — | — | — |
   </Accordion>
+</AccordionGroup>
 
-  <Accordion title="🇲🇿 Mozambique - 2 providers" id="mozambique">
+### Mozambique
+
+<AccordionGroup>
+  <Accordion title="🇲🇿 Mozambique - 2 providers">
     2 slugs provider sont disponibles. Les deux prennent en charge la collecte et le décaissement. Devise : `MZN`.
 
-    | **Provider** | **Slug** | **Devise** | **Type** | **Fetch Properties** | **Montant min.** | **Montant max.** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | M-Pesa | mpesa-mozambique | MZN | Collecte | No | — | — |
-    | M-Pesa | mpesa-mozambique | MZN | Décaissement | No | — | — |
-    | e-Mola | emola-mozambique | MZN | Collecte | No | — | — |
-    | e-Mola | emola-mozambique | MZN | Décaissement | No | — | — |
+    | **Provider** | **Slug** | **Devise** | **Flux pris en charge** | **Fetch Properties** | **Min collecte** | **Max collecte** | **Min décaissement** | **Max décaissement** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | M-Pesa | mpesa-mozambique | MZN | Collecte, Décaissement | No | — | — | — | — |
+    | e-Mola | emola-mozambique | MZN | Collecte, Décaissement | No | — | — | — | — |
   </Accordion>
+</AccordionGroup>
 
-  <Accordion title="🇳🇬 Nigeria - 6 providers" id="nigeria">
+### Nigeria
+
+<AccordionGroup>
+  <Accordion title="🇳🇬 Nigeria - 6 providers">
     6 slugs provider sont disponibles. 5 prennent en charge la collecte, 4 le décaissement et `bank-transfer-nigeria` requiert fetch-properties. Devise : `NGN`.
 
-    | **Provider** | **Slug** | **Devise** | **Type** | **Fetch Properties** | **Montant min.** | **Montant max.** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Bank Transfer | bank-transfer-nigeria | NGN | Collecte | Yes | — | — |
-    | Bank Transfer | bank-transfer-nigeria | NGN | Décaissement | Yes | — | — |
-    | Opay | opay-nigeria | NGN | Collecte | No | — | — |
-    | Opay Wallet | opay-wallet-nigeria | NGN | Décaissement | No | — | — |
-    | Airtel Smartcash | airtel-smartcash-ng | NGN | Décaissement | No | — | — |
-    | Airtel Smartcash | airtel-smartcash-ng | NGN | Collecte | No | — | — |
-    | MTN MoMo | mtn-momo-nigeria | NGN | Collecte | No | — | — |
-    | MTN MoMo | mtn-momo-nigeria | NGN | Décaissement | No | — | — |
-    | PalmPay | palmpay-nigeria | NGN | Collecte | No | — | — |
+    | **Provider** | **Slug** | **Devise** | **Flux pris en charge** | **Fetch Properties** | **Min collecte** | **Max collecte** | **Min décaissement** | **Max décaissement** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | Bank Transfer | bank-transfer-nigeria | NGN | Collecte, Décaissement | Yes | — | — | — | — |
+    | Opay | opay-nigeria | NGN | Collecte | No | — | — | — | — |
+    | Opay Wallet | opay-wallet-nigeria | NGN | Décaissement | No | — | — | — | — |
+    | Airtel Smartcash | airtel-smartcash-ng | NGN | Collecte, Décaissement | No | — | — | — | — |
+    | MTN MoMo | mtn-momo-nigeria | NGN | Collecte, Décaissement | No | — | — | — | — |
+    | PalmPay | palmpay-nigeria | NGN | Collecte | No | — | — | — | — |
   </Accordion>
+</AccordionGroup>
 
-  <Accordion title="🇸🇳 Sénégal - 2 providers" id="senegal">
+### Sénégal
+
+<AccordionGroup>
+  <Accordion title="🇸🇳 Sénégal - 2 providers">
     2 slugs provider sont disponibles. Les deux prennent en charge la collecte et le décaissement. Devise : `XOF`.
 
-    | **Provider** | **Slug** | **Devise** | **Type** | **Fetch Properties** | **Montant min.** | **Montant max.** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Orange | orange-senegal | XOF | Décaissement | No | — | — |
-    | Orange | orange-senegal | XOF | Collecte | No | — | — |
-    | Wave | wave-senegal | XOF | Collecte | No | — | — |
-    | Wave | wave-senegal | XOF | Décaissement | No | — | — |
+    | **Provider** | **Slug** | **Devise** | **Flux pris en charge** | **Fetch Properties** | **Min collecte** | **Max collecte** | **Min décaissement** | **Max décaissement** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | Orange | orange-senegal | XOF | Collecte, Décaissement | No | — | — | — | — |
+    | Wave | wave-senegal | XOF | Collecte, Décaissement | No | — | — | — | — |
   </Accordion>
+</AccordionGroup>
 
-  <Accordion title="🇹🇬 Togo - 2 providers" id="togo">
+### Togo
+
+<AccordionGroup>
+  <Accordion title="🇹🇬 Togo - 2 providers">
     2 slugs provider sont disponibles. Les deux prennent en charge la collecte et le décaissement. Devise : `XOF`.
 
-    | **Provider** | **Slug** | **Devise** | **Type** | **Fetch Properties** | **Montant min.** | **Montant max.** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Moov | moov-togo | XOF | Collecte | No | — | — |
-    | Togocel | togocel-togo | XOF | Décaissement | No | — | — |
-    | Moov | moov-togo | XOF | Décaissement | No | — | — |
-    | Togocel | togocel-togo | XOF | Collecte | No | — | — |
+    | **Provider** | **Slug** | **Devise** | **Flux pris en charge** | **Fetch Properties** | **Min collecte** | **Max collecte** | **Min décaissement** | **Max décaissement** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | Moov | moov-togo | XOF | Collecte, Décaissement | No | — | — | — | — |
+    | Togocel | togocel-togo | XOF | Collecte, Décaissement | No | — | — | — | — |
   </Accordion>
+</AccordionGroup>
 
-  <Accordion title="🇹🇿 Tanzanie - 5 providers" id="tanzania">
-    5 slugs provider sont disponibles. Les 5 prennent en charge la collecte et le décaissement. Devise : `TZS`.
+### Tanzanie
 
-    | **Provider** | **Slug** | **Devise** | **Type** | **Fetch Properties** | **Montant min.** | **Montant max.** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Airtel | airtel-tanzania | TZS | Collecte | No | 100 | — |
-    | Airtel | airtel-tanzania | TZS | Décaissement | No | 1,000 | — |
-    | Halopesa | halopesa-tanzania | TZS | Collecte | No | 100 | — |
-    | Halopesa | halopesa-tanzania | TZS | Décaissement | No | 100 | — |
-    | Mixx by Yas (formerly Tigo) | yas-tanzania | TZS | Décaissement | No | 100 | — |
-    | Mixx by Yas (formerly Tigo) | yas-tanzania | TZS | Collecte | No | 100 | — |
+<AccordionGroup>
+  <Accordion title="🇹🇿 Tanzanie - 4 providers">
+    4 slugs provider sont disponibles. Les 4 prennent en charge la collecte et le décaissement. Devise : `TZS`.
 
-[//]: # (| T-Pesa | tpesa-tanzania | TZS | Collecte | No | — | — |)
-[//]: # (    | T-Pesa | tpesa-tanzania | TZS | Décaissement | No | — | — |)
-    | M-Pesa | mpesa-tanzania | TZS | Décaissement | No | 200 | — |
-    | M-Pesa | mpesa-tanzania | TZS | Collecte | No | 100 | — |
+    | **Provider** | **Slug** | **Devise** | **Flux pris en charge** | **Fetch Properties** | **Min collecte** | **Max collecte** | **Min décaissement** | **Max décaissement** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | Airtel | airtel-tanzania | TZS | Collecte, Décaissement | No | 100 | — | 1,000 | — |
+    | Halopesa | halopesa-tanzania | TZS | Collecte, Décaissement | No | 100 | — | 100 | — |
+    | Mixx by Yas (formerly Tigo) | yas-tanzania | TZS | Collecte, Décaissement | No | 100 | — | 100 | — |
+    | M-Pesa | mpesa-tanzania | TZS | Collecte, Décaissement | No | 100 | — | 200 | — |
   </Accordion>
 </AccordionGroup>
 
