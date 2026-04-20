@@ -12,7 +12,11 @@ Cette page fournit des payloads pratiques pour chaque étape majeure du décaiss
 2. Demander le décaissement
 3. Vérifier le décaissement
 
-## 1) Valider le bénéficiaire, mobile money
+## 1) Valider le bénéficiaire
+
+Utilisez l'objet `account` correspondant au canal du provider que vous validez.
+
+### Mobile money
 
 Endpoint : `POST /billing/v1/transfer-recipients/validate`
 
@@ -51,7 +55,7 @@ Exemple de réponse :
 }
 ```
 
-## 2) Valider le bénéficiaire, virement bancaire
+### Virement bancaire
 
 Endpoint : `POST /billing/v1/transfer-recipients/validate`
 
@@ -93,7 +97,54 @@ Exemple de réponse :
 }
 ```
 
-## 3) Demander le décaissement
+### Virement bancaire (Angola)
+
+Endpoint : `POST /billing/v1/transfer-recipients/validate`
+
+```json
+{
+  "provider": "bank-transfer-angola",
+  "currency": "AOA",
+  "country": "AO",
+  "account": {
+    "accountName": "John Doe",
+    "accountNumber": "0123456789"
+  }
+}
+```
+
+Exemple de réponse :
+
+```json
+{
+  "statusCode": 200,
+  "data": {
+    "clientId": "6thbridge",
+    "parentClientId": "payfusion",
+    "ownerType": "client",
+    "ownerId": "6thbridge",
+    "provider": "bank-transfer-angola",
+    "providerLabel": "Bank Transfer",
+    "providerLogo": "https://app-tst.appypay.co.ao/images/payment-methods/ref.png",
+    "source": "disbursement",
+    "channel": "bank-transfer",
+    "currency": "AOA",
+    "country": "AO",
+    "tags": [],
+    "accountLabel": "Bank Transfer  | Miss Billie Friesen | 2215381176",
+    "account": {
+      "accountNumber": "2215381176",
+      "accountName": "Miss Billie Friesen"
+    },
+    "status": "pending",
+    "createdAt": "2026-04-20T12:40:56.084Z",
+    "updatedAt": "2026-04-20T12:40:56.084Z",
+    "id": "69e61ed8c5938efd8ef63e1b"
+  }
+}
+```
+
+## 2) Demander le décaissement
 
 Endpoint : `POST /billing/v1/disbursements`
 
@@ -125,7 +176,7 @@ Exemple de réponse :
 }
 ```
 
-## 4) Vérifier le décaissement
+## 3) Vérifier le décaissement
 
 Endpoint : `GET /billing/v1/disbursements/verify/{reference}`
 

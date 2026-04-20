@@ -12,7 +12,11 @@ This page provides practical payloads for each major disbursement step:
 2. Request disbursement
 3. Verify disbursement
 
-## 1) Validate Recipient (Mobile Money)
+## 1) Validate Recipient
+
+Use the matching account object for the provider channel you are validating.
+
+### Mobile Money
 
 Endpoint: `POST /billing/v1/transfer-recipients/validate`
 
@@ -51,7 +55,7 @@ Sample response:
 }
 ```
 
-## 2) Validate Recipient (Bank Transfer)
+### Bank Transfer
 
 Endpoint: `POST /billing/v1/transfer-recipients/validate`
 
@@ -93,7 +97,54 @@ Sample response:
 }
 ```
 
-## 3) Request Disbursement
+### Bank Transfer (Angola)
+
+Endpoint: `POST /billing/v1/transfer-recipients/validate`
+
+```json
+{
+  "provider": "bank-transfer-angola",
+  "currency": "AOA",
+  "country": "AO",
+  "account": {
+    "accountName": "John Doe",
+    "accountNumber": "0123456789"
+  }
+}
+```
+
+Sample response:
+
+```json
+{
+  "statusCode": 200,
+  "data": {
+    "clientId": "6thbridge",
+    "parentClientId": "payfusion",
+    "ownerType": "client",
+    "ownerId": "6thbridge",
+    "provider": "bank-transfer-angola",
+    "providerLabel": "Bank Transfer",
+    "providerLogo": "https://app-tst.appypay.co.ao/images/payment-methods/ref.png",
+    "source": "disbursement",
+    "channel": "bank-transfer",
+    "currency": "AOA",
+    "country": "AO",
+    "tags": [],
+    "accountLabel": "Bank Transfer  | Miss Billie Friesen | 2215381176",
+    "account": {
+      "accountNumber": "2215381176",
+      "accountName": "Miss Billie Friesen"
+    },
+    "status": "pending",
+    "createdAt": "2026-04-20T12:40:56.084Z",
+    "updatedAt": "2026-04-20T12:40:56.084Z",
+    "id": "69e61ed8c5938efd8ef63e1b"
+  }
+}
+```
+
+## 2) Request Disbursement
 
 Endpoint: `POST /billing/v1/disbursements`
 
@@ -125,7 +176,7 @@ Sample response:
 }
 ```
 
-## 4) Verify Disbursement
+## 3) Verify Disbursement
 
 Endpoint: `GET /billing/v1/disbursements/verify/{reference}`
 

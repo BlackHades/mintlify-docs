@@ -61,7 +61,7 @@ Use this page to choose the right provider slug for your integration by country,
   <Tab title="Overview">
     | Market | Currency | Collection Providers | Disbursement Providers | Notes |
     | :--- | :--- | :--- | :--- | :--- |
-    | [Angola](#angola) | `AOA` | Bank Transfer, Multicaixa | — | 2 providers are collection only |
+    | [Angola](#angola) | `AOA` | Bank Transfer, Multicaixa | Bank Transfer | Bank Transfer supports both flows |
     | [Burkina Faso](#burkina-faso) | `XOF` | Orange, Wave, Moov | Orange, Wave, Moov | 3 providers support both flows |
     | [Benin](#benin) | `XOF` | Moov, MTN MoMo | Moov, MTN MoMo | 2 providers support both flows |
     | [Ivory Coast](#ivory-coast) | `XOF` | Wave, Orange, MTN MoMo, Moov | MTN MoMo, Wave, Wave B2B, Orange, Moov | Wave B2B is disbursement only |
@@ -80,7 +80,7 @@ Use this page to choose the right provider slug for your integration by country,
   <Tab title="Provider Slugs">
     | Market | Currency | Dual-Flow Slugs | Collection-Only Slugs | Disbursement-Only Slugs |
     | :--- | :--- | :--- | :--- | :--- |
-    | Angola | `AOA` | `—` | `bank-transfer-angola`, `multicaixa-angola` | `—` |
+    | Angola | `AOA` | `bank-transfer-angola` | `multicaixa-angola` | `—` |
     | Burkina Faso | `XOF` | `orange-burkina-faso`, `wave-burkina-faso`, `moov-burkina-faso` | `—` | `—` |
     | Benin | `XOF` | `moov-benin`, `mtn-momo-benin` | `—` | `—` |
     | Ivory Coast | `XOF` | `wave-ivory-coast`, `orange-ivory-coast`, `mtn-momo-ivory-coast`, `moov-ivory-coast` | `—` | `wave-b2b-ivory-coast` |
@@ -136,11 +136,11 @@ Hover a market heading to copy a direct link to that section.
 
 <AccordionGroup>
   <Accordion title="🇦🇴 Angola - 2 providers">
-    2 provider slugs are available. Both support collection only. Currency: `AOA`.
+    2 provider slugs are available. Bank Transfer supports collection and disbursement; Multicaixa supports collection only. Currency: `AOA`.
 
     | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
     | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Bank Transfer | bank-transfer-angola | AOA | Collection | No | — | — | — | — |
+    | Bank Transfer | bank-transfer-angola | AOA | Collection, Disbursement | No | — | — | — | — |
     | Multicaixa | multicaixa-angola | AOA | Collection | No | — | — | — | — |
   </Accordion>
 </AccordionGroup>
