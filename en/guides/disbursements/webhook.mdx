@@ -8,6 +8,15 @@ Payfonte sends webhook events when disbursement status changes (for example `pro
 
 Use webhooks as your primary asynchronous disbursement update channel.
 
+## Webhook Source IPs
+
+If you restrict inbound traffic by IP address, allowlist the following Payfonte webhook source IPs for each environment.
+
+| Environment | Source IPs |
+| --- | --- |
+| Production | `49.13.133.127`, `49.13.229.61`, `194.32.79.135` |
+| Sandbox | `49.12.224.228`, `49.13.224.113` |
+
 ## Payload Fields
 
 | Field | Description |

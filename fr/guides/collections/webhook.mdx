@@ -8,6 +8,15 @@ Payfonte envoie des événements webhook vers votre endpoint configuré lorsque 
 
 Utilisez les webhooks comme source de vérité principale pour les résultats de paiement asynchrones.
 
+## Adresses IP source des webhooks
+
+Si vous limitez le trafic entrant par adresse IP, ajoutez à votre liste d'autorisation les adresses IP source Payfonte suivantes pour chaque environnement.
+
+| Environnement | Adresses IP source |
+| --- | --- |
+| Production | `49.13.133.127`, `49.13.229.61`, `194.32.79.135` |
+| Sandbox | `49.12.224.228`, `49.13.224.113` |
+
 ## Pourquoi les webhooks sont importants
 
 <CardGroup cols={3}>
