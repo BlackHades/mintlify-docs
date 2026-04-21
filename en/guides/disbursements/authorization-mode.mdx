@@ -70,6 +70,45 @@ Authorization URL mode lets your system approve or reject each disbursement atte
   Authorization URL mode is strict: if your endpoint is unavailable or returns non-`200`, the disbursement is not processed.
 </Warning>
 
+### Authorization Request Payload
+
+When Authorization URL mode is enabled, Payfonte sends a JSON payload like this to your configured authorization URL:
+
+```json
+{
+  "clientId": "client_123456789",
+  "type": "disbursement",
+  "externalReference": "EXT-DISB-000001",
+  "reference": "DISB-000001",
+  "provider": "paystack",
+  "channel": "bank-transfer",
+  "finalAmount": 500000,
+  "amount": 500000,
+  "transferRecipientLabel": "Paystack | Zenith Bank | Ada Lovelace | 0123456789",
+  "transferRecipient": {
+    "accountNumber": "0123456789",
+    "bankCode": "057",
+    "bankName": "Zenith Bank",
+    "accountName": "Ada Lovelace"
+  },
+  "recipient": {
+    "accountNumber": "0123456789",
+    "bankCode": "057",
+    "bankName": "Zenith Bank",
+    "accountName": "Ada Lovelace"
+  },
+  "transferRecipientId": "trf_recipient_123456789",
+  "charge": 15000,
+  "chargesApplied": [],
+  "fees": {},
+  "status": "queued",
+  "country": "NG",
+  "currency": "NGN",
+  "narration": "Vendor payout for invoice INV-2026-0001",
+  "webhookURL": "https://example.com/webhooks/disbursements"
+}
+```
+
 ## Recommended Validation Checks (Authorization URL)
 
 When Payfonte calls your authorization URL, validate:

@@ -70,6 +70,45 @@ Le mode URL d'autorisation permet à votre système d'approuver ou de rejeter dy
   Le mode URL d'autorisation est strict : si votre endpoint est indisponible ou renvoie autre chose que `200`, le décaissement n'est pas traité.
 </Warning>
 
+### Payload de requête d'autorisation
+
+Lorsque le mode URL d'autorisation est activé, Payfonte envoie un payload JSON comme celui-ci à votre URL d'autorisation configurée :
+
+```json
+{
+  "clientId": "client_123456789",
+  "type": "disbursement",
+  "externalReference": "EXT-DISB-000001",
+  "reference": "DISB-000001",
+  "provider": "paystack",
+  "channel": "bank-transfer",
+  "finalAmount": 500000,
+  "amount": 500000,
+  "transferRecipientLabel": "Paystack | Zenith Bank | Ada Lovelace | 0123456789",
+  "transferRecipient": {
+    "accountNumber": "0123456789",
+    "bankCode": "057",
+    "bankName": "Zenith Bank",
+    "accountName": "Ada Lovelace"
+  },
+  "recipient": {
+    "accountNumber": "0123456789",
+    "bankCode": "057",
+    "bankName": "Zenith Bank",
+    "accountName": "Ada Lovelace"
+  },
+  "transferRecipientId": "trf_recipient_123456789",
+  "charge": 15000,
+  "chargesApplied": [],
+  "fees": {},
+  "status": "queued",
+  "country": "NG",
+  "currency": "NGN",
+  "narration": "Vendor payout for invoice INV-2026-0001",
+  "webhookURL": "https://example.com/webhooks/disbursements"
+}
+```
+
 ## Contrôles de validation recommandés
 
 Lorsque Payfonte appelle votre URL d'autorisation, validez :
