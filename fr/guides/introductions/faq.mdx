@@ -25,19 +25,21 @@ Tout ce qu'il faut savoir sur la plateforme Payfonte, l'intégration mobile mone
     - Portefeuilles numériques : Opay, PalmPay et autres
 
     En une seule intégration multi-PSP, vous pouvez traiter les paiements sur plusieurs méthodes et marchés avec des capacités de routage intelligent.
+
   </Accordion>
 
   <Accordion title="Comment commencer avec Payfonte ?" icon="rocket">
     Le démarrage est simple :
 
     1. Créez un compte sandbox sur [sandbox-app.payfonte.com](https://sandbox-app.payfonte.com)
-    2. Récupérez vos identifiants API dans Settings -> API Keys/Webhooks
-    3. Configurez votre webhook dans Settings -> API Keys/Webhooks
+    2. Récupérez vos identifiants API dans Settings -> Security ->  API Keys and Webhooks
+    3. Configurez votre webhook dans Settings -> Security ->  API Keys and Webhooks
     4. Testez votre intégration en sandbox
     5. Terminez le KYB via notre [formulaire KYB](https://form.jotform.com/240038360690048)
     6. Passez en production une fois approuvé
 
     Le délai d'onboarding est généralement de 1 à 5 jours ouvrés après la soumission KYB.
+
   </Accordion>
 
   <Accordion title="Quelle différence entre sandbox et production ?" icon="flask">
@@ -52,6 +54,7 @@ Tout ce qu'il faut savoir sur la plateforme Payfonte, l'intégration mobile mone
     <Warning>
       Important : sandbox et production sont totalement séparés. Votre configuration sandbox, tokens API, URL de callback et données de test, n'est pas copiée en production. Il faut tout reconfigurer lors du passage en live.
     </Warning>
+
   </Accordion>
 
   <Accordion title="Quels documents KYB sont requis ?" icon="file-contract">
@@ -76,6 +79,7 @@ Tout ce qu'il faut savoir sur la plateforme Payfonte, l'intégration mobile mone
     <Tip>
       Nos exigences KYB sont plus souples que celles de nombreuses intégrations MNO directes. Certains marchands finalisent l'onboarding en quelques minutes sur les dossiers simples.
     </Tip>
+
   </Accordion>
 </AccordionGroup>
 
@@ -109,6 +113,7 @@ Tout ce qu'il faut savoir sur la plateforme Payfonte, l'intégration mobile mone
     ```
 
     Le processus complet prend généralement 30 à 60 secondes entre l'initiation et la confirmation.
+
   </Accordion>
 
   <Accordion title="Quelle différence entre STK Push et USSD ?" icon="code">
@@ -133,6 +138,7 @@ Tout ce qu'il faut savoir sur la plateforme Payfonte, l'intégration mobile mone
     <Note>
       Payfonte choisit automatiquement la bonne méthode d'autorisation selon le provider et le pays. Vous n'avez pas à gérer cette logique vous-même.
     </Note>
+
   </Accordion>
 
   <Accordion title="Quelle est l'expérience client pour un paiement mobile money ?" icon="user">
@@ -157,6 +163,7 @@ Tout ce qu'il faut savoir sur la plateforme Payfonte, l'intégration mobile mone
     | Autorisation client | 10 à 30 secondes |
     | Callback de confirmation | 1 à 3 secondes |
     | Total | 15 à 45 secondes |
+
   </Accordion>
 
   <Accordion title="Qu'est-ce que la pré-autorisation mobile money ?" icon="lock">
@@ -175,6 +182,7 @@ Tout ce qu'il faut savoir sur la plateforme Payfonte, l'intégration mobile mone
     <Note>
       La disponibilité dépend du MNO et du marché. Contactez le support pour connaître les configurations actuellement prises en charge.
     </Note>
+
   </Accordion>
 </AccordionGroup>
 
@@ -200,6 +208,7 @@ Tout ce qu'il faut savoir sur la plateforme Payfonte, l'intégration mobile mone
     <Warning>
       N'exécutez jamais une commande sur les statuts `pending` ou `processing`. Attendez toujours un statut final comme `success`, `failed` ou `expired`.
     </Warning>
+
   </Accordion>
 
   <Accordion title="Comment Payfonte garantit-il un état final à 100 % ?" icon="check-double">
@@ -216,6 +225,7 @@ Tout ce qu'il faut savoir sur la plateforme Payfonte, l'intégration mobile mone
     <Tip>
       Si une transaction semble bloquée dans le dashboard, le moteur de rapprochement travaille déjà à sa résolution. Vérifiez à nouveau entre 5 et 60 minutes plus tard.
     </Tip>
+
   </Accordion>
 
   <Accordion title="Quels sont les délais de timeout selon les providers ?" icon="clock">
@@ -230,6 +240,7 @@ Tout ce qu'il faut savoir sur la plateforme Payfonte, l'intégration mobile mone
     | Wave | 5 minutes | Confirmation via application |
 
     Si le client n'autorise pas à temps, la transaction passe à `expired` et vous recevez un webhook.
+
   </Accordion>
 
   <Accordion title="Comment gérer les transactions échouées ?" icon="triangle-exclamation">
@@ -250,6 +261,7 @@ Tout ce qu'il faut savoir sur la plateforme Payfonte, l'intégration mobile mone
     - Proposer un retry pour les erreurs relançables
     - Journaliser toutes les transactions en échec
     - Contacter le support si les erreurs `SYSTEM_ERROR` persistent
+
   </Accordion>
 </AccordionGroup>
 
@@ -262,7 +274,7 @@ Tout ce qu'il faut savoir sur la plateforme Payfonte, l'intégration mobile mone
     Les webhooks notifient votre serveur en temps réel lors des changements de statut.
 
     Étapes :
-    1. Ouvrir Dashboard -> Settings -> API Keys/Webhooks
+    1. Ouvrir Dashboard -> Settings -> Security ->  API Keys and Webhooks
     2. Saisir votre URL webhook, par exemple `https://yoursite.com/payfonte/webhook`
     3. Cliquer sur Save
 
@@ -275,6 +287,7 @@ Tout ce qu'il faut savoir sur la plateforme Payfonte, l'intégration mobile mone
     <Tip>
       Vous pouvez aussi envoyer une URL webhook par transaction via le champ `webhook` dans la requête API. Cela surcharge le webhook par défaut pour cette transaction.
     </Tip>
+
   </Accordion>
 
   <Accordion title="À quoi ressemble un payload webhook ?" icon="code">
@@ -311,6 +324,7 @@ Tout ce qu'il faut savoir sur la plateforme Payfonte, l'intégration mobile mone
     - `payment.expired`
     - `disbursement.completed`
     - `disbursement.failed`
+
   </Accordion>
 
   <Accordion title="Comment traiter correctement les webhooks ?" icon="server">
@@ -353,6 +367,7 @@ Tout ce qu'il faut savoir sur la plateforme Payfonte, l'intégration mobile mone
     <Warning>
       Répondez toujours rapidement avec HTTP 200. Si votre endpoint timeout ou renvoie une erreur, le webhook sera rejoué. Implémentez l'idempotence pour gérer les doublons.
     </Warning>
+
   </Accordion>
 
   <Accordion title="Que se passe-t-il si mon endpoint webhook est indisponible ?" icon="server">
@@ -372,6 +387,7 @@ Tout ce qu'il faut savoir sur la plateforme Payfonte, l'intégration mobile mone
     <Tip>
       Mettez en place une surveillance de votre endpoint webhook et des alertes de livraison échouée. Un polling de secours peut aussi servir de filet de sécurité.
     </Tip>
+
   </Accordion>
 </AccordionGroup>
 
@@ -393,6 +409,7 @@ Tout ce qu'il faut savoir sur la plateforme Payfonte, l'intégration mobile mone
     | Autres pays CFA | Mobile money | T+2 à T+3 |
 
     T correspond au jour de demande de règlement.
+
   </Accordion>
 
   <Accordion title="Puis-je envoyer des décaissements ?" icon="paper-plane">
@@ -412,6 +429,7 @@ Tout ce qu'il faut savoir sur la plateforme Payfonte, l'intégration mobile mone
     - Virement bancaire : le jour même à J+1 ouvré
 
     Voir le [guide des décaissements](/fr/guides/disbursements/overview) pour la procédure complète.
+
   </Accordion>
 
   <Accordion title="Comment vérifier mon solde portefeuille ?" icon="wallet">
@@ -440,6 +458,7 @@ Tout ce qu'il faut savoir sur la plateforme Payfonte, l'intégration mobile mone
       ]
     }
     ```
+
   </Accordion>
 </AccordionGroup>
 
@@ -464,6 +483,7 @@ Tout ce qu'il faut savoir sur la plateforme Payfonte, l'intégration mobile mone
     </Warning>
 
     Voir [Spécification des montants](/fr/guides/introductions/amount-specification) et [Providers pris en charge](/fr/guides/introductions/supported-providers) pour les limites provider.
+
   </Accordion>
 
   <Accordion title="Comment formater les numéros de téléphone ?" icon="phone">
@@ -490,6 +510,7 @@ Tout ce qu'il faut savoir sur la plateforme Payfonte, l'intégration mobile mone
     { "phoneNumber": "+234-801-234-5678" }
     { "phoneNumber": "08012345678" }
     ```
+
   </Accordion>
 
   <Accordion title="Qu'est-ce que l'API Direct Charge ?" icon="bolt">
@@ -516,6 +537,7 @@ Tout ce qu'il faut savoir sur la plateforme Payfonte, l'intégration mobile mone
     ```
 
     Le client reçoit ensuite directement le prompt STK ou USSD sur son téléphone.
+
   </Accordion>
 
   <Accordion title="Prenez-vous en charge l'orchestration hybride, BYOK ?" icon="key">
@@ -534,6 +556,7 @@ Tout ce qu'il faut savoir sur la plateforme Payfonte, l'intégration mobile mone
     - Dashboard unique pour tous vos APM
 
     Pour l'activer, contactez [commercial@payfonte.com](mailto:commercial@payfonte.com).
+
   </Accordion>
 
   <Accordion title="Que se passe-t-il si un provider est indisponible ?" icon="server">
@@ -552,6 +575,7 @@ Tout ce qu'il faut savoir sur la plateforme Payfonte, l'intégration mobile mone
     <Note>
       Vous pouvez aussi définir vos préférences de routage dans le dashboard pour prioriser certains providers selon le coût ou la performance.
     </Note>
+
   </Accordion>
 </AccordionGroup>
 
@@ -569,6 +593,7 @@ Tout ce qu'il faut savoir sur la plateforme Payfonte, l'intégration mobile mone
     - Chiffrement de bout en bout, en transit et au repos
 
     Vous pouvez demander nos certificats de conformité via [compliance@payfonte.com](mailto:compliance@payfonte.com).
+
   </Accordion>
 
   <Accordion title="Comment gérez-vous la confidentialité des données ?" icon="user-shield">
@@ -589,6 +614,7 @@ Tout ce qu'il faut savoir sur la plateforme Payfonte, l'intégration mobile mone
     - PIN mobile money
     - CVV carte
     - Soldes de portefeuille client
+
   </Accordion>
 
   <Accordion title="Quelles mesures anti-fraude sont en place ?" icon="magnifying-glass">
@@ -604,6 +630,7 @@ Tout ce qu'il faut savoir sur la plateforme Payfonte, l'intégration mobile mone
     - Définir vos propres limites dans le dashboard
     - Activer des vérifications supplémentaires pour les gros montants
     - Consulter des analyses et rapports de fraude
+
   </Accordion>
 </AccordionGroup>
 
@@ -626,6 +653,7 @@ Tout ce qu'il faut savoir sur la plateforme Payfonte, l'intégration mobile mone
     1. Attendre 5 à 15 minutes
     2. Vérifier le statut via l'API
     3. Si le blocage dépasse 30 minutes, contacter le support
+
   </Accordion>
 
   <Accordion title="Pourquoi ai-je une erreur 401 Unauthorized ?" icon="lock">
@@ -641,12 +669,14 @@ Tout ce qu'il faut savoir sur la plateforme Payfonte, l'intégration mobile mone
     1. Vérifiez l'environnement utilisé
     2. Recopiez les identifiants depuis Dashboard -> Settings -> API Keys
     3. Vérifiez les noms exacts des en-têtes : `client-id` et `client-secret`
+
   </Accordion>
 
   <Accordion title="Comment tester différents scénarios en sandbox ?" icon="flask-vial">
     La sandbox permet de simuler plusieurs résultats à partir des numéros de téléphone de test.
 
     Utilisez les scénarios documentés dans notre [guide de test](/fr/guides/introductions/testing) pour provoquer des transactions `success`, `failed` et `pending`.
+
   </Accordion>
 </AccordionGroup>
 
@@ -655,10 +685,18 @@ Tout ce qu'il faut savoir sur la plateforme Payfonte, l'intégration mobile mone
 ## Vous avez encore des questions ?
 
 <CardGroup cols={3}>
-  <Card title="Contacter le support" icon="headset" href="mailto:support@payfonte.com">
+  <Card
+    title="Contacter le support"
+    icon="headset"
+    href="mailto:support@payfonte.com"
+  >
     support@payfonte.com
   </Card>
-  <Card title="Réserver une démo" icon="calendar" href="https://calendly.com/marc-payfonte/30min">
+  <Card
+    title="Réserver une démo"
+    icon="calendar"
+    href="https://calendly.com/marc-payfonte/30min"
+  >
     Planifier une démonstration
   </Card>
   <Card title="Référence API" icon="code" href="/fr/api-reference/introduction">

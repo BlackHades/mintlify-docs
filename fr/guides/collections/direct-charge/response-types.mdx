@@ -1,28 +1,28 @@
 ---
 title: "Flux de traitement Direct Charge"
-description: "Comprenez les types de reponse Direct Charge pour les flux processing, redirect, bankTransfer et pre-OTP."
+description: "Comprenez les types de réponse Direct Charge pour les flux processing, redirect, bankTransfer et pre-OTP."
 icon: "bolt"
 ---
 
-Quand vous appelez l'API Direct Charge, la reponse initiale indique comment le client doit continuer ou ce que votre backend doit attendre. La plupart des flux Direct Charge suivent l'un de ces types de reponse :
+Quand vous appelez l'API Direct Charge, la réponse initiale indique comment le client doit continuer ou ce que votre backend doit attendre. La plupart des flux Direct Charge suivent l'un de ces types de réponse :
 
 - `processing` : flux de prompt USSD ou STK
-- `redirect` : flux de finalisation heberge par le provider
-- `bankTransfer` : le client doit faire un virement vers les details de compte renvoyes
+- `redirect` : flux de finalisation hébergé par le provider
+- `bankTransfer` : le client doit faire un virement vers les détails de compte renvoyés
 - `pre-otp` : code client requis avant la requete
 
 ## 1) Flux processing, prompt USSD ou STK
 
-Le client recoit une demande d'autorisation sur son appareil mobile et confirme avec son PIN.
+Le client reçoit une demande d'autorisation sur son appareil mobile et confirme avec son PIN.
 
 ### Ce qui se passe
 
 1. Vous initiez le direct charge.
 2. Le provider envoie un STK push ou un prompt USSD au client.
 3. Le client autorise sur son appareil.
-4. La transaction reste en attente jusqu'a la reponse finale du provider.
+4. La transaction reste en attente jusqu'à la réponse finale du provider.
 
-### Comment le detecter
+### Comment le détecter
 
 `data.action` vaut `processing`.
 
@@ -43,11 +43,11 @@ Le client recoit une demande d'autorisation sur son appareil mobile et confirme 
 }
 ```
 
-### Traitement cote marchand
+### Traitement côté marchand
 
-- Affichez un etat en attente au client.
+- Affichez un état en attente au client.
 - Ne livrez pas sur la reponse initiale.
-- Attendez le webhook ou verifiez par reference.
+- Attendez le webhook ou vérifiez par référence.
 
 ## 2) Flux redirect
 
@@ -56,13 +56,13 @@ Le provider renvoie un lien ; le client doit terminer le paiement sur la page ou
 ### Ce qui se passe
 
 1. Vous initiez le direct charge.
-2. L'API repond avec une URL de redirection.
+2. L'API répond avec une URL de redirection.
 3. Le client finalise le paiement sur le canal du provider.
 4. Le client peut ensuite revenir vers votre application ou votre site.
 
-### Comment le detecter
+### Comment le détecter
 
-`data.action` vaut `redirect` et l'URL se trouve generalement dans `data.data.link`.
+`data.action` vaut `redirect` et l'URL se trouve généralement dans `data.data.link`.
 
 ```json
 {
@@ -86,27 +86,27 @@ Le provider renvoie un lien ; le client doit terminer le paiement sur la page ou
 }
 ```
 
-### Traitement cote marchand
+### Traitement côté marchand
 
 - Redirigez l'utilisateur vers `data.data.link`.
-- Au retour, verifiez toujours le statut final cote serveur.
-- Ne marquez jamais le paiement comme reussi uniquement sur la redirection.
+- Au retour, vérifiez toujours le statut final côté serveur.
+- Ne marquez jamais le paiement comme réussi uniquement sur la redirection.
 
 ## 3) Flux bank transfer
 
-Payfonte renvoie les details d'un compte bancaire ; le client doit effectuer un virement bancaire pour finaliser le paiement.
+Payfonte renvoie les détails d'un compte bancaire ; le client doit effectuer un virement bancaire pour finaliser le paiement.
 
 ### Ce qui se passe
 
 1. Vous initiez le direct charge avec un provider bank transfer.
-2. L'API repond avec les details du compte pour le paiement client.
-3. Vous affichez les details du compte au client.
+2. L'API répond avec les détails du compte pour le paiement client.
+3. Vous affichez les détails du compte au client.
 4. Le client envoie le virement depuis son application bancaire ou son canal bancaire.
-5. La transaction reste en attente jusqu'a la confirmation du provider.
+5. La transaction reste en attente jusqu'à la confirmation du provider.
 
-### Comment le detecter
+### Comment le détecter
 
-`data.action` vaut `bankTransfer`. Les details de compte sont renvoyes dans `data.data`.
+`data.action` vaut `bankTransfer`. Les détails de compte sont renvoyés dans `data.data`.
 
 ```json
 {
@@ -134,32 +134,32 @@ Payfonte renvoie les details d'un compte bancaire ; le client doit effectuer un 
 }
 ```
 
-### Traitement cote marchand
+### Traitement côté marchand
 
-- Affichez clairement les details de compte renvoyes au client.
+- Affichez clairement les détails de compte renvoyés au client.
 - Incluez le nom de la banque, le numero de compte, le nom du compte, le montant, la reference et l'expiration quand ils sont presents.
-- Gardez le paiement en attente jusqu'a confirmation du statut final par webhook ou verification.
+- Gardez le paiement en attente jusqu'à confirmation du statut final par webhook ou vérification.
 - Ne livrez pas uniquement sur la base d'une preuve de virement.
 
 ## 4) Flux pre-OTP
 
-Certains providers demandent au client de generer un code provider ou OTP avant l'envoi de la requete de debit.
+Certains providers demandent au client de générer un code provider ou OTP avant l'envoi de la requête de débit.
 
 ### Ce qui se passe
 
-1. Le client genere un code via l'USSD du provider.
+1. Le client génère un code via l'USSD du provider.
 2. Le client partage ce code avec le marchand.
 3. Le marchand envoie `customerInput.customerCode`.
 4. Le provider traite le debit.
 
-### Codes USSD frequents
+### Codes USSD fréquents
 
 - Orange Ivory Coast : `#144*82#`
 - Orange Senegal : `#144#391#`
 - Orange Burkina Faso : `*144*4*6*Amount*PIN#`
 - Orange Mali : `#144#37#`
 
-### Exemple de requete
+### Exemple de requête
 
 ```json
 {
@@ -175,37 +175,37 @@ Certains providers demandent au client de generer un code provider ou OTP avant 
 }
 ```
 
-### Traitement cote marchand
+### Traitement côté marchand
 
 - Collectez explicitement l'OTP ou le code client.
 - Validez son format avant l'appel API.
-- Continuez ensuite avec le flux normal de finalisation via webhook ou verification.
+- Continuez ensuite avec le flux normal de finalisation via webhook ou vérification.
 
-## Resume de decision des flux
+## Résumé de décision des flux
 
 | Action | Etape suivante pour le client | Etape suivante pour le marchand |
 | --- | --- | --- |
-| `processing` | Approuver sur l'appareil, USSD ou STK | Attendre le webhook ou la verification |
-| `redirect` | Finaliser le paiement sur la page provider | Rediriger puis attendre le webhook ou la verification |
-| `bankTransfer` | Virer le montant vers les details de compte renvoyes | Afficher les details de compte puis attendre le webhook ou la verification |
-| Mode de requete `pre-otp` | Generer et partager le code d'abord | Envoyer le code dans `customerInput.customerCode` |
+| `processing` | Approuver sur l'appareil, USSD ou STK | Attendre le webhook ou la vérification |
+| `redirect` | Finaliser le paiement sur la page provider | Rediriger puis attendre le webhook ou la vérification |
+| `bankTransfer` | Virer le montant vers les détails de compte renvoyés | Afficher les détails de compte puis attendre le webhook ou la vérification |
+| Mode de requête `pre-otp` | Générer et partager le code d'abord | Envoyer le code dans `customerInput.customerCode` |
 
-## Regles importantes
+## Règles importantes
 
 <Warning>
-  Les valeurs de montant doivent etre des entiers en sous-unites. Les decimales ne sont pas prises en charge.
+  Les valeurs de montant doivent être des entiers en sous-unités. Les décimales ne sont pas prises en charge.
 </Warning>
 
-Voir [Specification des montants](/fr/guides/introductions/amount-specification).
+Voir [Spécification des montants](/fr/guides/introductions/amount-specification).
 
-## Documentation associee
+## Documentation associée
 
 <CardGroup cols={3}>
   <Card title="API Direct Charge" icon="bolt" href="/fr/guides/collections/direct-charge-api">
-    Utilisation des endpoints et definition des champs de requete.
+    Utilisation des endpoints et définition des champs de requête.
   </Card>
   <Card title="Exemples de payloads" icon="code" href="/fr/guides/collections/direct-charge/examples">
-    Modeles de payloads specifiques aux providers.
+    Modèles de payloads spécifiques aux providers.
   </Card>
   <Card title="Webhooks" icon="bell" href="/fr/guides/collections/webhook">
     Confirmez le resultat final de la transaction de maniere asynchrone.

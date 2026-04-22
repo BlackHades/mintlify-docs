@@ -19,21 +19,29 @@ Notre plateforme d'orchestration de paiement pour l'Afrique fournit tout ce qu'i
     Utilisez vos contrats MNO existants là où vos tarifs sont meilleurs, ou tirez parti des partenariats directs de Payfonte. Notre approche multi-PSP vous permet de combiner les deux pour optimiser couverture et coût sur tous vos marchés.
   </Accordion>
 
-  <Accordion title="💰 Efficacité de coût" icon="piggy-bank">
-    Éliminez le coût de développement et de maintenance des intégrations individuelles de mobile money. Plus besoin de développer vous-même MTN MoMo, M-Pesa ou Airtel Money : nous gérons l'infrastructure.
-  </Accordion>
+<Accordion title="💰 Efficacité de coût" icon="piggy-bank">
+  Éliminez le coût de développement et de maintenance des intégrations
+  individuelles de mobile money. Plus besoin de développer vous-même MTN MoMo,
+  M-Pesa ou Airtel Money : nous gérons l'infrastructure.
+</Accordion>
 
-  <Accordion title="⚡ Routage intelligent" icon="route">
-    Notre technologie de routage intelligent fournit du failover automatique et des rails de secours pour maximiser le taux de succès des transactions. Le moteur de routage sélectionne le meilleur chemin pour chaque paiement.
-  </Accordion>
+<Accordion title="⚡ Routage intelligent" icon="route">
+  Notre technologie de routage intelligent fournit du failover automatique et
+  des rails de secours pour maximiser le taux de succès des transactions. Le
+  moteur de routage sélectionne le meilleur chemin pour chaque paiement.
+</Accordion>
 
-  <Accordion title="📊 Dashboard unifié" icon="table-columns">
-    Un seul dashboard pour tous les marchés, moyens de paiement et MNO. Gérez l'ensemble de vos opérations, du reporting temps réel au rapprochement financier.
-  </Accordion>
+<Accordion title="📊 Dashboard unifié" icon="table-columns">
+  Un seul dashboard pour tous les marchés, moyens de paiement et MNO. Gérez
+  l'ensemble de vos opérations, du reporting temps réel au rapprochement
+  financier.
+</Accordion>
 
-  <Accordion title="🔄 Rapprochement intelligent" icon="arrows-rotate">
-    Le moteur de rapprochement intégré garantit une résolution à 100 % vers un état final. Aucune transaction manquante ni bloquée, chaque paiement aboutit à un statut définitif.
-  </Accordion>
+<Accordion title="🔄 Rapprochement intelligent" icon="arrows-rotate">
+  Le moteur de rapprochement intégré garantit une résolution à 100 % vers un
+  état final. Aucune transaction manquante ni bloquée, chaque paiement aboutit à
+  un statut définitif.
+</Accordion>
 
   <Accordion title="🎨 Solutions en marque blanche" icon="palette">
     Pages de checkout entièrement personnalisables avec votre identité visuelle, ou infrastructure de paiement complète pour les fintechs qui construisent leur propre solution.
@@ -56,6 +64,7 @@ Payfonte propose deux grandes offres afin de répondre à différents modèles d
     - Checkout et dashboard en marque blanche
     - Accès API complet
     - Règles de routage personnalisées
+
   </Card>
 
   <Card title="Payment Aggregation" icon="layer-group">
@@ -67,6 +76,7 @@ Payfonte propose deux grandes offres afin de répondre à différents modèles d
     - Tarifs MNO pré-négociés
     - Onboarding simplifié
     - Conformité gérée
+
   </Card>
 </CardGroup>
 
@@ -82,7 +92,7 @@ Mettez-vous en route en trois étapes simples :
   </Step>
 
   <Step title="Récupérer vos identifiants API">
-    Ouvrez `Settings -> API Keys/Webhooks` dans votre dashboard pour récupérer `client-id` et `client-secret`.
+    Ouvrez `Settings -> Security ->  API Keys and Webhooks` dans votre dashboard pour récupérer `client-id` et `client-secret`.
   </Step>
 
   <Step title="Faire votre premier appel API">
@@ -105,11 +115,14 @@ Mettez-vous en route en trois étapes simples :
         }
       }'
     ```
+
   </Step>
 </Steps>
 
 <Note>
-  Prêt pour la production ? Terminez le processus KYB via notre [formulaire d'onboarding](https://form.jotform.com/240038360690048) puis passez en live sous 1 à 5 jours ouvrés.
+  Prêt pour la production ? Terminez le processus KYB via notre [formulaire
+  d'onboarding](https://form.jotform.com/240038360690048) puis passez en live
+  sous 1 à 5 jours ouvrés.
 </Note>
 
 ---
@@ -118,12 +131,12 @@ Mettez-vous en route en trois étapes simples :
 
 Payfonte prend en charge de nombreux moyens de paiement locaux en Afrique via son agrégateur mobile money :
 
-| Catégorie | Providers |
-|----------|-----------|
-| Mobile Money API | MTN MoMo, Orange Money, Airtel Money, M-Pesa, Wave, Moov, Togocel, Halopesa |
-| Virements bancaires | Virements bancaires directs, Nigeria, Kenya, Afrique du Sud |
-| Cartes | Visa, Mastercard via des gateways partenaires |
-| Portefeuilles | Opay, PalmPay, OPay Wallet |
+| Catégorie           | Providers                                                                   |
+| ------------------- | --------------------------------------------------------------------------- |
+| Mobile Money API    | MTN MoMo, Orange Money, Airtel Money, M-Pesa, Wave, Moov, Togocel, Halopesa |
+| Virements bancaires | Virements bancaires directs, Nigeria, Kenya, Afrique du Sud                 |
+| Cartes              | Visa, Mastercard via des gateways partenaires                               |
+| Portefeuilles       | Opay, PalmPay, OPay Wallet                                                  |
 
 Nos intégrations mobile money couvrent notamment :
 
@@ -134,10 +147,18 @@ Nos intégrations mobile money couvrent notamment :
 - Orange Money, Moov et d'autres providers régionaux
 
 <CardGroup cols={2}>
-  <Card title="Voir tous les providers" icon="list" href="/fr/guides/introductions/supported-providers">
+  <Card
+    title="Voir tous les providers"
+    icon="list"
+    href="/fr/guides/introductions/supported-providers"
+  >
     Liste complète des moyens de paiement alternatifs pris en charge par pays
   </Card>
-  <Card title="Spécification des montants" icon="hashtag" href="/fr/guides/introductions/amount-specification">
+  <Card
+    title="Spécification des montants"
+    icon="hashtag"
+    href="/fr/guides/introductions/amount-specification"
+  >
     Règles de formatage des montants, valeurs entières en sous-unités uniquement
   </Card>
 </CardGroup>
@@ -151,7 +172,8 @@ Nos intégrations mobile money couvrent notamment :
     Conformité complète au standard PCI DSS
   </Card>
   <Card title="Scans ASV trimestriels" icon="magnifying-glass">
-    Évaluations de vulnérabilité externes réalisées par des consultants certifiés
+    Évaluations de vulnérabilité externes réalisées par des consultants
+    certifiés
   </Card>
   <Card title="Chiffrement de bout en bout" icon="lock">
     Toutes les données sont chiffrées en transit et au repos
@@ -169,10 +191,18 @@ Nos intégrations mobile money couvrent notamment :
   <Card title="Référence API" icon="code" href="/fr/api-reference/introduction">
     Documentation API complète
   </Card>
-  <Card title="Contacter le support" icon="headset" href="mailto:support@payfonte.com">
+  <Card
+    title="Contacter le support"
+    icon="headset"
+    href="mailto:support@payfonte.com"
+  >
     support@payfonte.com
   </Card>
-  <Card title="Réserver une démo" icon="calendar" href="https://calendly.com/marc-payfonte/30min">
-    Planifier une visite guidée
+  <Card
+    title="Réserver une démo"
+    icon="calendar"
+    href="https://calendly.com/marc-payfonte/30min"
+  >
+    Planifier une démonstration
   </Card>
 </CardGroup>

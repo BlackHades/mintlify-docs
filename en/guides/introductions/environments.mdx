@@ -8,13 +8,14 @@ icon: "server"
 
 Payfonte provides two environments for integration:
 
-| Environment | Use Case | API Base URL | Dashboard |
-| --- | --- | --- | --- |
-| Sandbox | Development and QA | `https://sandbox-api.payfonte.com` | https://sandbox-app.payfonte.com |
-| Production | Live transactions | `https://api.payfonte.com` | https://app.payfonte.com |
+| Environment | Use Case           | API Base URL                       | Dashboard                        |
+| ----------- | ------------------ | ---------------------------------- | -------------------------------- |
+| Sandbox     | Development and QA | `https://sandbox-api.payfonte.com` | https://sandbox-app.payfonte.com |
+| Production  | Live transactions  | `https://api.payfonte.com`         | https://app.payfonte.com         |
 
 <Warning>
-  Do not use live provider credentials in sandbox. Keep sandbox and production credentials separate.
+  Do not use live provider credentials in sandbox. Keep sandbox and production
+  credentials separate.
 </Warning>
 
 ## API Authentication
@@ -26,7 +27,7 @@ All API calls require these headers:
 
 You can find both in:
 
-`Dashboard -> Settings -> API Keys/Webhooks`
+`Dashboard -> Settings -> Security ->  API Keys and Webhooks`
 
 ## Sandbox Example
 
@@ -59,7 +60,7 @@ curl --location 'https://sandbox-api.payfonte.com/payments/v1/checkouts' \
     Replace sandbox `client-id`/`client-secret` with production keys and update your API base URL to `https://api.payfonte.com`.
   </Step>
   <Step title="Verify webhooks in production">
-    Confirm your production webhook URL is configured under `Settings -> API Keys/Webhooks`.
+    Confirm your production webhook URL is configured under `Settings -> Security ->  API Keys and Webhooks`.
   </Step>
 </Steps>
 
@@ -86,12 +87,12 @@ const config = isProduction
   ? {
       baseUrl: process.env.PAYFONTE_PRODUCTION_BASE_URL,
       clientId: process.env.PAYFONTE_PRODUCTION_CLIENT_ID,
-      clientSecret: process.env.PAYFONTE_PRODUCTION_CLIENT_SECRET
+      clientSecret: process.env.PAYFONTE_PRODUCTION_CLIENT_SECRET,
     }
   : {
       baseUrl: process.env.PAYFONTE_SANDBOX_BASE_URL,
       clientId: process.env.PAYFONTE_SANDBOX_CLIENT_ID,
-      clientSecret: process.env.PAYFONTE_SANDBOX_CLIENT_SECRET
+      clientSecret: process.env.PAYFONTE_SANDBOX_CLIENT_SECRET,
     };
 ```
 

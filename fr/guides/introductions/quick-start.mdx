@@ -18,7 +18,10 @@ Avant de commencer, vous aurez besoin de :
 
 <Check>Un compte sandbox Payfonte</Check>
 <Check>Vos identifiants API, `client-id` et `client-secret`</Check>
-<Check>Un outil pour faire des requêtes HTTP, cURL, Postman ou votre langage préféré</Check>
+<Check>
+  Un outil pour effectuer des requêtes HTTP (cURL, Postman ou votre langage
+  préféré)
+</Check>
 
 ---
 
@@ -29,9 +32,9 @@ Avant de commencer, vous aurez besoin de :
     Ouvrez [sandbox-app.payfonte.com](https://sandbox-app.payfonte.com) et créez un compte gratuit.
   </Step>
 
-  <Step title="Vérifier votre e-mail">
-    Consultez votre boîte de réception puis confirmez votre adresse e-mail.
-  </Step>
+<Step title="Vérifier votre e-mail">
+  Consultez votre boîte de réception puis confirmez votre adresse e-mail.
+</Step>
 
   <Step title="Compléter votre profil">
     Renseignez les informations de base de votre entreprise pour activer le compte.
@@ -43,7 +46,10 @@ Avant de commencer, vous aurez besoin de :
 ## Étape 2 : récupérer vos identifiants API
 
 <Frame>
-  <img src="/images/api-keys-location.png" alt="Emplacement des clés API dans le dashboard" />
+  <img
+    src="/images/api-keys-location.png"
+    alt="Emplacement des clés API dans le dashboard"
+  />
 </Frame>
 
 <Steps>
@@ -51,9 +57,9 @@ Avant de commencer, vous aurez besoin de :
     Connectez-vous à votre dashboard puis cliquez sur Settings dans la barre latérale.
   </Step>
 
-  <Step title="Aller vers API Keys/Webhooks">
-    Ouvrez l'onglet API Keys/Webhooks.
-  </Step>
+<Step title="Aller vers API Keys/Webhooks">
+  Ouvrez l'onglet API Keys/Webhooks.
+</Step>
 
   <Step title="Copier vos identifiants">
     Vous y trouverez :
@@ -63,7 +69,8 @@ Avant de commencer, vous aurez besoin de :
 </Steps>
 
 <Danger>
-  N'exposez jamais votre `client-secret` dans du code côté client ni dans des dépôts publics. Faites toujours les appels API depuis votre backend.
+  N'exposez jamais votre `client-secret` dans du code côté client ni dans des
+  dépôts publics. Faites toujours les appels API depuis votre backend.
 </Danger>
 
 ---
@@ -74,12 +81,13 @@ Les webhooks notifient votre serveur en temps réel lors des changements de stat
 
 <Steps>
   <Step title="Aller vers API Keys/Webhooks">
-    Dans Settings -> API Keys/Webhooks, trouvez la section de configuration webhook.
+    Dans Settings -> Security ->  API Keys and Webhooks, trouvez la section de configuration webhook.
   </Step>
 
-  <Step title="Saisir votre URL de callback">
-    Ajoutez l'URL de votre endpoint webhook, par exemple `https://yoursite.com/payfonte/webhook`.
-  </Step>
+<Step title="Saisir votre URL de callback">
+  Ajoutez l'URL de votre endpoint webhook, par exemple
+  `https://yoursite.com/payfonte/webhook`.
+</Step>
 
   <Step title="Enregistrer la configuration">
     Cliquez sur Save. Vous pourrez tester le webhook via une transaction de test.
@@ -103,6 +111,7 @@ Les webhooks notifient votre serveur en temps réel lors des changements de stat
     <Note>
       Les transactions sandbox sont simulées et n'impliquent pas de fonds réels.
     </Note>
+
   </Tab>
 
   <Tab title="Production, live">
@@ -117,6 +126,7 @@ Les webhooks notifient votre serveur en temps réel lors des changements de stat
     <Danger>
       Les transactions en production impliquent de l'argent réel. Testez soigneusement en sandbox avant de basculer.
     </Danger>
+
   </Tab>
 </Tabs>
 
@@ -147,29 +157,29 @@ curl --location 'https://sandbox-api.payfonte.com/payments/v1/checkouts' \
 ```
 
 ```javascript Node.js
-const axios = require('axios');
+const axios = require("axios");
 
 const response = await axios.post(
-  'https://sandbox-api.payfonte.com/payments/v1/checkouts',
+  "https://sandbox-api.payfonte.com/payments/v1/checkouts",
   {
-    reference: 'order-001',
+    reference: "order-001",
     amount: 5000,
-    currency: 'NGN',
-    country: 'NG',
-    redirectURL: 'https://yoursite.com/payment/success',
-    webhook: 'https://yoursite.com/payfonte/webhook',
+    currency: "NGN",
+    country: "NG",
+    redirectURL: "https://yoursite.com/payment/success",
+    webhook: "https://yoursite.com/payfonte/webhook",
     user: {
-      email: 'customer@example.com',
-      phoneNumber: '08012345678'
-    }
+      email: "customer@example.com",
+      phoneNumber: "08012345678",
+    },
   },
   {
     headers: {
-      'client-id': 'YOUR_CLIENT_ID',
-      'client-secret': 'YOUR_CLIENT_SECRET',
-      'Content-Type': 'application/json'
-    }
-  }
+      "client-id": "YOUR_CLIENT_ID",
+      "client-secret": "YOUR_CLIENT_SECRET",
+      "Content-Type": "application/json",
+    },
+  },
 );
 
 console.log(response.data);
@@ -235,6 +245,7 @@ curl_close($curl);
 
 echo $response;
 ```
+
 </CodeGroup>
 
 ### Réponse attendue
@@ -293,7 +304,8 @@ Lorsque le statut du paiement change, nous envoyons une requête POST à votre U
 ```
 
 <Tip>
-  Vérifiez toujours les signatures webhook et confirmez le statut de transaction via l'API avant d'exécuter une commande.
+  Vérifiez toujours les signatures webhook et confirmez le statut de transaction
+  via l'API avant d'exécuter une commande.
 </Tip>
 
 ---
@@ -301,13 +313,25 @@ Lorsque le statut du paiement change, nous envoyons une requête POST à votre U
 ## Et ensuite ?
 
 <CardGroup cols={2}>
-  <Card title="Explorer les méthodes de collecte" icon="credit-card" href="/fr/guides/collections/overview">
+  <Card
+    title="Explorer les méthodes de collecte"
+    icon="credit-card"
+    href="/fr/guides/collections/overview"
+  >
     Découvrez les intégrations inline, standard et direct charge
   </Card>
-  <Card title="Configurer les décaissements" icon="money-bill-transfer" href="/fr/guides/disbursements/overview">
+  <Card
+    title="Configurer les décaissements"
+    icon="money-bill-transfer"
+    href="/fr/guides/disbursements/overview"
+  >
     Envoyez des fonds vers le mobile money et les comptes bancaires
   </Card>
-  <Card title="Voir tous les providers" icon="globe-africa" href="/fr/guides/introductions/supported-providers">
+  <Card
+    title="Voir tous les providers"
+    icon="globe-africa"
+    href="/fr/guides/introductions/supported-providers"
+  >
     Consultez les moyens de paiement disponibles par pays
   </Card>
   <Card title="Référence API" icon="code" href="/fr/api-reference/introduction">
@@ -324,12 +348,15 @@ Lorsque le statut du paiement change, nous envoyons une requête POST à votre U
     Vérifiez `client-id` et `client-secret`. Assurez-vous d'utiliser les identifiants sandbox avec l'URL sandbox.
   </Accordion>
 
-  <Accordion title="Combinaison pays ou devise invalide">
-    Assurez-vous que la devise correspond bien au pays. Par exemple, le Nigeria utilise NGN et le Kenya KES. Consultez [Providers pris en charge](/fr/guides/introductions/supported-providers) pour les combinaisons valides.
-  </Accordion>
+<Accordion title="Combinaison pays ou devise invalide">
+  Assurez-vous que la devise correspond bien au pays. Par exemple, le Nigeria
+  utilise NGN et le Kenya KES. Consultez [Providers pris en
+  charge](/fr/guides/introductions/supported-providers) pour les combinaisons
+  valides.
+</Accordion>
 
   <Accordion title="Le webhook ne reçoit aucun événement">
-    Vérifiez que votre URL webhook est accessible publiquement et renvoie un statut 200. Consultez aussi les logs de votre serveur.
+    Vérifiez que votre URL Webhooks est accessible publiquement et renvoie un statut 200. Consultez aussi les logs de votre serveur.
   </Accordion>
 </AccordionGroup>
 

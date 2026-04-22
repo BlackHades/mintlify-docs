@@ -13,7 +13,7 @@ Utilisez toujours la sandbox pour valider votre intégration avant de passer en 
     URL de base API : `https://sandbox-api.payfonte.com`
   </Step>
   <Step title="Utiliser les identifiants sandbox">
-    Récupérez votre `client-id` et `client-secret` depuis `Settings -> API Keys/Webhooks` sur [sandbox-app.payfonte.com](https://sandbox-app.payfonte.com).
+    Récupérez votre `client-id` et `client-secret` depuis `Settings -> Security ->  API Keys and Webhooks` sur [sandbox-app.payfonte.com](https://sandbox-app.payfonte.com).
   </Step>
   <Step title="Définir un endpoint webhook">
     Configurez une URL de callback de test afin de valider les mises à jour de transaction asynchrones.
@@ -27,39 +27,44 @@ Utilisez toujours la sandbox pour valider votre intégration avant de passer en 
     Confirmez que toutes les requêtes incluent `client-id` et `client-secret`.
   </Card>
   <Card title="Format de montant" icon="hashtag">
-    Vérifiez que vous envoyez uniquement des valeurs entières en sous-unités. Les décimales ne sont pas prises en charge.
+    Vérifiez que vous envoyez uniquement des valeurs entières en sous-unités.
+    Les décimales ne sont pas prises en charge.
   </Card>
   <Card title="Cycle de vie des statuts" icon="repeat">
-    Validez le passage des états pending ou processing vers les états finaux `success` ou `failed` dans votre logique métier.
+    Validez le passage des états pending ou processing vers les états finaux
+    `success` ou `failed` dans votre logique métier.
   </Card>
   <Card title="Traitement des webhooks" icon="bell">
-    Vérifiez la validation de signature, les retries, l'idempotence et les temps de réponse.
+    Vérifiez la validation de signature, les retries, l'idempotence et les temps
+    de réponse.
   </Card>
 </CardGroup>
 
 ## Scénarios de test principaux
 
-| Scénario | Résultat attendu |
-| --- | --- |
-| Requête de débit valide | Réponse `201` avec référence de transaction |
-| Identifiants invalides | Échec d'authentification, `401` ou `403` |
-| Envoi d'un montant décimal | Échec de validation ou provider |
-| Référence dupliquée | `409` avec `DuplicateTransactionReference` |
-| Slug provider invalide | Erreur avec `InvalidProvider` |
-| Livraison webhook | Callback reçu puis traité une seule fois |
+| Scénario                   | Résultat attendu                            |
+| -------------------------- | ------------------------------------------- |
+| Requête de débit valide    | Réponse `201` avec référence de transaction |
+| Identifiants invalides     | Échec d'authentification, `401` ou `403`    |
+| Envoi d'un montant décimal | Échec de validation ou provider             |
+| Référence dupliquée        | `409` avec `DuplicateTransactionReference`  |
+| Slug provider invalide     | Erreur avec `InvalidProvider`               |
+| Livraison webhook          | Callback reçu puis traité une seule fois    |
 
 ## Simuler des résultats success, failed et pending
 
 Pour les collectes comme pour les décaissements en sandbox, vous pouvez contrôler le résultat attendu en modifiant le numéro mobile money utilisé dans la requête.
 
-| Motif du numéro | Résultat attendu | Utilisation |
-| --- | --- | --- |
-| Tout autre numéro | `success` | La sandbox considère tous les autres numéros comme des transactions réussies |
-| Numéro se terminant par `000000` | `failed` | La sandbox force l'échec de la transaction |
-| Numéro se terminant par `111111` | `pending` | La sandbox maintient la transaction en attente pour tester le traitement asynchrone |
+| Motif du numéro                  | Résultat attendu | Utilisation                                                                         |
+| -------------------------------- | ---------------- | ----------------------------------------------------------------------------------- |
+| Tout autre numéro                | `success`        | La sandbox considère tous les autres numéros comme des transactions réussies        |
+| Numéro se terminant par `000000` | `failed`         | La sandbox force l'échec de la transaction                                          |
+| Numéro se terminant par `111111` | `pending`        | La sandbox maintient la transaction en attente pour tester le traitement asynchrone |
 
 <Info>
-  Appliquez cette règle au champ de numéro que vous envoyez pour la transaction. Pour les collectes, utilisez le numéro mobile money du client. Pour les décaissements, utilisez le numéro du bénéficiaire.
+  Appliquez cette règle au champ de numéro que vous envoyez pour la transaction.
+  Pour les collectes, utilisez le numéro mobile money du client. Pour les
+  décaissements, utilisez le numéro du bénéficiaire.
 </Info>
 
 Lorsque vous testez des flux pending, ne traitez pas la réponse API initiale comme définitive. Attendez les mises à jour webhook ou vérifiez le statut depuis votre backend avant de marquer la transaction comme `success` ou `failed`.
@@ -78,6 +83,7 @@ Lorsque vous testez des flux pending, ne traitez pas la réponse API initiale co
        - Phone Number : `7701101040`, généralement prérempli
        - PIN : `1791`
     4. Utilisez l'OTP généré sur la plateforme de paiement.
+
   </Accordion>
   <Accordion title="Safaricom / Equitel / T-Kash / Telkom" icon="phone">
     - Exemple success : `254700123456`
@@ -112,13 +118,21 @@ curl --location 'https://sandbox-api.payfonte.com/payments/v1/checkouts' \
 ## Documentation associée
 
 <CardGroup cols={3}>
-  <Card title="Environnements" icon="server" href="/fr/guides/introductions/environments">
+  <Card
+    title="Environnements"
+    icon="server"
+    href="/fr/guides/introductions/environments"
+  >
     URL sandbox et production, ainsi que configuration des identifiants.
   </Card>
   <Card title="Webhooks" icon="bell" href="/fr/guides/collections/webhook">
     Vérifiez les payloads de callback et la validation de signature.
   </Card>
-  <Card title="Codes d'erreur" icon="triangle-exclamation" href="/fr/guides/introductions/error-codes">
+  <Card
+    title="Codes d'erreur"
+    icon="triangle-exclamation"
+    href="/fr/guides/introductions/error-codes"
+  >
     Dépannez rapidement les requêtes de test échouées.
   </Card>
 </CardGroup>

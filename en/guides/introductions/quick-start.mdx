@@ -1,11 +1,11 @@
 ---
-title: 'Quick Start'
-description: 'Get up and running with Payfonte payment orchestration API in under 10 minutes. Integrate MTN MoMo API, M-Pesa API, and other Africa mobile money API providers.'
-icon: 'bolt'
+title: "Quick Start"
+description: "Get up and running with Payfonte payment orchestration API in under 10 minutes. Integrate MTN MoMo API, M-Pesa API, and other Africa mobile money API providers."
+icon: "bolt"
 seo:
-  title: 'Quick Start - Payment Orchestration API Integration | Africa Mobile Money API'
-  description: 'Step-by-step guide to integrate Payfonte payment orchestration API. Connect to MTN MoMo API, M-Pesa API, Airtel Money API, Wave Money integration in minutes.'
-  keywords: 'payment orchestration API, Africa mobile money API, MTN MoMo API integration, M-Pesa API, mobile money integration Africa, quick start guide'
+  title: "Quick Start - Payment Orchestration API Integration | Africa Mobile Money API"
+  description: "Step-by-step guide to integrate Payfonte payment orchestration API. Connect to MTN MoMo API, M-Pesa API, Airtel Money API, Wave Money integration in minutes."
+  keywords: "payment orchestration API, Africa mobile money API, MTN MoMo API integration, M-Pesa API, mobile money integration Africa, quick start guide"
 ---
 
 This guide will help you make your first payment orchestration API call to Payfonte in under 10 minutes. By the end, you'll have integrated Africa mobile money API capabilities including MTN MoMo API, M-Pesa API, and other local payment methods in Africa.
@@ -18,7 +18,9 @@ Before you begin, you'll need:
 
 <Check>A Payfonte sandbox account</Check>
 <Check>Your API credentials (client-id and client-secret)</Check>
-<Check>A tool to make HTTP requests (cURL, Postman, or your preferred language)</Check>
+<Check>
+  A tool to make HTTP requests (cURL, Postman, or your preferred language)
+</Check>
 
 ---
 
@@ -29,9 +31,9 @@ Before you begin, you'll need:
     Go to [sandbox-app.payfonte.com](https://sandbox-app.payfonte.com) and create a free account.
   </Step>
 
-  <Step title="Verify Email">
-    Check your inbox and verify your email address.
-  </Step>
+<Step title="Verify Email">
+  Check your inbox and verify your email address.
+</Step>
 
   <Step title="Complete Profile">
     Fill in basic business information to activate your account.
@@ -43,7 +45,10 @@ Before you begin, you'll need:
 ## Step 2: Get Your API Credentials
 
 <Frame>
-  <img src="/images/api-keys-location.png" alt="API Keys Location in Dashboard" />
+  <img
+    src="/images/api-keys-location.png"
+    alt="API Keys Location in Dashboard"
+  />
 </Frame>
 
 <Steps>
@@ -51,9 +56,7 @@ Before you begin, you'll need:
     Log into your dashboard and click on Settings in the sidebar.
   </Step>
 
-  <Step title="Go to API Keys/Webhooks">
-    Click on API Keys/Webhooks tab.
-  </Step>
+<Step title="Go to API Keys/Webhooks">Click on API Keys/Webhooks tab.</Step>
 
   <Step title="Copy Your Credentials">
     You'll find your:
@@ -63,7 +66,8 @@ Before you begin, you'll need:
 </Steps>
 
 <Danger>
-  Never expose your `client-secret` in client-side code or public repositories. Always make API calls from your backend server.
+  Never expose your `client-secret` in client-side code or public repositories.
+  Always make API calls from your backend server.
 </Danger>
 
 ---
@@ -74,12 +78,12 @@ Webhooks notify your server about transaction status changes in real-time.
 
 <Steps>
   <Step title="Go to API Keys/Webhooks">
-    In Settings → API Keys/Webhooks, find the webhook configuration section.
+    In Settings -> Security ->  API Keys and Webhooks, find the webhook configuration section.
   </Step>
 
-  <Step title="Enter Your Callback URL">
-    Add your webhook endpoint URL (e.g., `https://yoursite.com/payfonte/webhook`).
-  </Step>
+<Step title="Enter Your Callback URL">
+  Add your webhook endpoint URL (e.g., `https://yoursite.com/payfonte/webhook`).
+</Step>
 
   <Step title="Save Configuration">
     Click Save. You can test the webhook using our test transaction feature.
@@ -103,6 +107,7 @@ Webhooks notify your server about transaction status changes in real-time.
     <Note>
       Sandbox transactions are simulated and do not involve real money.
     </Note>
+
   </Tab>
 
   <Tab title="Production (Live)">
@@ -117,6 +122,7 @@ Webhooks notify your server about transaction status changes in real-time.
     <Danger>
       Production transactions involve real money. Ensure thorough testing in sandbox first.
     </Danger>
+
   </Tab>
 </Tabs>
 
@@ -147,29 +153,29 @@ curl --location 'https://sandbox-api.payfonte.com/payments/v1/checkouts' \
 ```
 
 ```javascript Node.js
-const axios = require('axios');
+const axios = require("axios");
 
 const response = await axios.post(
-  'https://sandbox-api.payfonte.com/payments/v1/checkouts',
+  "https://sandbox-api.payfonte.com/payments/v1/checkouts",
   {
-    reference: 'order-001',
+    reference: "order-001",
     amount: 5000,
-    currency: 'NGN',
-    country: 'NG',
-    redirectURL: 'https://yoursite.com/payment/success',
-    webhook: 'https://yoursite.com/payfonte/webhook',
+    currency: "NGN",
+    country: "NG",
+    redirectURL: "https://yoursite.com/payment/success",
+    webhook: "https://yoursite.com/payfonte/webhook",
     user: {
-      email: 'customer@example.com',
-      phoneNumber: '08012345678'
-    }
+      email: "customer@example.com",
+      phoneNumber: "08012345678",
+    },
   },
   {
     headers: {
-      'client-id': 'YOUR_CLIENT_ID',
-      'client-secret': 'YOUR_CLIENT_SECRET',
-      'Content-Type': 'application/json'
-    }
-  }
+      "client-id": "YOUR_CLIENT_ID",
+      "client-secret": "YOUR_CLIENT_SECRET",
+      "Content-Type": "application/json",
+    },
+  },
 );
 
 console.log(response.data);
@@ -235,6 +241,7 @@ curl_close($curl);
 
 echo $response;
 ```
+
 </CodeGroup>
 
 ### Expected Response
@@ -265,6 +272,7 @@ window.location.href = response.data.checkoutUrl;
 ```
 
 The customer will:
+
 1. See available payment methods for their country
 2. Select their preferred method (e.g., MTN MoMo, Bank Transfer)
 3. Complete the payment
@@ -292,7 +300,8 @@ When the payment status changes, we'll send a POST request to your webhook URL:
 ```
 
 <Tip>
-  Always verify webhook signatures and confirm transaction status via API before fulfilling orders.
+  Always verify webhook signatures and confirm transaction status via API before
+  fulfilling orders.
 </Tip>
 
 ---
@@ -300,13 +309,25 @@ When the payment status changes, we'll send a POST request to your webhook URL:
 ## What's Next?
 
 <CardGroup cols={2}>
-  <Card title="Explore Collection Methods" icon="credit-card" href="/en/guides/collections/overview">
+  <Card
+    title="Explore Collection Methods"
+    icon="credit-card"
+    href="/en/guides/collections/overview"
+  >
     Learn about inline, standard, and direct charge integrations
   </Card>
-  <Card title="Set Up Disbursements" icon="money-bill-transfer" href="/en/guides/disbursements/overview">
+  <Card
+    title="Set Up Disbursements"
+    icon="money-bill-transfer"
+    href="/en/guides/disbursements/overview"
+  >
     Send disbursements to mobile money and bank accounts
   </Card>
-  <Card title="View All Providers" icon="globe-africa" href="/en/guides/introductions/supported-providers">
+  <Card
+    title="View All Providers"
+    icon="globe-africa"
+    href="/en/guides/introductions/supported-providers"
+  >
     See available payment methods by country
   </Card>
   <Card title="API Reference" icon="code" href="/en/api-reference/introduction">
@@ -323,15 +344,22 @@ When the payment status changes, we'll send a POST request to your webhook URL:
     Double-check your `client-id` and `client-secret`. Ensure you're using sandbox credentials with the sandbox URL.
   </Accordion>
 
-  <Accordion title="Invalid Country/Currency Combination">
-    Make sure the currency matches the country. For example, Nigeria uses NGN, Kenya uses KES. See [Supported Providers](/en/guides/introductions/supported-providers) for valid combinations.
-  </Accordion>
+<Accordion title="Invalid Country/Currency Combination">
+  Make sure the currency matches the country. For example, Nigeria uses NGN,
+  Kenya uses KES. See [Supported
+  Providers](/en/guides/introductions/supported-providers) for valid
+  combinations.
+</Accordion>
 
   <Accordion title="Webhook Not Receiving Events">
     Ensure your webhook URL is publicly accessible and returns a 200 status code. Check your server logs for incoming requests.
   </Accordion>
 </AccordionGroup>
 
-<Card title="Still need help?" icon="headset" href="mailto:support@payfonte.com">
+<Card
+  title="Still need help?"
+  icon="headset"
+  href="mailto:support@payfonte.com"
+>
   Contact our support team at support@payfonte.com
 </Card>

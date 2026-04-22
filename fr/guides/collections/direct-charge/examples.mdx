@@ -1,10 +1,10 @@
 ---
 title: "Exemples de payloads Direct Charge"
-description: "Payloads Direct Charge prets a l'emploi pour les flux mobile money standards, Bank Transfer et Orange pre-OTP."
+description: "Payloads Direct Charge prêts à l'emploi pour les flux mobile money standards, Bank Transfer et Orange pre-OTP."
 icon: "code"
 ---
 
-Utilisez ces modeles de payload lorsque vous appelez :
+Utilisez ces modèles de payload lorsque vous appelez :
 
 `POST /payments/v1/payments/direct-charge`
 
@@ -25,7 +25,7 @@ Utilisez ces modeles de payload lorsque vous appelez :
 
 ## Payload Orange pre-OTP
 
-Les providers Orange peuvent exiger un code genere par le client avant l'envoi de la requete.
+Les providers Orange peuvent exiger un code généré par le client avant l'envoi de la requête.
 
 ### Indications USSD
 
@@ -33,7 +33,7 @@ Les providers Orange peuvent exiger un code genere par le client avant l'envoi d
 - Orange Mali : `#144#77#`
 - Orange Burkina Faso : `*144*4*6*amount#`
 
-En sandbox, n'importe quel code aleatoire a 6 chiffres peut etre utilise pour les tests.
+En sandbox, n'importe quel code aléatoire à 6 chiffres peut être utilisé pour les tests.
 
 ```json
 {
@@ -49,46 +49,46 @@ En sandbox, n'importe quel code aleatoire a 6 chiffres peut etre utilise pour le
 }
 ```
 
-## Reference des champs
+## Référence des champs
 
 | Champ | Type | Requis | Notes |
 | --- | --- | --- | --- |
-| `reference` | string | Recommande | Doit etre unique par transaction |
-| `amount` | integer | Oui | Valeur en sous-unites uniquement |
+| `reference` | string | Recommandé | Doit être unique par transaction |
+| `amount` | integer | Oui | Valeur en sous-unités uniquement |
 | `provider` | string | Oui | Utilisez le slug provenant des providers pris en charge |
-| `webhook` | string | Non | Surcharge de webhook par requete |
+| `webhook` | string | Non | Surcharge de webhook par requête |
 | `narration` | string | Non | Note de transaction lisible par humain |
-| `customerInput.phoneNumber` | string | Generalement oui | Format selon le provider et le pays |
-| `customerInput.network` | string | Specifique au provider | Requis pour certains flux comme le bank transfer |
-| `customerInput.customerCode` | string | Specifique au provider | Requis pour les flux Orange pre-OTP |
+| `customerInput.phoneNumber` | string | Généralement oui | Format selon le provider et le pays |
+| `customerInput.network` | string | Spécifique au provider | Requis pour certains flux comme le bank transfer |
+| `customerInput.customerCode` | string | Spécifique au provider | Requis pour les flux Orange pre-OTP |
 
 ## Checklist de validation avant l'envoi
 
 <AccordionGroup>
   <Accordion title="Format du montant" icon="hashtag" defaultOpen>
-    Envoyez uniquement des montants entiers en sous-unites. Les decimales ne sont pas prises en charge.
+    Envoyez uniquement des montants entiers en sous-unités. Les décimales ne sont pas prises en charge.
   </Accordion>
   <Accordion title="Slug provider" icon="tag">
     Assurez-vous que `provider` correspond a un slug valide de [Providers pris en charge](/fr/guides/introductions/supported-providers).
   </Accordion>
   <Accordion title="Champs `customerInput` requis" icon="list-check">
-    Confirmez la presence des champs specifiques au provider, comme `phoneNumber`, `network` ou `customerCode`, avant d'envoyer la requete.
+    Confirmez la présence des champs spécifiques au provider, comme `phoneNumber`, `network` ou `customerCode`, avant d'envoyer la requête.
   </Accordion>
   <Accordion title="Unicite de la reference" icon="fingerprint">
-    Generez des references uniques afin d'eviter les erreurs de transaction en double.
+    Générez des références uniques afin d'éviter les erreurs de transaction en double.
   </Accordion>
 </AccordionGroup>
 
-## Documentation associee
+## Documentation associée
 
 <CardGroup cols={3}>
   <Card title="API Direct Charge" icon="bolt" href="/fr/guides/collections/direct-charge-api">
-    Flux de requete et gestion des reponses et actions.
+    Flux de requête et gestion des réponses et actions.
   </Card>
   <Card title="Flux de traitement" icon="bolt" href="/fr/guides/collections/direct-charge/response-types">
     Comportements processing, redirect, bankTransfer et pre-OTP.
   </Card>
   <Card title="Specification des montants" icon="hashtag" href="/fr/guides/introductions/amount-specification">
-    Regles de conversion en sous-unites pour tous les montants.
+    Règles de conversion en sous-unités pour tous les montants.
   </Card>
 </CardGroup>

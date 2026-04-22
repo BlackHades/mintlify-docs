@@ -1,17 +1,17 @@
 ---
-title: "Introduction a l'API"
-description: "Vue d'ensemble des domaines de l'API Payfonte, de l'authentification, des URL de base et des flux d'endpoints issus de la specification OpenAPI 3.1."
+title: "Introduction à l'API"
+description: "Vue d'ensemble des domaines de l'API Payfonte, de l'authentification, des URL de base et des flux d'endpoints issus de la spécification OpenAPI 3.1."
 ---
 
 ## Vue d'ensemble
 
-Payfonte fournit des API pour trois capacites principales :
+Payfonte fournit des API pour trois capacités principales :
 
-- **Collectes** : creer des checkouts de paiement, lancer des direct charges et verifier les transactions.
-- **Decaissements** : valider des beneficiaires, demander des virements, lister les decaissements et verifier leur statut.
-- **Portefeuilles** : recuperer les soldes de portefeuille par `country` et `currency`.
+- **Collectes** : créer des checkouts de paiement, lancer des direct charges et vérifier les transactions.
+- **Décaissements** : valider des bénéficiaires, demander des virements, lister les décaissements et vérifier leur statut.
+- **Portefeuilles** : récupérer les soldes de portefeuille par `country` et `currency`.
 
-La specification API definit **11 operations** sur les flux de collecte, de decaissement et de portefeuille.
+La spécification API définit **11 opérations** sur les flux de collecte, de décaissement et de portefeuille.
 
 ## URL de base
 
@@ -24,7 +24,7 @@ Utilisez le bon serveur selon votre environnement :
 
 ## Authentification
 
-Tous les endpoints exigent deux en-tetes de cle API, et non une authentification Bearer :
+Tous les endpoints exigent deux en-têtes de clé API, et non une authentification Bearer :
 
 - `client-id`
 - `client-secret`
@@ -39,57 +39,57 @@ curl --request GET 'https://sandbox-api.payfonte.com/payments/v1/checkouts' \
 
 ### Collectes
 
-| Methode | Chemin | Objet |
+| Méthode | Chemin | Objet |
 | --- | --- | --- |
-| `POST` | `/payments/v1/checkouts` | Generer une URL de checkout |
-| `GET` | `/payments/v1/checkouts` | Lister les transactions de checkout (paginees) |
+| `POST` | `/payments/v1/checkouts` | Générer une URL de checkout |
+| `GET` | `/payments/v1/checkouts` | Lister les transactions de checkout (paginées) |
 | `POST` | `/payments/v1/payments/direct-charge` | Lancer un direct charge via un provider |
-| `GET` | `/payments/v1/payments/direct-charge/{provider}/properties` | Recuperer les proprietes specifiques au provider |
-| `GET` | `/payments/v1/payments/verify/{reference}` | Verifier une transaction de collecte |
+| `GET` | `/payments/v1/payments/direct-charge/{provider}/properties` | Récupérer les propriétés spécifiques au provider |
+| `GET` | `/payments/v1/payments/verify/{reference}` | Vérifier une transaction de collecte |
 
-### Decaissements
+### Décaissements
 
-| Methode | Chemin | Objet |
+| Méthode | Chemin | Objet |
 | --- | --- | --- |
-| `GET` | `/billing/v1/transfer-recipients/{provider}/properties` | Recuperer les proprietes du beneficiaire/provider |
-| `POST` | `/billing/v1/transfer-recipients/validate` | Valider un beneficiaire de virement |
-| `POST` | `/billing/v1/disbursements` | Demander un decaissement |
-| `GET` | `/billing/v1/disbursements` | Lister les transactions de decaissement (paginees) |
-| `GET` | `/billing/v1/disbursements/verify/{reference}` | Verifier le statut d'un decaissement |
+| `GET` | `/billing/v1/transfer-recipients/{provider}/properties` | Récupérer les propriétés du bénéficiaire/provider |
+| `POST` | `/billing/v1/transfer-recipients/validate` | Valider un bénéficiaire de virement |
+| `POST` | `/billing/v1/disbursements` | Demander un décaissement |
+| `GET` | `/billing/v1/disbursements` | Lister les transactions de décaissement (paginées) |
+| `GET` | `/billing/v1/disbursements/verify/{reference}` | Vérifier le statut d'un décaissement |
 
 ### Portefeuilles
 
-| Methode | Chemin | Objet |
+| Méthode | Chemin | Objet |
 | --- | --- | --- |
-| `GET` | `/billing/v1/wallets` | Recuperer les soldes des portefeuilles |
+| `GET` | `/billing/v1/wallets` | Récupérer les soldes des portefeuilles |
 
-## Conventions communes des requetes
+## Conventions communes des requêtes
 
-- **Format des montants** : envoyez `amount` dans la plus petite denomination (sous-unite).
+- **Format des montants** : envoyez `amount` dans la plus petite dénomination (sous-unité).
   Exemple : `100.00` USD s'envoie sous la forme `10000`.
-- **Devise** : code sur 3 caracteres (par exemple `NGN`, `USD`, `XOF`, `XAF`).
-- **Pays** : code sur 2 caracteres (par exemple `NG`, `US`, `CI`, `SN`).
-- **Reference** : la reference generee par le marchand doit etre unique par requete.
-- **Surcharge webhook** : certains endpoints acceptent une URL de webhook specifique a la requete.
+- **Devise** : code sur 3 caractères (par exemple `NGN`, `USD`, `XOF`, `XAF`).
+- **Pays** : code sur 2 caractères (par exemple `NG`, `US`, `CI`, `SN`).
+- **Référence** : la référence générée par le marchand doit être unique par requête.
+- **Surcharge webhook** : certains endpoints acceptent une URL de webhook spécifique à la requête.
 
 ## Flux habituels
 
 ### Flux de collecte
 
-1. Creez un checkout (`POST /payments/v1/checkouts`) ou lancez un direct charge (`POST /payments/v1/payments/direct-charge`).
-2. Recevez les mises a jour via webhook et/ou interrogez la verification (`GET /payments/v1/payments/verify/{reference}`).
+1. Créez un checkout (`POST /payments/v1/checkouts`) ou lancez un direct charge (`POST /payments/v1/payments/direct-charge`).
+2. Recevez les mises à jour via webhook et/ou interrogez la vérification (`GET /payments/v1/payments/verify/{reference}`).
 3. Utilisez l'endpoint de liste (`GET /payments/v1/checkouts`) pour le rapprochement et le reporting.
 
-### Flux de decaissement
+### Flux de décaissement
 
-1. Recuperez les proprietes du provider si necessaire puis validez le beneficiaire (`POST /billing/v1/transfer-recipients/validate`).
-2. Demandez le decaissement (`POST /billing/v1/disbursements`).
-3. Verifiez le statut (`GET /billing/v1/disbursements/verify/{reference}`) et rapprochez avec l'endpoint de liste (`GET /billing/v1/disbursements`).
+1. Récupérez les propriétés du provider si nécessaire puis validez le bénéficiaire (`POST /billing/v1/transfer-recipients/validate`).
+2. Demandez le décaissement (`POST /billing/v1/disbursements`).
+3. Vérifiez le statut (`GET /billing/v1/disbursements/verify/{reference}`) et rapprochez avec l'endpoint de liste (`GET /billing/v1/disbursements`).
 
 ## Pagination et filtres
 
 Les endpoints de liste prennent en charge la pagination avec `page` et `limit`.
-Les endpoints de liste de collecte et de decaissement prennent aussi en charge les filtres de date (`dateFrom`, `dateTo`).
+Les endpoints de liste de collecte et de décaissement prennent aussi en charge les filtres de date (`dateFrom`, `dateTo`).
 
 ## Support
 
