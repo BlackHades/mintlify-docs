@@ -41,7 +41,7 @@ Le Direct Charge permet a votre backend d'initier un paiement directement avec u
     Appelez l'endpoint direct-charge avec `provider`, `amount` et `customerInput`.
   </Step>
   <Step title="Traiter l'action puis confirmer le statut final">
-    Utilisez l'action de la reponse (`processing`, `redirect`, `bank-transfer`) puis finalisez selon le webhook ou la verification.
+    Utilisez l'action de la reponse (`processing`, `redirect`, `bankTransfer`) puis finalisez selon le webhook ou la verification.
   </Step>
 </Steps>
 
@@ -126,7 +126,7 @@ Exemple de reponse :
     Redirigez le client vers l'URL du provider, souvent dans `data.data.link`.
     Ne considerez jamais la simple fin de la redirection comme un succes de paiement.
   </Accordion>
-  <Accordion title="bank-transfer" icon="building">
+  <Accordion title="bankTransfer" icon="building">
     Affichez les instructions de virement renvoyees, comme le nom du compte, le numero, le montant et l'expiration.
     Attendez le webhook ou la verification avant de marquer le paiement comme reussi.
   </Accordion>
@@ -153,8 +153,8 @@ Pour l'execution de commande, appuyez-vous sur :
 ## Documentation associee
 
 <CardGroup cols={3}>
-  <Card title="Flux Direct Charge" icon="mobile-screen-button" href="/fr/guides/collections/direct-charge/mobile-money">
-    Comprendre les modeles `processing`, `redirect` et pre-OTP.
+  <Card title="Flux de traitement" icon="bolt" href="/fr/guides/collections/direct-charge/response-types">
+    Comprendre les modeles `processing`, `redirect`, `bankTransfer` et pre-OTP.
   </Card>
   <Card title="Exemples de payloads" icon="code" href="/fr/guides/collections/direct-charge/examples">
     Copier des exemples de requetes specifiques par provider.

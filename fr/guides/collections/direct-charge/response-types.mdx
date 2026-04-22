@@ -1,13 +1,14 @@
 ---
-title: "Flux Mobile Money Direct Charge"
-description: "Comprenez le comportement du direct charge mobile money selon les flux processing, redirect et pre-OTP."
-icon: "mobile-screen-button"
+title: "Flux de traitement Direct Charge"
+description: "Comprenez les types de reponse Direct Charge pour les flux processing, redirect, bankTransfer et pre-OTP."
+icon: "bolt"
 ---
 
-Quand vous appelez l'API Direct Charge pour le mobile money, le comportement du provider suit en general l'un de ces trois modeles :
+Quand vous appelez l'API Direct Charge, la reponse initiale indique comment le client doit continuer ou ce que votre backend doit attendre. La plupart des flux Direct Charge suivent l'un de ces types de reponse :
 
 - `processing` : flux de prompt USSD ou STK
 - `redirect` : flux de finalisation heberge par le provider
+- `bankTransfer` : le client doit faire un virement vers les details de compte renvoyes
 - `pre-otp` : code client requis avant la requete
 
 ## 1) Flux processing, prompt USSD ou STK
@@ -91,7 +92,56 @@ Le provider renvoie un lien ; le client doit terminer le paiement sur la page ou
 - Au retour, verifiez toujours le statut final cote serveur.
 - Ne marquez jamais le paiement comme reussi uniquement sur la redirection.
 
-## 3) Flux pre-OTP
+## 3) Flux bank transfer
+
+Payfonte renvoie les details d'un compte bancaire ; le client doit effectuer un virement bancaire pour finaliser le paiement.
+
+### Ce qui se passe
+
+1. Vous initiez le direct charge avec un provider bank transfer.
+2. L'API repond avec les details du compte pour le paiement client.
+3. Vous affichez les details du compte au client.
+4. Le client envoie le virement depuis son application bancaire ou son canal bancaire.
+5. La transaction reste en attente jusqu'a la confirmation du provider.
+
+### Comment le detecter
+
+`data.action` vaut `bankTransfer`. Les details de compte sont renvoyes dans `data.data`.
+
+```json
+{
+  "data": {
+    "action": "bankTransfer",
+    "sessionId": "BT-20250812043010-9D7M2",
+    "provider": "bank-transfer-nigeria",
+    "channel": "bank-transfer",
+    "reference": "ORDER-1002",
+    "amount": 10000,
+    "status": "pending",
+    "charge": 100,
+    "statusDescription": "Awaiting customer bank transfer",
+    "data": {
+      "accountName": "PAYFONTE / Karis Clothing",
+      "accountNumber": "0123456789",
+      "bankName": "Wema Bank",
+      "bankCode": "035",
+      "amount": 10000,
+      "reference": "ORDER-1002",
+      "expiresAt": "2025-08-12T04:45:10.000Z"
+    }
+  },
+  "statusCode": 201
+}
+```
+
+### Traitement cote marchand
+
+- Affichez clairement les details de compte renvoyes au client.
+- Incluez le nom de la banque, le numero de compte, le nom du compte, le montant, la reference et l'expiration quand ils sont presents.
+- Gardez le paiement en attente jusqu'a confirmation du statut final par webhook ou verification.
+- Ne livrez pas uniquement sur la base d'une preuve de virement.
+
+## 4) Flux pre-OTP
 
 Certains providers demandent au client de generer un code provider ou OTP avant l'envoi de la requete de debit.
 
@@ -137,6 +187,7 @@ Certains providers demandent au client de generer un code provider ou OTP avant 
 | --- | --- | --- |
 | `processing` | Approuver sur l'appareil, USSD ou STK | Attendre le webhook ou la verification |
 | `redirect` | Finaliser le paiement sur la page provider | Rediriger puis attendre le webhook ou la verification |
+| `bankTransfer` | Virer le montant vers les details de compte renvoyes | Afficher les details de compte puis attendre le webhook ou la verification |
 | Mode de requete `pre-otp` | Generer et partager le code d'abord | Envoyer le code dans `customerInput.customerCode` |
 
 ## Regles importantes

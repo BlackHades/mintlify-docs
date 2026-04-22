@@ -1,13 +1,14 @@
 ---
-title: "Direct Charge Mobile Money Flows"
-description: "Understand how mobile money direct charge behaves across processing, redirect, and pre-OTP provider flows."
-icon: "mobile-screen-button"
+title: "Direct Charge Processing Flows"
+description: "Understand Direct Charge response types across processing, redirect, bankTransfer, and pre-OTP provider flows."
+icon: "bolt"
 ---
 
-When you call the Direct Charge API for mobile money, provider behavior usually follows one of three flow types:
+When you call the Direct Charge API, the initial response tells you how the customer should continue or what your backend should wait for. Most Direct Charge flows follow one of these response types:
 
 - `processing` (USSD/STK prompt flow)
 - `redirect` (provider-hosted completion flow)
+- `bankTransfer` (customer must transfer to returned account details)
 - `pre-otp` (customer code required before request)
 
 ## 1) Processing Flow (USSD/STK Prompt)
@@ -91,7 +92,56 @@ Provider returns a link; customer must complete payment on provider page/app.
 - On return, still verify final status server-side.
 - Do not mark success from redirect alone.
 
-## 3) Pre-OTP Flow
+## 3) Bank Transfer Flow
+
+Payfonte returns bank account details; the customer must make a bank transfer to complete payment.
+
+### What happens
+
+1. You initiate direct charge with a bank transfer provider.
+2. API responds with account details for the customer payment.
+3. You display the account details to the customer.
+4. Customer sends the transfer from their banking app or bank channel.
+5. Transaction remains pending until provider confirmation.
+
+### How to detect
+
+`data.action` is `bankTransfer`. Account details are returned in `data.data`.
+
+```json
+{
+  "data": {
+    "action": "bankTransfer",
+    "sessionId": "BT-20250812043010-9D7M2",
+    "provider": "bank-transfer-nigeria",
+    "channel": "bank-transfer",
+    "reference": "ORDER-1002",
+    "amount": 10000,
+    "status": "pending",
+    "charge": 100,
+    "statusDescription": "Awaiting customer bank transfer",
+    "data": {
+      "accountName": "PAYFONTE / Karis Clothing",
+      "accountNumber": "0123456789",
+      "bankName": "Wema Bank",
+      "bankCode": "035",
+      "amount": 10000,
+      "reference": "ORDER-1002",
+      "expiresAt": "2025-08-12T04:45:10.000Z"
+    }
+  },
+  "statusCode": 201
+}
+```
+
+### Merchant handling
+
+- Display the returned account details clearly to the customer.
+- Include bank name, account number, account name, amount, reference, and expiry when present.
+- Keep the payment pending until webhook or verification confirms final status.
+- Do not fulfill on proof of transfer alone.
+
+## 4) Pre-OTP Flow
 
 Some providers require customer to generate a provider code/OTP before you send the charge request.
 
@@ -137,6 +187,7 @@ Some providers require customer to generate a provider code/OTP before you send 
 | --- | --- | --- |
 | `processing` | Approve on device (USSD/STK) | Wait for webhook/verify |
 | `redirect` | Complete payment on provider page | Redirect + wait for webhook/verify |
+| `bankTransfer` | Transfer to the returned account details | Display account details + wait for webhook/verify |
 | `pre-otp` request pattern | Generate and share code first | Send code in `customerInput.customerCode` |
 
 ## Important Rules

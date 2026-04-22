@@ -57,6 +57,34 @@ Sample response:
 
 ### Bank Transfer
 
+Fetch the bank list before validating a bank transfer recipient so you can send a valid `bankCode`.
+
+Endpoint: `GET /billing/v1/transfer-recipients/{provider}/properties`
+
+```bash
+curl --location 'https://sandbox-api.payfonte.com/billing/v1/transfer-recipients/bank-transfer-nigeria/properties' \
+  --header 'client-id: <client-id>' \
+  --header 'client-secret: <client-secret>'
+```
+
+Sample response:
+
+```json
+{
+  "statusCode": 200,
+  "data": {
+    "banks": [
+      {
+        "bankName": "Access Bank",
+        "bankCode": "044"
+      }
+    ]
+  }
+}
+```
+
+Use the selected `bankCode` when validating the recipient.
+
 Endpoint: `POST /billing/v1/transfer-recipients/validate`
 
 ```json
@@ -66,7 +94,7 @@ Endpoint: `POST /billing/v1/transfer-recipients/validate`
   "country": "NG",
   "account": {
     "accountNumber": "0123456789",
-    "bankCode": "948"
+    "bankCode": "044"
   }
 }
 ```
@@ -83,13 +111,13 @@ Sample response:
     "channel": "bank-transfer",
     "currency": "NGN",
     "country": "NG",
-    "accountLabel": "Momo Payment Service Bank | AAA BBB XXX | 2215381176",
+    "accountLabel": "Access Bank | AAA BBB XXX | 0123456789",
     "account": {
       "name": "AAA BBB XXX",
       "accountName": "AAA BBB XXX",
-      "accountNumber": "2215381176",
-      "bankCode": "948",
-      "bankName": "Momo Payment Service Bank"
+      "accountNumber": "0123456789",
+      "bankCode": "044",
+      "bankName": "Access Bank"
     },
     "status": "pending",
     "id": "6834655cdc1370231451f2a5"

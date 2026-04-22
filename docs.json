@@ -76,7 +76,7 @@
                     "icon": "bolt",
                     "pages": [
                       "en/guides/collections/direct-charge-api",
-                      "en/guides/collections/direct-charge/mobile-money",
+                      "en/guides/collections/direct-charge/response-types",
                       "en/guides/collections/direct-charge/examples"
                     ]
                   }
@@ -164,7 +164,7 @@
                     "icon": "bolt",
                     "pages": [
                       "fr/guides/collections/direct-charge-api",
-                      "fr/guides/collections/direct-charge/mobile-money",
+                      "fr/guides/collections/direct-charge/response-types",
                       "fr/guides/collections/direct-charge/examples"
                     ]
                   }

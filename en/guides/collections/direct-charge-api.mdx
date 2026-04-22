@@ -42,7 +42,7 @@ Direct Charge allows your backend to initiate payment directly with a provider, 
     Call the direct-charge endpoint with `provider`, `amount`, and `customerInput`.
   </Step>
   <Step title="Handle action + confirm final status">
-    Use response action (`processing`, `redirect`, `bank-transfer`) and finalize based on webhook/verification.
+    Use response action (`processing`, `redirect`, `bankTransfer`) and finalize based on webhook/verification.
   </Step>
 </Steps>
 
@@ -127,7 +127,7 @@ Sample response:
     Redirect customer to provider URL (usually at `data.data.link`).
     Do not treat redirect completion alone as payment success.
   </Accordion>
-  <Accordion title="bank-transfer" icon="building">
+  <Accordion title="bankTransfer" icon="building">
     Display returned bank transfer instructions (account name/number, amount, expiry).
     Wait for webhook/verification before marking success.
   </Accordion>
@@ -154,8 +154,8 @@ For order fulfillment, rely on:
 ## Related Docs
 
 <CardGroup cols={3}>
-  <Card title="Direct Charge Flows" icon="mobile-screen-button" href="/en/guides/collections/direct-charge/mobile-money">
-    Understand `processing`, `redirect`, and pre-OTP patterns.
+  <Card title="Processing Flows" icon="bolt" href="/en/guides/collections/direct-charge/response-types">
+    Understand `processing`, `redirect`, `bankTransfer`, and pre-OTP patterns.
   </Card>
   <Card title="Example Payloads" icon="code" href="/en/guides/collections/direct-charge/examples">
     Copy provider-specific request examples.
