@@ -12,10 +12,10 @@ Utilisez les webhooks comme source de vérité principale pour les résultats de
 
 Si vous limitez le trafic entrant par adresse IP, ajoutez à votre liste d'autorisation les adresses IP source Payfonte suivantes pour chaque environnement.
 
-| Environnement | Adresses IP source |
-| --- | --- |
-| Production | `49.13.133.127`, `49.13.229.61`, `194.32.79.135` |
-| Sandbox | `49.12.224.228`, `49.13.224.113` |
+| Environnement | Adresses IP source                               |
+| ------------- | ------------------------------------------------ |
+| Production    | `49.13.133.127`, `49.13.229.61`, `194.32.79.135` |
+| Sandbox       | `49.12.224.228`, `49.13.224.113`                 |
 
 ## Pourquoi les webhooks sont importants
 
@@ -24,27 +24,29 @@ Si vous limitez le trafic entrant par adresse IP, ajoutez à votre liste d'autor
     Recevez l'état des paiements sans interroger chaque transaction en continu.
   </Card>
   <Card title="Finalisation fiable" icon="check-double">
-    Confirmez le statut final, `success` ou `failed`, avant d'exécuter une commande.
+    Confirmez le statut final, `success` ou `failed`, avant d'exécuter une
+    commande.
   </Card>
   <Card title="Sécurité opérationnelle" icon="repeat">
-    Gérez les retries de manière idempotente pour éviter les doubles traitements.
+    Gérez les retries de manière idempotente pour éviter les doubles
+    traitements.
   </Card>
 </CardGroup>
 
 ## Champs du payload webhook
 
-| Champ | Description |
-| --- | --- |
-| `event` | Type d'événement, par exemple `payment.completed` ou `payment.failed` |
-| `clientId` | Votre identifiant client Payfonte |
-| `data.status` | Statut de transaction, `success`, `failed` ou `pending` |
-| `data.reference` | Référence de transaction Payfonte |
-| `data.externalReference` | Référence fournie par le marchand, si elle existe |
-| `data.amount` | Montant de transaction en sous-unités |
-| `data.charge` | Frais de transaction appliqués |
-| `data.provider` | Slug ou nom du provider utilisé |
-| `data.channel` | Canal de paiement, par exemple `card` ou `mobile-money` |
-| `data.user` | Métadonnées client, nom, e-mail, téléphone si disponibles |
+| Champ                    | Description                                                           |
+| ------------------------ | --------------------------------------------------------------------- |
+| `event`                  | Type d'événement, par exemple `payment.completed` ou `payment.failed` |
+| `clientId`               | Votre identifiant client Payfonte                                     |
+| `data.status`            | Statut de transaction, `success`, `failed` ou `pending`               |
+| `data.reference`         | Référence de transaction Payfonte                                     |
+| `data.externalReference` | Référence fournie par le marchand, si elle existe                     |
+| `data.amount`            | Montant de transaction en sous-unités                                 |
+| `data.charge`            | Frais de transaction appliqués                                        |
+| `data.provider`          | Slug ou nom du provider utilisé                                       |
+| `data.channel`           | Canal de paiement, par exemple `card` ou `mobile-money`               |
+| `data.user`              | Métadonnées client, nom, e-mail, téléphone si disponibles             |
 
 Exemple de payload :
 
@@ -79,7 +81,7 @@ Chaque webhook inclut :
 - L'en-tête `x-webhook-signature`
 - Une valeur HMAC `sha512` du corps brut de la requête, signée avec votre `client-secret`
 
-Utilisez votre `client-secret` depuis `Settings -> API Keys/Webhooks`.
+Utilisez votre `client-secret` depuis `Settings -> Security ->  API Keys and Webhooks`.
 
 ```javascript
 const crypto = require("crypto");
@@ -87,7 +89,10 @@ const crypto = require("crypto");
 app.post("/payfonte/webhook", express.json({ type: "*/*" }), (req, res) => {
   const secret = process.env.PAYFONTE_CLIENT_SECRET;
   const payload = JSON.stringify(req.body);
-  const expected = crypto.createHmac("sha512", secret).update(payload).digest("hex");
+  const expected = crypto
+    .createHmac("sha512", secret)
+    .update(payload)
+    .digest("hex");
   const received = req.headers["x-webhook-signature"];
 
   if (expected !== received) {
@@ -111,13 +116,16 @@ app.post("/payfonte/webhook", express.json({ type: "*/*" }), (req, res) => {
     Retournez un HTTP `200` rapidement afin d'éviter des retries inutiles.
   </Step>
   <Step title="Détecter les doublons">
-    Utilisez `reference` + `status`, ou un identifiant de livraison si disponible, pour identifier les événements déjà traités.
+    Utilisez `reference` + `status`, ou un identifiant de livraison si
+    disponible, pour identifier les événements déjà traités.
   </Step>
   <Step title="Vérifier la transaction si nécessaire">
-    Pour les flux critiques, vérifiez le statut du paiement depuis votre backend avant la finalisation.
+    Pour les flux critiques, vérifiez le statut du paiement depuis votre backend
+    avant la finalisation.
   </Step>
   <Step title="Appliquer la transition d'état sans risque">
-    Garantissez que les actions métier, comme l'exécution de commande, ne s'exécutent qu'une fois par succès final.
+    Garantissez que les actions métier, comme l'exécution de commande, ne
+    s'exécutent qu'une fois par succès final.
   </Step>
 </Steps>
 
@@ -131,23 +139,35 @@ Payfonte utilise les URL webhook dans cet ordre :
 
 ## Problèmes fréquents
 
-| Problème | Cause probable | Correctif |
-| --- | --- | --- |
-| Traitement webhook en double | Pas de garde idempotente | Stockez `reference` + `status` déjà traités et ignorez les répétitions |
-| Signature invalide | Mauvais secret ou corps modifié | Utilisez le bon `client-secret` et hashez le corps exact reçu |
-| Mises à jour manquées | Timeout de l'endpoint ou réponse non 200 | Répondez vite avec `200` et déplacez la logique lourde vers un worker asynchrone |
-| Événements du mauvais environnement | Configuration sandbox et production mélangée | Utilisez les bons endpoints et identifiants pour chaque environnement |
+| Problème                            | Cause probable                               | Correctif                                                                        |
+| ----------------------------------- | -------------------------------------------- | -------------------------------------------------------------------------------- |
+| Traitement webhook en double        | Pas de garde idempotente                     | Stockez `reference` + `status` déjà traités et ignorez les répétitions           |
+| Signature invalide                  | Mauvais secret ou corps modifié              | Utilisez le bon `client-secret` et hashez le corps exact reçu                    |
+| Mises à jour manquées               | Timeout de l'endpoint ou réponse non 200     | Répondez vite avec `200` et déplacez la logique lourde vers un worker asynchrone |
+| Événements du mauvais environnement | Configuration sandbox et production mélangée | Utilisez les bons endpoints et identifiants pour chaque environnement            |
 
 ## Documentation associée
 
 <CardGroup cols={3}>
-  <Card title="Checkout standard" icon="arrow-up-right-from-square" href="/fr/guides/collections/standard">
+  <Card
+    title="Checkout standard"
+    icon="arrow-up-right-from-square"
+    href="/fr/guides/collections/standard"
+  >
     Flux par redirection avec finalisation webhook.
   </Card>
-  <Card title="API Direct Charge" icon="bolt" href="/fr/guides/collections/direct-charge-api">
+  <Card
+    title="API Direct Charge"
+    icon="bolt"
+    href="/fr/guides/collections/direct-charge-api"
+  >
     Flux de direct charge et gestion des actions.
   </Card>
-  <Card title="Autorisation" icon="key" href="/fr/guides/introductions/authorization">
+  <Card
+    title="Autorisation"
+    icon="key"
+    href="/fr/guides/introductions/authorization"
+  >
     Exigences sur les identifiants et les en-têtes.
   </Card>
 </CardGroup>

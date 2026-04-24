@@ -10,7 +10,8 @@ Every Payfonte API request is authenticated using two headers:
 - `client-secret`
 
 <Danger>
-  Never expose `client-secret` in frontend apps, mobile apps, browser storage, or public repositories.
+  Never expose `client-secret` in frontend apps, mobile apps, browser storage,
+  or public repositories.
 </Danger>
 
 ## Authentication Model
@@ -20,7 +21,8 @@ Every Payfonte API request is authenticated using two headers:
     Public identifier for your account and environment.
   </Card>
   <Card title="client-secret" icon="lock">
-    Secret key used to authorize requests. Store only on trusted backend systems.
+    Secret key used to authorize requests. Store only on trusted backend
+    systems.
   </Card>
   <Card title="Header-Based Auth" icon="server">
     Pass both credentials in request headers on every API call.
@@ -37,7 +39,7 @@ Every Payfonte API request is authenticated using two headers:
     Use [sandbox-app.payfonte.com](https://sandbox-app.payfonte.com) for testing or [app.payfonte.com](https://app.payfonte.com) for live operations.
   </Step>
   <Step title="Open API key settings">
-    Navigate to `Settings -> API Keys/Webhooks`.
+    Navigate to `Settings -> Security ->  API Keys and Webhooks`.
   </Step>
   <Step title="Copy credentials securely">
     Save your `client-id` and `client-secret` into server environment variables.
@@ -69,33 +71,44 @@ await fetch("https://sandbox-api.payfonte.com/payments/v1/checkouts", {
   headers: {
     "Content-Type": "application/json",
     "client-id": process.env.PAYFONTE_SANDBOX_CLIENT_ID,
-    "client-secret": process.env.PAYFONTE_SANDBOX_CLIENT_SECRET
+    "client-secret": process.env.PAYFONTE_SANDBOX_CLIENT_SECRET,
   },
   body: JSON.stringify({
     reference: "test-001",
     amount: 1000,
     currency: "NGN",
     country: "NG",
-    user: { phoneNumber: "08012345678" }
-  })
+    user: { phoneNumber: "08012345678" },
+  }),
 });
 ```
+
 </CodeGroup>
 
 ## Common Mistakes
 
 <AccordionGroup>
-  <Accordion title="Using production keys in sandbox" icon="triangle-exclamation">
-    Sandbox and production are separate environments. Use the matching base URL and matching credentials together.
+  <Accordion
+    title="Using production keys in sandbox"
+    icon="triangle-exclamation"
+  >
+    Sandbox and production are separate environments. Use the matching base URL
+    and matching credentials together.
   </Accordion>
-  <Accordion title="Placing client-secret in frontend code" icon="shield-halved">
-    Frontend code is public to end users. Keep all authenticated Payfonte API calls on your backend.
+  <Accordion
+    title="Placing client-secret in frontend code"
+    icon="shield-halved"
+  >
+    Frontend code is public to end users. Keep all authenticated Payfonte API
+    calls on your backend.
   </Accordion>
   <Accordion title="Forgetting required headers" icon="circle-info">
-    Requests without either `client-id` or `client-secret` will fail authentication.
+    Requests without either `client-id` or `client-secret` will fail
+    authentication.
   </Accordion>
   <Accordion title="Hardcoding secrets in source control" icon="code">
-    Always load credentials from environment variables or a secure secret manager.
+    Always load credentials from environment variables or a secure secret
+    manager.
   </Accordion>
 </AccordionGroup>
 
@@ -109,13 +122,25 @@ await fetch("https://sandbox-api.payfonte.com/payments/v1/checkouts", {
 ## Related Docs
 
 <CardGroup cols={3}>
-  <Card title="Environments" icon="server" href="/en/guides/introductions/environments">
+  <Card
+    title="Environments"
+    icon="server"
+    href="/en/guides/introductions/environments"
+  >
     Sandbox and production URL/key setup.
   </Card>
-  <Card title="Getting Started" icon="flag-checkered" href="/en/guides/introductions/getting-started">
+  <Card
+    title="Getting Started"
+    icon="flag-checkered"
+    href="/en/guides/introductions/getting-started"
+  >
     Make your first successful API call.
   </Card>
-  <Card title="API Reference" icon="file-code" href="/en/api-reference/introduction">
+  <Card
+    title="API Reference"
+    icon="file-code"
+    href="/en/api-reference/introduction"
+  >
     Full endpoint and schema details.
   </Card>
 </CardGroup>

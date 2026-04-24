@@ -1,12 +1,13 @@
 ---
-title: 'FAQ & Features Explained'
-description: 'Frequently asked questions about Africa payment orchestration, mobile money API integration, MTN MoMo API, M-Pesa API, Airtel Money API, and local payment methods in Africa.'
-icon: 'circle-question'
+title: "FAQ & Features Explained"
+description: "Frequently asked questions about Africa payment orchestration, mobile money API integration, MTN MoMo API, M-Pesa API, Airtel Money API, and local payment methods in Africa."
+icon: "circle-question"
 seo:
-  title: 'FAQ - Africa Payment Orchestration | Mobile Money API Integration Guide'
-  description: 'Learn about payment orchestration platform Africa, mobile money integration, MTN MoMo API, M-Pesa API, Wave Money integration, smart payment routing, and alternative payment methods APM.'
-  keywords: 'mobile money API, Africa mobile money API, MTN MoMo API integration, M-Pesa API, Airtel Money API, Wave Money integration, payment orchestration API, alternative payment methods APM, local payment methods Africa, mobile money payment aggregator'
+  title: "FAQ - Africa Payment Orchestration | Mobile Money API Integration Guide"
+  description: "Learn about payment orchestration platform Africa, mobile money integration, MTN MoMo API, M-Pesa API, Wave Money integration, smart payment routing, and alternative payment methods APM."
+  keywords: "mobile money API, Africa mobile money API, MTN MoMo API integration, M-Pesa API, Airtel Money API, Wave Money integration, payment orchestration API, alternative payment methods APM, local payment methods Africa, mobile money payment aggregator"
 ---
+
 Everything you need to know about Payfonte's payment orchestration platform Africa, mobile money API integration, and processing alternative payment methods (APM) across African markets.
 
 ---
@@ -30,19 +31,21 @@ Everything you need to know about Payfonte's payment orchestration platform Afri
     - Wave Money integration for Senegal, Ivory Coast, and more
 
     With one multi-PSP integration, you can process payments across all these methods and markets with smart payment routing Africa capabilities.
+
   </Accordion>
 
   <Accordion title="How do I get started with Payfonte?" icon="rocket">
     Getting started is simple:
 
     1. Create a Sandbox Account: Sign up at [sandbox-app.payfonte.com](https://sandbox-app.payfonte.com)
-    2. Get API Credentials: Navigate to Settings → API Keys/Webhooks in your dashboard
-    3. Set Up Webhooks: Configure your callback URL under Settings → API Keys/Webhooks
+    2. Get API Credentials: Navigate to Settings -> Security ->  API Keys and Webhooks in your dashboard
+    3. Set Up Webhooks: Configure your callback URL under Settings -> Security ->  API Keys and Webhooks
     4. Test Your Integration: Use our sandbox environment to test transactions
     5. Complete KYB: Submit documentation via our [KYB form](https://form.jotform.com/240038360690048)
     6. Go Live: Once approved, switch to production credentials
 
     Typical onboarding time: 1-5 business days after KYB submission.
+
   </Accordion>
 
   <Accordion title="What are the differences between Sandbox and Production?" icon="flask">
@@ -57,6 +60,7 @@ Everything you need to know about Payfonte's payment orchestration platform Afri
     <Warning>
       Important: Sandbox and Production are completely separate environments. Your sandbox configuration (API tokens, callback URLs, test data) does NOT carry over to production. You must reconfigure everything when going live.
     </Warning>
+
   </Accordion>
 
   <Accordion title="What KYB documents are required for onboarding?" icon="file-contract">
@@ -81,6 +85,7 @@ Everything you need to know about Payfonte's payment orchestration platform Afri
     <Tip>
       We offer relaxed KYB requirements compared to direct MNO integrations. Some merchants have completed onboarding in as little as 5 minutes for straightforward applications.
     </Tip>
+
   </Accordion>
 </AccordionGroup>
 
@@ -114,6 +119,7 @@ Everything you need to know about Payfonte's payment orchestration platform Afri
     ```
 
     The entire process typically takes 30-60 seconds from initiation to confirmation.
+
   </Accordion>
 
   <Accordion title="What is STK Push vs USSD?" icon="code">
@@ -141,6 +147,7 @@ Everything you need to know about Payfonte's payment orchestration platform Afri
     <Note>
       Payfonte's payment orchestration API automatically selects the appropriate authorization method based on the provider and country. You don't need to handle this logic—just call our API and we manage the mobile money integration Africa complexity.
     </Note>
+
   </Accordion>
 
   <Accordion title="What is the customer experience for mobile money payments?" icon="user">
@@ -168,6 +175,7 @@ Everything you need to know about Payfonte's payment orchestration platform Afri
     | Customer authorization | 10-30 seconds |
     | Confirmation callback | 1-3 seconds |
     | Total | 15-45 seconds |
+
   </Accordion>
 
   <Accordion title="What is Pre-Authorization for mobile money?" icon="lock">
@@ -186,6 +194,7 @@ Everything you need to know about Payfonte's payment orchestration platform Afri
     <Note>
       Pre-authorization availability depends on the specific MNO and market. Contact support for the latest supported configurations.
     </Note>
+
   </Accordion>
 </AccordionGroup>
 
@@ -211,6 +220,7 @@ Everything you need to know about Payfonte's payment orchestration platform Afri
     <Warning>
       Never fulfill orders based on `pending` or `processing` status. Always wait for a final status (`success`, `failed`, `expired`) before taking action.
     </Warning>
+
   </Accordion>
 
   <Accordion title="How does Payfonte ensure 100% final state resolution?" icon="check-double">
@@ -228,6 +238,7 @@ Everything you need to know about Payfonte's payment orchestration platform Afri
     <Tip>
       If you see a transaction stuck in "pending" on your dashboard, our reconciliation engine is already working to resolve it. Check back in 5-60 minutes, or contact support if it persists beyond 60 minutes.
     </Tip>
+
   </Accordion>
 
   <Accordion title="What are the timeout windows for different providers?" icon="clock">
@@ -242,6 +253,7 @@ Everything you need to know about Payfonte's payment orchestration platform Afri
     | Wave | 5 minutes | App-based confirmation |
 
     If a customer doesn't authorize within the timeout window, the transaction will be marked as `expired` and you'll receive a webhook notification.
+
   </Accordion>
 
   <Accordion title="How do I handle failed transactions?" icon="triangle-exclamation">
@@ -264,6 +276,7 @@ Everything you need to know about Payfonte's payment orchestration platform Afri
     - Offer retry option for retriable errors
     - Log all failed transactions for analysis
     - Contact support for persistent `SYSTEM_ERROR` issues
+
   </Accordion>
 </AccordionGroup>
 
@@ -276,7 +289,7 @@ Everything you need to know about Payfonte's payment orchestration platform Afri
     Webhooks notify your server about transaction status changes in real-time.
 
     Setup steps:
-    1. Go to Dashboard → Settings → API Keys/Webhooks
+    1. Go to Dashboard → Settings -> Security ->  API Keys and Webhooks
     2. Enter your webhook endpoint URL (e.g., `https://yoursite.com/payfonte/webhook`)
     3. Click Save
 
@@ -289,6 +302,7 @@ Everything you need to know about Payfonte's payment orchestration platform Afri
     <Tip>
       You can also specify a webhook URL per-transaction by including the `webhook` parameter in your API request. This overrides the default webhook for that specific transaction.
     </Tip>
+
   </Accordion>
 
   <Accordion title="What does a webhook payload look like?" icon="code">
@@ -325,6 +339,7 @@ Everything you need to know about Payfonte's payment orchestration platform Afri
     - `payment.expired` - Payment timed out
     - `disbursement.completed` - Disbursement successful
     - `disbursement.failed` - Disbursement failed
+
   </Accordion>
 
   <Accordion title="How should I handle webhooks?" icon="server">
@@ -367,6 +382,7 @@ Everything you need to know about Payfonte's payment orchestration platform Afri
     <Warning>
       Critical: Always return HTTP 200 quickly. If your endpoint times out or returns an error, we'll retry the webhook. Implement idempotency to handle duplicate deliveries.
     </Warning>
+
   </Accordion>
 
   <Accordion title="What if my webhook endpoint is down?" icon="server">
@@ -387,6 +403,7 @@ Everything you need to know about Payfonte's payment orchestration platform Afri
     <Tip>
       Set up monitoring for your webhook endpoint and dashboard alerts for failed deliveries. You can also implement a polling fallback to check for missed webhooks.
     </Tip>
+
   </Accordion>
 </AccordionGroup>
 
@@ -410,6 +427,7 @@ Everything you need to know about Payfonte's payment orchestration platform Afri
     T = Settlement Request Day
 
     Settlements are processed to your designated bank account or mobile money wallet as configured in your merchant profile.
+
   </Accordion>
 
   <Accordion title="Can I send Disbursements (disbursements)?" icon="paper-plane">
@@ -429,6 +447,7 @@ Everything you need to know about Payfonte's payment orchestration platform Afri
     - Bank Transfer: Same day - Next business day
 
     See our [Disbursements Guide](/en/guides/disbursements/overview) for full documentation.
+
   </Accordion>
 
   <Accordion title="How do I check my wallet balance?" icon="wallet">
@@ -456,6 +475,7 @@ Everything you need to know about Payfonte's payment orchestration platform Afri
       ]
     }
     ```
+
   </Accordion>
 </AccordionGroup>
 
@@ -482,6 +502,7 @@ Everything you need to know about Payfonte's payment orchestration platform Afri
     </Warning>
 
     See [Amount Specification](/en/guides/introductions/amount-specification) for full conversion guidance, and [Supported Providers](/en/guides/introductions/supported-providers) for provider limits.
+
   </Accordion>
 
   <Accordion title="How should I format phone numbers?" icon="phone">
@@ -509,6 +530,7 @@ Everything you need to know about Payfonte's payment orchestration platform Afri
     { "phoneNumber": "+234-801-234-5678" }
     { "phoneNumber": "08012345678" }
     ```
+
   </Accordion>
 
   <Accordion title="What is the Direct Charge API?" icon="bolt">
@@ -537,6 +559,7 @@ Everything you need to know about Payfonte's payment orchestration platform Afri
     ```
 
     The customer receives the STK push / USSD prompt directly on their phone through the Africa mobile money API.
+
   </Accordion>
 
   <Accordion title="Do you support Hybrid Orchestration (BYOK)?" icon="key">
@@ -557,6 +580,7 @@ Everything you need to know about Payfonte's payment orchestration platform Afri
 
     Setup:
     Contact [commercial@payfonte.com](mailto:commercial@payfonte.com) to configure hybrid orchestration for your Africa payment orchestration account.
+
   </Accordion>
 
   <Accordion title="What happens if a provider is down?" icon="server">
@@ -578,6 +602,7 @@ Everything you need to know about Payfonte's payment orchestration platform Afri
     <Note>
       You can also configure routing preferences in your dashboard if you want to prioritize certain alternative payment methods for cost or performance reasons.
     </Note>
+
   </Accordion>
 </AccordionGroup>
 
@@ -595,6 +620,7 @@ Everything you need to know about Payfonte's payment orchestration platform Afri
     - End-to-End Encryption: All data encrypted in transit (TLS 1.2+) and at rest
 
     You can request our compliance certificates via [compliance@payfonte.com](mailto:compliance@payfonte.com).
+
   </Accordion>
 
   <Accordion title="How do you handle customer data privacy?" icon="user-shield">
@@ -615,6 +641,7 @@ Everything you need to know about Payfonte's payment orchestration platform Afri
     - Mobile money PINs
     - Card CVVs (tokenized immediately)
     - Customer wallet balances
+
   </Accordion>
 
   <Accordion title="What fraud prevention measures are in place?" icon="magnifying-glass">
@@ -630,6 +657,7 @@ Everything you need to know about Payfonte's payment orchestration platform Afri
     - Set custom transaction limits in your dashboard
     - Enable additional verification for high-value transactions
     - Access fraud analytics and reports
+
   </Accordion>
 </AccordionGroup>
 
@@ -654,6 +682,7 @@ Everything you need to know about Payfonte's payment orchestration platform Afri
     3. If stuck > 30 minutes, contact support
 
     Our reconciliation engine ensures all transactions reach final state—no manual intervention required in most cases.
+
   </Accordion>
 
   <Accordion title="Why am I getting 401 Unauthorized errors?" icon="lock">
@@ -675,6 +704,7 @@ Everything you need to know about Payfonte's payment orchestration platform Afri
     --header 'client-id: abc123' \
     --header 'client-secret: xyz789'
     ```
+
   </Accordion>
 
   <Accordion title="How do I test different transaction scenarios in sandbox?" icon="flask-vial">
@@ -682,22 +712,18 @@ Everything you need to know about Payfonte's payment orchestration platform Afri
 
     [//]: # (| Phone Number | Scenario |)
 
-[//]: # (|--------------|----------|)
+[//]: # "|--------------|----------|"
+[//]: # "| `2348000000001` | Successful payment |"
+[//]: # "| `2348000000002` | Failed - Insufficient funds |"
+[//]: # "| `2348000000003` | Failed - Wrong PIN |"
+[//]: # "| `2348000000004` | Timeout - No response |"
+[//]: # "| `2348000000005` | Processing delay (30s) |"
+[//]: #
 
-[//]: # (| `2348000000001` | Successful payment |)
-
-[//]: # (| `2348000000002` | Failed - Insufficient funds |)
-
-[//]: # (| `2348000000003` | Failed - Wrong PIN |)
-
-[//]: # (| `2348000000004` | Timeout - No response |)
-
-[//]: # (| `2348000000005` | Processing delay &#40;30s&#41; |)
-
-[//]: # ()
     [//]: # (Use these numbers with any supported provider slug in sandbox to simulate different outcomes.)
 
     See our [Testing Guide](/en/guides/introductions/testing) for complete test scenarios.
+
   </Accordion>
 </AccordionGroup>
 
@@ -706,10 +732,18 @@ Everything you need to know about Payfonte's payment orchestration platform Afri
 ## Still Have Questions?
 
 <CardGroup cols={3}>
-  <Card title="Contact Support" icon="headset" href="mailto:support@payfonte.com">
+  <Card
+    title="Contact Support"
+    icon="headset"
+    href="mailto:support@payfonte.com"
+  >
     support@payfonte.com
   </Card>
-  <Card title="Book a Demo" icon="calendar" href="https://calendly.com/marc-payfonte/30min">
+  <Card
+    title="Book a Demo"
+    icon="calendar"
+    href="https://calendly.com/marc-payfonte/30min"
+  >
     Schedule a walkthrough
   </Card>
   <Card title="API Reference" icon="code" href="/en/api-reference/introduction">

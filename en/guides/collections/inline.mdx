@@ -30,7 +30,7 @@ CDN SDK URL:
 
 <Steps>
   <Step title="Get sandbox credentials">
-    Retrieve your `client-id` from `Settings -> API Keys/Webhooks` in [sandbox-app.payfonte.com](https://sandbox-app.payfonte.com).
+    Retrieve your `client-id` from `Settings -> Security ->  API Keys and Webhooks` in [sandbox-app.payfonte.com](https://sandbox-app.payfonte.com).
   </Step>
   <Step title="Set your environment">
     Use `sandbox` while testing and `production` only after go-live approval.
@@ -41,7 +41,8 @@ CDN SDK URL:
 </Steps>
 
 <Warning>
-  Never expose `client-secret` in frontend code. Inline checkout should only use `client-id`.
+  Never expose `client-secret` in frontend code. Inline checkout should only use
+  `client-id`.
 </Warning>
 
 ## Quick Integration Example
@@ -58,7 +59,8 @@ CDN SDK URL:
 <body>
   <button id="pay-btn">Pay NGN 1,000.00</button>
 
-  <script src="https://cdn.payfonte.com/payfonte.min.js"></script>
+<script src="https://cdn.payfonte.com/payfonte.min.js"></script>
+
   <script>
     document.getElementById("pay-btn").addEventListener("click", () => {
       const handler = new Payfonte({
@@ -89,6 +91,7 @@ CDN SDK URL:
       handler.openIframe();
     });
   </script>
+
 </body>
 </html>
 ```
@@ -96,18 +99,18 @@ CDN SDK URL:
 
 ## Parameter Reference
 
-| Field | Type | Required | Description |
-| --- | --- | --- | --- |
-| `environment` | string | Yes | `sandbox` or `production` |
-| `reference` | string | Recommended | Unique transaction reference |
-| `clientId` | string | Yes | Your Payfonte `client-id` |
-| `amount` | integer | Yes | Amount in minor units (no decimals) |
-| `currency` | string | Yes | ISO currency code (for example `NGN`) |
-| `country` | string | Yes | ISO country code (for example `NG`) |
-| `customer` | object | Yes | Customer details (name/email/phone) |
-| `metadata` | object | No | Custom fields returned in callbacks/webhooks |
-| `callback` | function | Yes | Runs after payment event payload is returned |
-| `onClose` | function | No | Runs when checkout modal is closed |
+| Field         | Type     | Required    | Description                                  |
+| ------------- | -------- | ----------- | -------------------------------------------- |
+| `environment` | string   | Yes         | `sandbox` or `production`                    |
+| `reference`   | string   | Recommended | Unique transaction reference                 |
+| `clientId`    | string   | Yes         | Your Payfonte `client-id`                    |
+| `amount`      | integer  | Yes         | Amount in minor units (no decimals)          |
+| `currency`    | string   | Yes         | ISO currency code (for example `NGN`)        |
+| `country`     | string   | Yes         | ISO country code (for example `NG`)          |
+| `customer`    | object   | Yes         | Customer details (name/email/phone)          |
+| `metadata`    | object   | No          | Custom fields returned in callbacks/webhooks |
+| `callback`    | function | Yes         | Runs after payment event payload is returned |
+| `onClose`     | function | No          | Runs when checkout modal is closed           |
 
 ## Amount Rule (Important)
 
@@ -122,35 +125,47 @@ See [Amount Specification](/en/guides/introductions/amount-specification) for fu
 
 <AccordionGroup>
   <Accordion title="Create reference on backend" icon="server" defaultOpen>
-    Generate the transaction reference from your backend so you can enforce uniqueness and map it to your internal order.
+    Generate the transaction reference from your backend so you can enforce
+    uniqueness and map it to your internal order.
   </Accordion>
   <Accordion title="Use callback for UI updates only" icon="code">
-    Treat frontend callback as a user experience signal. Final fulfillment should depend on backend verification or webhook confirmation.
+    Treat frontend callback as a user experience signal. Final fulfillment
+    should depend on backend verification or webhook confirmation.
   </Accordion>
   <Accordion title="Implement webhook confirmation" icon="bell">
-    Always process [Webhooks](/en/guides/collections/webhook) to confirm final transaction state (`success`/`failed`).
+    Always process [Webhooks](/en/guides/collections/webhook) to confirm final
+    transaction state (`success`/`failed`).
   </Accordion>
   <Accordion title="Handle retries idempotently" icon="repeat">
-    If callback/webhook repeats, ensure your order processing runs once per reference.
+    If callback/webhook repeats, ensure your order processing runs once per
+    reference.
   </Accordion>
 </AccordionGroup>
 
 ## Troubleshooting
 
-| Symptom | Likely Cause | Fix |
-| --- | --- | --- |
-| Checkout does not open | SDK script not loaded | Confirm script URL and browser console errors |
+| Symptom                             | Likely Cause                            | Fix                                             |
+| ----------------------------------- | --------------------------------------- | ----------------------------------------------- |
+| Checkout does not open              | SDK script not loaded                   | Confirm script URL and browser console errors   |
 | Authentication/authorization issues | Invalid `clientId` or wrong environment | Use matching credentials for sandbox/production |
-| Amount validation failure | Decimal amount used | Convert to integer minor units |
-| Duplicate transaction error | Reused `reference` | Generate a new unique reference |
+| Amount validation failure           | Decimal amount used                     | Convert to integer minor units                  |
+| Duplicate transaction error         | Reused `reference`                      | Generate a new unique reference                 |
 
 ## Related Docs
 
 <CardGroup cols={3}>
-  <Card title="Javascript SDK" icon="code" href="/en/guides/collections/sdks/javascript">
+  <Card
+    title="Javascript SDK"
+    icon="code"
+    href="/en/guides/collections/sdks/javascript"
+  >
     Full SDK example and configuration reference.
   </Card>
-  <Card title="Standard Checkout" icon="arrow-up-right-from-square" href="/en/guides/collections/standard">
+  <Card
+    title="Standard Checkout"
+    icon="arrow-up-right-from-square"
+    href="/en/guides/collections/standard"
+  >
     Redirect-based alternative integration flow.
   </Card>
   <Card title="Webhooks" icon="bell" href="/en/guides/collections/webhook">

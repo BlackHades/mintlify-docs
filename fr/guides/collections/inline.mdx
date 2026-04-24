@@ -22,7 +22,8 @@ URL CDN du SDK :
     Ajoutez un script et déclenchez le checkout depuis votre bouton de paiement.
   </Card>
   <Card title="Hooks d'événements" icon="bell">
-    Utilisez des callbacks de fermeture et de finalisation dans votre flux applicatif.
+    Utilisez des callbacks de fermeture et de finalisation dans votre flux
+    applicatif.
   </Card>
 </CardGroup>
 
@@ -30,7 +31,7 @@ URL CDN du SDK :
 
 <Steps>
   <Step title="Récupérer vos identifiants sandbox">
-    Récupérez votre `client-id` depuis `Settings -> API Keys/Webhooks` sur [sandbox-app.payfonte.com](https://sandbox-app.payfonte.com).
+    Récupérez votre `client-id` depuis `Settings -> Security -> API Keys and Webhooks` sur [sandbox-app.payfonte.com](https://sandbox-app.payfonte.com).
   </Step>
   <Step title="Définir votre environnement">
     Utilisez `sandbox` pour les tests et `production` seulement après validation de la mise en production.
@@ -41,7 +42,8 @@ URL CDN du SDK :
 </Steps>
 
 <Warning>
-  N'exposez jamais `client-secret` dans du code frontend. Le checkout inline ne doit utiliser que `client-id`.
+  N'exposez jamais `client-secret` dans du code frontend. Le checkout inline ne
+  doit utiliser que `client-id`.
 </Warning>
 
 ## Exemple d'intégration rapide
@@ -58,7 +60,8 @@ URL CDN du SDK :
 <body>
   <button id="pay-btn">Pay NGN 1,000.00</button>
 
-  <script src="https://cdn.payfonte.com/payfonte.min.js"></script>
+<script src="https://cdn.payfonte.com/payfonte.min.js"></script>
+
   <script>
     document.getElementById("pay-btn").addEventListener("click", () => {
       const handler = new Payfonte({
@@ -89,6 +92,7 @@ URL CDN du SDK :
       handler.openIframe();
     });
   </script>
+
 </body>
 </html>
 ```
@@ -96,18 +100,18 @@ URL CDN du SDK :
 
 ## Référence des paramètres
 
-| Champ | Type | Requis | Description |
-| --- | --- | --- | --- |
-| `environment` | string | Oui | `sandbox` ou `production` |
-| `reference` | string | Recommandé | Référence de transaction unique |
-| `clientId` | string | Oui | Votre `client-id` Payfonte |
-| `amount` | integer | Oui | Montant en sous-unités, sans décimales |
-| `currency` | string | Oui | Code devise ISO, par exemple `NGN` |
-| `country` | string | Oui | Code pays ISO, par exemple `NG` |
-| `customer` | object | Oui | Informations client, nom, e-mail, téléphone |
-| `metadata` | object | Non | Champs personnalisés renvoyés dans les callbacks et webhooks |
-| `callback` | function | Oui | Exécuté après le retour d'un événement de paiement |
-| `onClose` | function | Non | Exécuté lorsque la modale de checkout se ferme |
+| Champ         | Type     | Requis     | Description                                                  |
+| ------------- | -------- | ---------- | ------------------------------------------------------------ |
+| `environment` | string   | Oui        | `sandbox` ou `production`                                    |
+| `reference`   | string   | Recommandé | Référence de transaction unique                              |
+| `clientId`    | string   | Oui        | Votre `client-id` Payfonte                                   |
+| `amount`      | integer  | Oui        | Montant en sous-unités, sans décimales                       |
+| `currency`    | string   | Oui        | Code devise ISO, par exemple `NGN`                           |
+| `country`     | string   | Oui        | Code pays ISO, par exemple `NG`                              |
+| `customer`    | object   | Oui        | Informations client, nom, e-mail, téléphone                  |
+| `metadata`    | object   | Non        | Champs personnalisés renvoyés dans les callbacks et webhooks |
+| `callback`    | function | Oui        | Exécuté après le retour d'un événement de paiement           |
+| `onClose`     | function | Non        | Exécuté lorsque la modale de checkout se ferme               |
 
 ## Règle de montant importante
 
@@ -122,35 +126,47 @@ Voir [Spécification des montants](/fr/guides/introductions/amount-specification
 
 <AccordionGroup>
   <Accordion title="Créer la référence côté backend" icon="server" defaultOpen>
-    Générez la référence de transaction depuis votre backend afin de garantir son unicité et son lien avec votre commande interne.
+    Générez la référence de transaction depuis votre backend afin de garantir
+    son unicité et son lien avec votre commande interne.
   </Accordion>
   <Accordion title="Utiliser le callback uniquement pour l'UI" icon="code">
-    Considérez le callback frontend comme un signal UX. La finalisation métier doit dépendre d'une vérification backend ou d'un webhook.
+    Considérez le callback frontend comme un signal UX. La finalisation métier
+    doit dépendre d'une vérification backend ou d'un webhook.
   </Accordion>
   <Accordion title="Implémenter la confirmation par webhook" icon="bell">
-    Traitez toujours les [Webhooks](/fr/guides/collections/webhook) pour confirmer l'état final de la transaction, `success` ou `failed`.
+    Traitez toujours les [Webhooks](/fr/guides/collections/webhook) pour
+    confirmer l'état final de la transaction, `success` ou `failed`.
   </Accordion>
   <Accordion title="Gérer les retries de façon idempotente" icon="repeat">
-    Si un callback ou un webhook est rejoué, assurez-vous que le traitement de commande ne s'exécute qu'une fois par référence.
+    Si un callback ou un webhook est rejoué, assurez-vous que le traitement de
+    commande ne s'exécute qu'une fois par référence.
   </Accordion>
 </AccordionGroup>
 
 ## Dépannage
 
-| Symptôme | Cause probable | Correctif |
-| --- | --- | --- |
-| Le checkout ne s'ouvre pas | Script SDK non chargé | Vérifiez l'URL du script et la console du navigateur |
-| Problèmes d'authentification | `clientId` invalide ou mauvais environnement | Utilisez les identifiants correspondant à sandbox ou production |
-| Échec de validation du montant | Montant décimal utilisé | Convertissez en sous-unités entières |
-| Erreur de transaction en double | `reference` réutilisée | Générez une nouvelle référence unique |
+| Symptôme                        | Cause probable                               | Correctif                                                       |
+| ------------------------------- | -------------------------------------------- | --------------------------------------------------------------- |
+| Le checkout ne s'ouvre pas      | Script SDK non chargé                        | Vérifiez l'URL du script et la console du navigateur            |
+| Problèmes d'authentification    | `clientId` invalide ou mauvais environnement | Utilisez les identifiants correspondant à sandbox ou production |
+| Échec de validation du montant  | Montant décimal utilisé                      | Convertissez en sous-unités entières                            |
+| Erreur de transaction en double | `reference` réutilisée                       | Générez une nouvelle référence unique                           |
 
 ## Documentation associée
 
 <CardGroup cols={3}>
-  <Card title="SDK JavaScript" icon="code" href="/fr/guides/collections/sdks/javascript">
+  <Card
+    title="SDK JavaScript"
+    icon="code"
+    href="/fr/guides/collections/sdks/javascript"
+  >
     Exemple complet et référence de configuration du SDK.
   </Card>
-  <Card title="Checkout standard" icon="arrow-up-right-from-square" href="/fr/guides/collections/standard">
+  <Card
+    title="Checkout standard"
+    icon="arrow-up-right-from-square"
+    href="/fr/guides/collections/standard"
+  >
     Intégration alternative basée sur une redirection.
   </Card>
   <Card title="Webhooks" icon="bell" href="/fr/guides/collections/webhook">
