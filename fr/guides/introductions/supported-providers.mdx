@@ -8,7 +8,7 @@ seo:
   keywords: "providers pris en charge Payfonte, slug provider, providers mobile money Afrique, providers collecte, providers décaissement, limites provider, couverture provider par pays"
 ---
 
-<Badge color="green" icon="circle">Dernière mise à jour : 24 avril 2026</Badge>
+<Badge color="green" icon="circle">Dernière mise à jour : 30 avril 2026</Badge>
 
 Utilisez cette page pour choisir le bon slug provider selon le pays, le flux pris en charge et la devise de votre intégration.
 
@@ -19,13 +19,13 @@ Utilisez cette page pour choisir le bon slug provider selon le pays, le flux pri
 ## En un coup d'oeil
 
 <CardGroup cols={2}>
-  <Card title="32 marchés" icon="globe-africa">
-    La couverture provider est actuellement publiée pour 32 pays d'Afrique de l'Ouest, de l'Est, centrale et australe.
+  <Card title="33 marchés" icon="globe-africa">
+    La couverture provider est actuellement publiée pour 33 pays d'Afrique de l'Ouest, de l'Est, centrale et australe.
   </Card>
-  <Card title="71 slugs provider" icon="fingerprint">
+  <Card title="73 slugs provider" icon="fingerprint">
     Envoyez la valeur exacte du `Slug` dans vos payloads API lorsque vous renseignez le champ `provider`.
   </Card>
-  <Card title="71 slugs double flux" icon="right-left">
+  <Card title="73 slugs double flux" icon="right-left">
     Chaque slug provider listé sur cette page prend actuellement en charge à la fois la `Collecte` et le `Décaissement`.
   </Card>
   <Card title="1 fetch requis" icon="sliders">
@@ -61,6 +61,7 @@ Utilisez cette page pour choisir le bon slug provider selon le pays, le flux pri
   <Tab title="Vue d'ensemble">
     | Marché | Devise | Providers collecte | Providers décaissement | Notes |
     | :--- | :--- | :--- | :--- | :--- |
+    | [Angola](#angola) | `AOA` | Bank Transfer, Multicaixa | Bank Transfer, Multicaixa | 2 providers prennent en charge les deux flux |
     | [Burkina Faso](#burkina-faso) | `XOF` | Moov, Orange | Moov, Orange | 2 providers prennent en charge les deux flux |
     | [Bénin](#benin) | `XOF` | MTN MoMo, Moov | MTN MoMo, Moov | 2 providers prennent en charge les deux flux |
     | [RDC](#dr-congo) | `CDF` | AfriMoney, Airtel, MPesa, Orange | AfriMoney, Airtel, MPesa, Orange | 4 providers prennent en charge les deux flux |
@@ -98,6 +99,7 @@ Utilisez cette page pour choisir le bon slug provider selon le pays, le flux pri
   <Tab title="Slugs provider">
     | Marché | Devise | Slugs double flux | Slugs collecte uniquement | Slugs décaissement uniquement |
     | :--- | :--- | :--- | :--- | :--- |
+    | Angola | `AOA` | `bank-transfer-angola`, `multicaixa-angola` | `—` | `—` |
     | Burkina Faso | `XOF` | `moov-burkina-faso`, `orange-burkina-faso` | `—` | `—` |
     | Bénin | `XOF` | `mtn-momo-benin`, `moov-benin` | `—` | `—` |
     | RDC | `CDF` | `afrimoney-dr-congo`, `airtel-dr-congo`, `mpesa-dr-congo`, `orange-dr-congo` | `—` | `—` |
@@ -166,9 +168,24 @@ Utilisez cette page pour choisir le bon slug provider selon le pays, le flux pri
 
 ## Couverture détaillée
 
-Aller à : [Burkina Faso](#burkina-faso) | [Bénin](#benin) | [RDC](#dr-congo) | [Congo](#congo) | [Côte d'Ivoire](#ivory-coast) | [Cameroun](#cameroon) | [Gabon](#gabon) | [Ghana](#ghana) | [Gambie](#gambia) | [Guinée](#guinea) | [Kenya](#kenya) | [Libéria](#liberia) | [Lesotho](#lesotho) | [Madagascar](#madagascar) | [Mali](#mali) | [Malawi](#malawi) | [Mozambique](#mozambique) | [Namibie](#namibia) | [Niger](#niger) | [Nigeria](#nigeria) | [Rwanda](#rwanda) | [Seychelles](#seychelles) | [Sierra Leone](#sierra-leone) | [Sénégal](#senegal) | [Soudan du Sud](#south-sudan) | [Eswatini](#eswatini) | [Tchad](#chad) | [Togo](#togo) | [Tanzanie](#tanzania) | [Ouganda](#uganda) | [Afrique du Sud](#south-africa) | [Zambie](#zambia)
+Aller à : [Angola](#angola) | [Burkina Faso](#burkina-faso) | [Bénin](#benin) | [RDC](#dr-congo) | [Congo](#congo) | [Côte d'Ivoire](#ivory-coast) | [Cameroun](#cameroon) | [Gabon](#gabon) | [Ghana](#ghana) | [Gambie](#gambia) | [Guinée](#guinea) | [Kenya](#kenya) | [Libéria](#liberia) | [Lesotho](#lesotho) | [Madagascar](#madagascar) | [Mali](#mali) | [Malawi](#malawi) | [Mozambique](#mozambique) | [Namibie](#namibia) | [Niger](#niger) | [Nigeria](#nigeria) | [Rwanda](#rwanda) | [Seychelles](#seychelles) | [Sierra Leone](#sierra-leone) | [Sénégal](#senegal) | [Soudan du Sud](#south-sudan) | [Eswatini](#eswatini) | [Tchad](#chad) | [Togo](#togo) | [Tanzanie](#tanzania) | [Ouganda](#uganda) | [Afrique du Sud](#south-africa) | [Zambie](#zambia)
 
 Survolez un titre de marché pour copier un lien direct vers cette section.
+
+<div id="angola"></div>
+
+### Angola
+
+<AccordionGroup>
+  <Accordion title="🇦🇴 Angola - 2 providers" defaultOpen>
+    2 slugs provider sont disponibles. Les deux prennent en charge la collecte et le décaissement. Devise : `AOA`.
+
+    | **Provider** | **Slug** | **Devise** | **Flux pris en charge** | **Fetch Properties** | **Min collecte** | **Max collecte** | **Min décaissement** | **Max décaissement** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | Bank Transfer | bank-transfer-angola | AOA | Collecte, Décaissement | No | — | — | — | — |
+    | Multicaixa | multicaixa-angola | AOA | Collecte, Décaissement | No | — | — | — | — |
+  </Accordion>
+</AccordionGroup>
 
 <div id="burkina-faso"></div>
 
