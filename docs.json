@@ -226,6 +226,16 @@
       "linkedin": "https://linkedin.com/company/mintlify"
     }
   },
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/en/guides/introductions/overview"
+    },
+    {
+      "source": "/guides/:slug*",
+      "destination": "/en/guides/:slug*"
+    }
+  ],
   "contextual": {
     "options": [
       "copy",
