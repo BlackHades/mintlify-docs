@@ -230,6 +230,10 @@
     {
       "source": "/",
       "destination": "/en/guides/introductions/overview"
+    },
+    {
+      "source": "/guides/:slug*",
+      "destination": "/en/guides/:slug*"
     }
   ],
   "contextual": {
