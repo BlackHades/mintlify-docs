@@ -69,6 +69,7 @@
                 "pages": [
                   "en/guides/collections/overview",
                   "en/guides/collections/inline",
+                  "en/guides/collections/direct-card-api",
                   "en/guides/collections/standard",
                   "en/guides/collections/webhook",
                   {
@@ -165,7 +166,8 @@
                     "pages": [
                       "fr/guides/collections/direct-charge-api",
                       "fr/guides/collections/direct-charge/response-types",
-                      "fr/guides/collections/direct-charge/examples"
+                      "fr/guides/collections/direct-charge/examples",
+                      "en/guides/collections/direct-card-api"
                     ]
                   }
                 ]
