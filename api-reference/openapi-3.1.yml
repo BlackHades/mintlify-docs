@@ -603,6 +603,21 @@ components:
             phoneNumber:
               type: string
               example: "+221786836369"
+        metadata:
+          type: object
+          properties:
+            trafficType:
+              type: string
+              example: "CLOTHING"
+            merchantName:
+              type: string
+              example: "Sample Name"
+            bankName:
+              type: string
+              example: "CAPITEC BANK"
+            bankCode:
+              type: string
+              example: "4700"
         checkoutId:
           type: string
           example: "69651ca8bf1ff6b132d93a47"
