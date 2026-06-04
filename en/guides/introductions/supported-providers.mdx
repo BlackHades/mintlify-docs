@@ -154,6 +154,9 @@ Use this page to choose the right provider slug for your integration by country,
 
     Every provider row currently listed on this page uses `Collection, Disbursement`.
   </Accordion>
+  <Accordion title="Collection Processing Type" icon="route">
+    Indicates whether collections use direct processing such as `USSD/STK_PUSH`, redirect, or both.
+  </Accordion>
   <Accordion title="Fetch Properties" icon="sliders">
     `Yes` means you may need to call a provider-properties endpoint before initiating a request.
   </Accordion>
@@ -180,10 +183,10 @@ Hover a market heading to copy a direct link to that section.
   <Accordion title="🇦🇴 Angola - 2 providers" defaultOpen>
     2 provider slugs are available. Both support collection and disbursement. Currency: `AOA`.
 
-    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Bank Transfer | bank-transfer-angola | AOA | Collection | No | — | — | — | — |
-    | Multicaixa | multicaixa-angola | AOA | Collection | No | — | — | — | — |
+    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Collection Processing Type** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | Bank Transfer | bank-transfer-angola | AOA | Collection | processing (USSD/STK_PUSH) | No | — | — | — | — |
+    | Multicaixa | multicaixa-angola | AOA | Collection | processing (USSD/STK_PUSH) | No | — | — | — | — |
   </Accordion>
 </AccordionGroup>
 
@@ -195,10 +198,10 @@ Hover a market heading to copy a direct link to that section.
   <Accordion title="🇧🇫 Burkina Faso - 2 providers" defaultOpen>
     2 provider slugs are available. Both support collection and disbursement. Currency: `XOF`.
 
-    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Moov | moov-burkina-faso | XOF | Collection, Disbursement | No | — | — | — | — |
-    | Orange | orange-burkina-faso | XOF | Collection, Disbursement | No | — | — | 100 | 1,000,000 |
+    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Collection Processing Type** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | Moov | moov-burkina-faso | XOF | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
+    | Orange | orange-burkina-faso | XOF | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | 100 | 1,000,000 |
   </Accordion>
 </AccordionGroup>
 
@@ -210,10 +213,10 @@ Hover a market heading to copy a direct link to that section.
   <Accordion title="🇧🇯 Benin - 2 providers">
     2 provider slugs are available. Both support collection and disbursement. Currency: `XOF`.
 
-    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | MTN MoMo | mtn-momo-benin | XOF | Collection, Disbursement | No | 100 | 3,000,000 | — | — |
-    | Moov | moov-benin | XOF | Collection, Disbursement | No | 100 | 3,000,000 | — | — |
+    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Collection Processing Type** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | MTN MoMo | mtn-momo-benin | XOF | Collection, Disbursement | processing (USSD/STK_PUSH) | No | 100 | 3,000,000 | — | — |
+    | Moov | moov-benin | XOF | Collection, Disbursement | processing (USSD/STK_PUSH) | No | 100 | 3,000,000 | — | — |
   </Accordion>
 </AccordionGroup>
 
@@ -225,12 +228,12 @@ Hover a market heading to copy a direct link to that section.
   <Accordion title="🇨🇩 DR Congo - 4 providers">
     4 provider slugs are available. All 4 support collection and disbursement. Currency: `CDF`.
 
-    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | AfriMoney | afrimoney-dr-congo | CDF | Collection, Disbursement | No | — | — | — | — |
-    | Airtel | airtel-dr-congo | CDF | Collection, Disbursement | No | — | — | — | — |
-    | MPesa | mpesa-dr-congo | CDF | Collection, Disbursement | No | — | — | — | — |
-    | Orange | orange-dr-congo | CDF | Collection, Disbursement | No | — | — | — | — |
+    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Collection Processing Type** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | AfriMoney | afrimoney-dr-congo | CDF | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
+    | Airtel | airtel-dr-congo | CDF | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
+    | MPesa | mpesa-dr-congo | CDF | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
+    | Orange | orange-dr-congo | CDF | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
   </Accordion>
 </AccordionGroup>
 
@@ -242,10 +245,10 @@ Hover a market heading to copy a direct link to that section.
   <Accordion title="🇨🇬 Congo - 2 providers">
     2 provider slugs are available. Both support collection and disbursement. Currency: `XAF`.
 
-    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Airtel | airtel-congo | XAF | Collection, Disbursement | No | — | — | — | — |
-    | MTN MoMo | mtn-momo-congo | XAF | Collection, Disbursement | No | — | — | — | — |
+    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Collection Processing Type** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | Airtel | airtel-congo | XAF | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
+    | MTN MoMo | mtn-momo-congo | XAF | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
   </Accordion>
 </AccordionGroup>
 
@@ -257,12 +260,12 @@ Hover a market heading to copy a direct link to that section.
   <Accordion title="🇨🇮 Ivory Coast - 4 providers">
     4 provider slugs are available. All 4 support collection and disbursement. Currency: `XOF`.
 
-    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | MTN MoMo | mtn-momo-ivory-coast | XOF | Collection, Disbursement | No | — | — | — | — |
-    | Moov | moov-ivory-coast | XOF | Collection, Disbursement | No | — | — | 500 | 2,000,000 |
-    | Orange | orange-ivory-coast | XOF | Collection, Disbursement | No | — | — | 200 | 1,500,000 |
-    | Wave | wave-ivory-coast | XOF | Collection, Disbursement | No | — | — | — | — |
+    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Collection Processing Type** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | MTN MoMo | mtn-momo-ivory-coast | XOF | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
+    | Moov | moov-ivory-coast | XOF | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | 500 | 2,000,000 |
+    | Orange | orange-ivory-coast | XOF | Collection, Disbursement | redirect/processing | No | — | — | 200 | 1,500,000 |
+    | Wave | wave-ivory-coast | XOF | Collection, Disbursement | redirect | No | — | — | — | — |
   </Accordion>
 </AccordionGroup>
 
@@ -274,10 +277,10 @@ Hover a market heading to copy a direct link to that section.
   <Accordion title="🇨🇲 Cameroon - 2 providers">
     2 provider slugs are available. Both support collection and disbursement. Currency: `XAF`.
 
-    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | MTN MoMo | mtn-momo-cameroon | XAF | Collection, Disbursement | No | 500 | 500,000 | 500 | 500,000 |
-    | Orange | orange-cameroon | XAF | Collection, Disbursement | No | 500 | 500,000 | 500 | 500,000 |
+    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Collection Processing Type** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | MTN MoMo | mtn-momo-cameroon | XAF | Collection, Disbursement | processing (USSD/STK_PUSH) | No | 500 | 500,000 | 500 | 500,000 |
+    | Orange | orange-cameroon | XAF | Collection, Disbursement | processing (USSD/STK_PUSH) | No | 500 | 500,000 | 500 | 500,000 |
   </Accordion>
 </AccordionGroup>
 
@@ -289,9 +292,9 @@ Hover a market heading to copy a direct link to that section.
   <Accordion title="🇬🇦 Gabon - 1 provider">
     1 provider slug is available. It supports collection and disbursement. Currency: `XAF`.
 
-    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Airtel | airtel-gabon | XAF | Collection, Disbursement | No | — | — | — | — |
+    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Collection Processing Type** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | Airtel | airtel-gabon | XAF | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
   </Accordion>
 </AccordionGroup>
 
@@ -303,11 +306,11 @@ Hover a market heading to copy a direct link to that section.
   <Accordion title="🇬🇭 Ghana - 3 providers">
     3 provider slugs are available. All 3 support collection and disbursement. Currency: `GHS`.
 
-    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | AT | airtel-ghana | GHS | Collection, Disbursement | No | — | — | — | — |
-    | MTN MoMo | mtn-momo-ghana | GHS | Collection, Disbursement | No | — | — | — | — |
-    | Telecel | telecel-ghana | GHS | Collection, Disbursement | No | — | — | — | — |
+    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Collection Processing Type** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | AT | airtel-ghana | GHS | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
+    | MTN MoMo | mtn-momo-ghana | GHS | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
+    | Telecel | telecel-ghana | GHS | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
   </Accordion>
 </AccordionGroup>
 
@@ -319,12 +322,12 @@ Hover a market heading to copy a direct link to that section.
   <Accordion title="🇬🇲 Gambia - 4 providers">
     4 provider slugs are available. All 4 support collection and disbursement. Currency: `GMD`.
 
-    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | AfriMoney | afrimoney-gambia | GMD | Collection, Disbursement | No | — | — | — | — |
-    | Airtel | airtel-gambia | GMD | Collection, Disbursement | No | — | — | — | — |
-    | QMoney | qmoney-gambia | GMD | Collection, Disbursement | No | — | — | — | — |
-    | Wave | wave-gambia | GMD | Collection, Disbursement | No | — | — | — | — |
+    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Collection Processing Type** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | AfriMoney | afrimoney-gambia | GMD | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
+    | Airtel | airtel-gambia | GMD | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
+    | QMoney | qmoney-gambia | GMD | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
+    | Wave | wave-gambia | GMD | Collection, Disbursement | redirect | No | — | — | — | — |
   </Accordion>
 </AccordionGroup>
 
@@ -336,10 +339,10 @@ Hover a market heading to copy a direct link to that section.
   <Accordion title="🇬🇳 Guinea - 2 providers">
     2 provider slugs are available. Both support collection and disbursement. Currency: `GNF`.
 
-    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | MTN MoMo | mtn-momo-guinea-conakry | GNF | Collection, Disbursement | No | — | — | — | — |
-    | Orange | orange-guinea-conakry | GNF | Collection, Disbursement | No | — | — | — | — |
+    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Collection Processing Type** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | MTN MoMo | mtn-momo-guinea-conakry | GNF | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
+    | Orange | orange-guinea-conakry | GNF | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
   </Accordion>
 </AccordionGroup>
 
@@ -351,10 +354,10 @@ Hover a market heading to copy a direct link to that section.
   <Accordion title="🇰🇪 Kenya - 2 providers">
     2 provider slugs are available. Both support collection and disbursement. Currency: `KES`.
 
-    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Airtel | airtel-kenya | KES | Collection, Disbursement | No | — | — | — | — |
-    | M-Pesa | safaricom-kenya | KES | Collection, Disbursement | No | — | — | — | — |
+    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Collection Processing Type** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | Airtel | airtel-kenya | KES | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
+    | M-Pesa | safaricom-kenya | KES | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
   </Accordion>
 </AccordionGroup>
 
@@ -366,9 +369,9 @@ Hover a market heading to copy a direct link to that section.
   <Accordion title="🇱🇷 Liberia - 1 provider">
     1 provider slug is available. It supports collection and disbursement. Currency: `LRD`.
 
-    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | MTN MoMo | mtn-momo-liberia | LRD | Collection, Disbursement | No | — | — | — | — |
+    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Collection Processing Type** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | MTN MoMo | mtn-momo-liberia | LRD | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
   </Accordion>
 </AccordionGroup>
 
@@ -380,9 +383,9 @@ Hover a market heading to copy a direct link to that section.
   <Accordion title="🇱🇸 Lesotho - 1 provider">
     1 provider slug is available. It supports collection and disbursement. Currency: `LSL`.
 
-    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | MTN MoMo | mtn-momo-lesotho | LSL | Collection, Disbursement | No | — | — | — | — |
+    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Collection Processing Type** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | MTN MoMo | mtn-momo-lesotho | LSL | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
   </Accordion>
 </AccordionGroup>
 
@@ -394,9 +397,9 @@ Hover a market heading to copy a direct link to that section.
   <Accordion title="🇲🇬 Madagascar - 1 provider">
     1 provider slug is available. It supports collection and disbursement. Currency: `MGA`.
 
-    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Airtel | airtel-madagascar | MGA | Collection, Disbursement | No | — | — | — | — |
+    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Collection Processing Type** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | Airtel | airtel-madagascar | MGA | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
   </Accordion>
 </AccordionGroup>
 
@@ -408,10 +411,10 @@ Hover a market heading to copy a direct link to that section.
   <Accordion title="🇲🇱 Mali - 2 providers">
     2 provider slugs are available. Both support collection and disbursement. Currency: `XOF`.
 
-    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Moov | moov-mali | XOF | Collection, Disbursement | No | — | — | — | — |
-    | Orange | orange-mali | XOF | Collection, Disbursement | No | — | — | — | — |
+    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Collection Processing Type** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | Moov | moov-mali | XOF | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
+    | Orange | orange-mali | XOF | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
   </Accordion>
 </AccordionGroup>
 
@@ -423,9 +426,9 @@ Hover a market heading to copy a direct link to that section.
   <Accordion title="🇲🇼 Malawi - 1 provider">
     1 provider slug is available. It supports collection and disbursement. Currency: `MWK`.
 
-    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Airtel | airtel-malawi | MWK | Collection, Disbursement | No | — | — | — | — |
+    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Collection Processing Type** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | Airtel | airtel-malawi | MWK | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
   </Accordion>
 </AccordionGroup>
 
@@ -437,10 +440,10 @@ Hover a market heading to copy a direct link to that section.
   <Accordion title="🇲🇿 Mozambique - 2 providers">
     2 provider slugs are available. Both support collection and disbursement. Currency: `MZN`.
 
-    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Movitel e-Mola | emola-mozambique | MZN | Collection, Disbursement | No | — | — | — | — |
-    | Vodacom M-Pesa | mpesa-mozambique | MZN | Collection, Disbursement | No | — | — | — | — |
+    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Collection Processing Type** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | Movitel e-Mola | emola-mozambique | MZN | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
+    | Vodacom M-Pesa | mpesa-mozambique | MZN | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
   </Accordion>
 </AccordionGroup>
 
@@ -452,9 +455,9 @@ Hover a market heading to copy a direct link to that section.
   <Accordion title="🇳🇦 Namibia - 1 provider">
     1 provider slug is available. It supports collection and disbursement. Currency: `NAD`.
 
-    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | MTN MoMo | mtn-momo-namibia | NAD | Collection, Disbursement | No | — | — | — | — |
+    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Collection Processing Type** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | MTN MoMo | mtn-momo-namibia | NAD | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
   </Accordion>
 </AccordionGroup>
 
@@ -466,9 +469,9 @@ Hover a market heading to copy a direct link to that section.
   <Accordion title="🇳🇪 Niger - 1 provider">
     1 provider slug is available. It supports collection and disbursement. Currency: `XOF`.
 
-    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Airtel | airtel-niger | XOF | Collection, Disbursement | No | — | — | — | — |
+    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Collection Processing Type** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | Airtel | airtel-niger | XOF | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
   </Accordion>
 </AccordionGroup>
 
@@ -480,18 +483,18 @@ Hover a market heading to copy a direct link to that section.
   <Accordion title="🇳🇬 Nigeria - 10 providers">
     10 provider slugs are available. All 10 support collection and disbursement, and `bank-transfer-nigeria` requires fetch properties. Currency: `NGN`.
 
-    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | flutterwave | flutterwave | NGN | Collection, Disbursement | No | — | — | — | — |
-    | interswitch | interswitch | NGN | Collection, Disbursement | No | — | — | — | — |
-    | paystack | paystack | NGN | Collection, Disbursement | No | — | — | — | — |
-    | Airtel | airtel-smartcash-ng | NGN | Collection, Disbursement | No | — | — | — | — |
-    | Bank Transfer | bank-transfer-nigeria | NGN | Collection, Disbursement | Yes | — | — | — | — |
-    | CoralPay | coralpay | NGN | Collection, Disbursement | No | — | — | — | — |
-    | MTN MoMo | mtn-momo-nigeria | NGN | Collection, Disbursement | No | — | — | — | — |
-    | Opay | opay-nigeria | NGN | Collection, Disbursement | No | — | — | — | — |
-    | PalmPay | palmpay-nigeria | NGN | Collection, Disbursement | No | — | — | — | — |
-    | card-nigeria | card-nigeria | NGN | Collection, Disbursement | No | — | — | — | — |
+    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Collection Processing Type** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | flutterwave | flutterwave | NGN | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
+    | interswitch | interswitch | NGN | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
+    | paystack | paystack | NGN | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
+    | Airtel | airtel-smartcash-ng | NGN | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
+    | Bank Transfer | bank-transfer-nigeria | NGN | Collection, Disbursement | processing (USSD/STK_PUSH) | Yes | — | — | — | — |
+    | CoralPay | coralpay | NGN | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
+    | MTN MoMo | mtn-momo-nigeria | NGN | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
+    | Opay | opay-nigeria | NGN | Collection, Disbursement | redirect | No | — | — | — | — |
+    | PalmPay | palmpay-nigeria | NGN | Collection, Disbursement | redirect | No | — | — | — | — |
+    | card-nigeria | card-nigeria | NGN | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
   </Accordion>
 </AccordionGroup>
 
@@ -503,10 +506,10 @@ Hover a market heading to copy a direct link to that section.
   <Accordion title="🇷🇼 Rwanda - 2 providers">
     2 provider slugs are available. Both support collection and disbursement. Currency: `RWF`.
 
-    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Airtel | airtel-rwanda | RWF | Collection, Disbursement | No | — | — | — | — |
-    | MTN MoMo | mtn-momo-rwanda | RWF | Collection, Disbursement | No | — | — | — | — |
+    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Collection Processing Type** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | Airtel | airtel-rwanda | RWF | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
+    | MTN MoMo | mtn-momo-rwanda | RWF | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
   </Accordion>
 </AccordionGroup>
 
@@ -518,9 +521,9 @@ Hover a market heading to copy a direct link to that section.
   <Accordion title="🇸🇨 Seychelles - 1 provider">
     1 provider slug is available. It supports collection and disbursement. Currency: `SCR`.
 
-    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Airtel | airtel-seychelles | SCR | Collection, Disbursement | No | — | — | — | — |
+    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Collection Processing Type** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | Airtel | airtel-seychelles | SCR | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
   </Accordion>
 </AccordionGroup>
 
@@ -532,9 +535,9 @@ Hover a market heading to copy a direct link to that section.
   <Accordion title="🇸🇱 Sierra Leone - 1 provider">
     1 provider slug is available. It supports collection and disbursement. Currency: `SLE`.
 
-    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Orange | orange-sierra-leone | SLE | Collection, Disbursement | No | — | — | — | — |
+    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Collection Processing Type** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | Orange | orange-sierra-leone | SLE | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
   </Accordion>
 </AccordionGroup>
 
@@ -546,11 +549,11 @@ Hover a market heading to copy a direct link to that section.
   <Accordion title="🇸🇳 Senegal - 3 providers">
     3 provider slugs are available. All 3 support collection and disbursement. Currency: `XOF`.
 
-    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Mixx by Yas | mixx-senegal | XOF | Collection, Disbursement | No | — | — | — | — |
-    | Orange | orange-senegal | XOF | Collection, Disbursement | No | — | — | — | — |
-    | Wave | wave-senegal | XOF | Collection, Disbursement | No | — | — | — | — |
+    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Collection Processing Type** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | Mixx by Yas | mixx-senegal | XOF | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
+    | Orange | orange-senegal | XOF | Collection, Disbursement | redirect/processing | No | — | — | — | — |
+    | Wave | wave-senegal | XOF | Collection, Disbursement | redirect | No | — | — | — | — |
   </Accordion>
 </AccordionGroup>
 
@@ -562,9 +565,9 @@ Hover a market heading to copy a direct link to that section.
   <Accordion title="🇸🇸 South Sudan - 1 provider">
     1 provider slug is available. It supports collection and disbursement. Currency: `SSP`.
 
-    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | MTN MoMo | mtn-momo-south-sudan | SSP | Collection, Disbursement | No | — | — | — | — |
+    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Collection Processing Type** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | MTN MoMo | mtn-momo-south-sudan | SSP | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
   </Accordion>
 </AccordionGroup>
 
@@ -576,9 +579,9 @@ Hover a market heading to copy a direct link to that section.
   <Accordion title="🇸🇿 Eswatini - 1 provider">
     1 provider slug is available. It supports collection and disbursement. Currency: `SZL`.
 
-    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | MTN MoMo | mtn-momo-eswatini | SZL | Collection, Disbursement | No | — | — | — | — |
+    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Collection Processing Type** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | MTN MoMo | mtn-momo-eswatini | SZL | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
   </Accordion>
 </AccordionGroup>
 
@@ -590,9 +593,9 @@ Hover a market heading to copy a direct link to that section.
   <Accordion title="🇹🇩 Chad - 1 provider">
     1 provider slug is available. It supports collection and disbursement. Currency: `XAF`.
 
-    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Airtel | airtel-chad | XAF | Collection, Disbursement | No | — | — | — | — |
+    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Collection Processing Type** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | Airtel | airtel-chad | XAF | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
   </Accordion>
 </AccordionGroup>
 
@@ -604,10 +607,10 @@ Hover a market heading to copy a direct link to that section.
   <Accordion title="🇹🇬 Togo - 2 providers">
     2 provider slugs are available. Both support collection and disbursement. Currency: `XOF`.
 
-    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Mixx by Yas | mixx-togo | XOF | Collection, Disbursement | No | — | — | — | — |
-    | Moov | moov-togo | XOF | Collection, Disbursement | No | — | — | — | — |
+    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Collection Processing Type** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | Mixx by Yas | mixx-togo | XOF | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
+    | Moov | moov-togo | XOF | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
   </Accordion>
 </AccordionGroup>
 
@@ -619,12 +622,12 @@ Hover a market heading to copy a direct link to that section.
   <Accordion title="🇹🇿 Tanzania - 4 providers">
     4 provider slugs are available. All 4 support collection and disbursement. Currency: `TZS`.
 
-    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Airtel | airtel-tanzania | TZS | Collection, Disbursement | No | 100 | — | 1,000 | — |
-    | Halopesa | halopesa-tanzania | TZS | Collection, Disbursement | No | 100 | — | 100 | — |
-    | MPesa | mpesa-tanzania | TZS | Collection, Disbursement | No | 100 | — | 200 | — |
-    | Mixx by Yas | mixx-tanzania | TZS | Collection, Disbursement | No | — | — | — | — |
+    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Collection Processing Type** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | Airtel | airtel-tanzania | TZS | Collection, Disbursement | processing (USSD/STK_PUSH) | No | 100 | — | 1,000 | — |
+    | Halopesa | halopesa-tanzania | TZS | Collection, Disbursement | processing (USSD/STK_PUSH) | No | 100 | — | 100 | — |
+    | MPesa | mpesa-tanzania | TZS | Collection, Disbursement | processing (USSD/STK_PUSH) | No | 100 | — | 200 | — |
+    | Mixx by Yas | mixx-tanzania | TZS | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
   </Accordion>
 </AccordionGroup>
 
@@ -636,10 +639,10 @@ Hover a market heading to copy a direct link to that section.
   <Accordion title="🇺🇬 Uganda - 2 providers">
     2 provider slugs are available. Both support collection and disbursement. Currency: `UGX`.
 
-    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Airtel | airtel-uganda | UGX | Collection, Disbursement | No | — | — | — | — |
-    | MTN MoMo | mtn-momo-uganda | UGX | Collection, Disbursement | No | — | — | — | — |
+    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Collection Processing Type** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | Airtel | airtel-uganda | UGX | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
+    | MTN MoMo | mtn-momo-uganda | UGX | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
   </Accordion>
 </AccordionGroup>
 
@@ -651,10 +654,10 @@ Hover a market heading to copy a direct link to that section.
   <Accordion title="🇿🇦 South Africa - 2 providers">
     2 provider slugs are available. Both support collection and disbursement. Currency: `ZAR`.
 
-    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Electronic Fund Transfer (EFT) | eft-south-africa | ZAR | Collection, Disbursement | No | — | — | — | — |
-    | MTN MoMo | mtn-momo-south-africa | ZAR | Collection, Disbursement | No | — | — | — | — |
+    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Collection Processing Type** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | Electronic Fund Transfer (EFT) | eft-south-africa | ZAR | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
+    | MTN MoMo | mtn-momo-south-africa | ZAR | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
   </Accordion>
 </AccordionGroup>
 
@@ -666,11 +669,11 @@ Hover a market heading to copy a direct link to that section.
   <Accordion title="🇿🇲 Zambia - 3 providers">
     3 provider slugs are available. All 3 support collection and disbursement. Currency: `ZMW`.
 
-    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
-    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Airtel | airtel-zambia | ZMW | Collection, Disbursement | No | — | — | — | — |
-    | MTN MoMo | mtn-momo-zambia | ZMW | Collection, Disbursement | No | — | — | — | — |
-    | Zamtel | zamtel-zambia | ZMW | Collection, Disbursement | No | — | — | — | — |
+    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Collection Processing Type** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | Airtel | airtel-zambia | ZMW | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
+    | MTN MoMo | mtn-momo-zambia | ZMW | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
+    | Zamtel | zamtel-zambia | ZMW | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
   </Accordion>
 </AccordionGroup>
 
