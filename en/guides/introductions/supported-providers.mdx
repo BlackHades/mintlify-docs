@@ -8,7 +8,7 @@ seo:
   keywords: 'Payfonte supported providers, provider slug, Africa mobile money providers, collection providers, disbursement providers, provider limits, provider coverage by country'
 ---
 
-<Badge color="green" icon="circle">Last updated: June 4, 2026</Badge>
+<Badge color="green" icon="circle">Last updated: June 18, 2026</Badge>
 
 Use this page to choose the right provider slug for your integration by country, supported flow, and currency.
 
@@ -22,10 +22,10 @@ Use this page to choose the right provider slug for your integration by country,
   <Card title="33 Markets" icon="globe-africa">
     Provider coverage is currently published for 33 countries across West, East, Central, and Southern Africa.
   </Card>
-  <Card title="73 Provider Slugs" icon="fingerprint">
+  <Card title="72 Provider Slugs" icon="fingerprint">
     Send the exact `Slug` value in your API payloads when specifying the `provider` field.
   </Card>
-  <Card title="73 Dual-Flow Slugs" icon="right-left">
+  <Card title="72 Dual-Flow Slugs" icon="right-left">
     Every listed provider slug on this page currently supports both `Collection` and `Disbursement`.
   </Card>
   <Card title="1 Fetch Required" icon="sliders">
@@ -70,7 +70,7 @@ Use this page to choose the right provider slug for your integration by country,
     | [Cameroon](#cameroon) | `XAF` | MTN MoMo, Orange | MTN MoMo, Orange | Published min/max limits are available |
     | [Gabon](#gabon) | `XAF` | Airtel | Airtel | 1 provider supports both flows |
     | [Ghana](#ghana) | `GHS` | AT, MTN MoMo, Telecel | AT, MTN MoMo, Telecel | 3 providers support both flows |
-    | [Gambia](#gambia) | `GMD` | AfriMoney, Airtel, QMoney, Wave | AfriMoney, Airtel, QMoney, Wave | 4 providers support both flows |
+    | [Gambia](#gambia) | `GMD` | AfriMoney, Airtel, Wave | AfriMoney, Airtel, Wave | 3 providers support both flows |
     | [Guinea](#guinea) | `GNF` | MTN MoMo, Orange | MTN MoMo, Orange | 2 providers support both flows |
     | [Kenya](#kenya) | `KES` | Airtel, M-Pesa | Airtel, M-Pesa | 2 providers support both flows |
     | [Liberia](#liberia) | `LRD` | MTN MoMo | MTN MoMo | 1 provider supports both flows |
@@ -108,7 +108,7 @@ Use this page to choose the right provider slug for your integration by country,
     | Cameroon | `XAF` | `mtn-momo-cameroon`, `orange-cameroon` | `—` | `—` |
     | Gabon | `XAF` | `airtel-gabon` | `—` | `—` |
     | Ghana | `GHS` | `airtel-ghana`, `mtn-momo-ghana`, `telecel-ghana` | `—` | `—` |
-    | Gambia | `GMD` | `afrimoney-gambia`, `airtel-gambia`, `qmoney-gambia`, `wave-gambia` | `—` | `—` |
+    | Gambia | `GMD` | `afrimoney-gambia`, `airtel-gambia`, `wave-gambia` | `—` | `—` |
     | Guinea | `GNF` | `mtn-momo-guinea-conakry`, `orange-guinea-conakry` | `—` | `—` |
     | Kenya | `KES` | `airtel-kenya`, `safaricom-kenya` | `—` | `—` |
     | Liberia | `LRD` | `mtn-momo-liberia` | `—` | `—` |
@@ -319,14 +319,13 @@ Hover a market heading to copy a direct link to that section.
 ### Gambia
 
 <AccordionGroup>
-  <Accordion title="🇬🇲 Gambia - 4 providers">
-    4 provider slugs are available. All 4 support collection and disbursement. Currency: `GMD`.
+  <Accordion title="🇬🇲 Gambia - 3 providers">
+    3 provider slugs are available. All 3 support collection and disbursement. Currency: `GMD`.
 
     | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Collection Processing Type** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
     | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
     | AfriMoney | afrimoney-gambia | GMD | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
     | Airtel | airtel-gambia | GMD | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
-    | QMoney | qmoney-gambia | GMD | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
     | Wave | wave-gambia | GMD | Collection, Disbursement | redirect | No | — | — | — | — |
   </Accordion>
 </AccordionGroup>
