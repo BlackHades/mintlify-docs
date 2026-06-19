@@ -50,31 +50,34 @@ Sample payload:
 
 ```json payment.completed
 {
-  "event": "payment.completed",
-  "clientId": "payfonte",
+  "clientId": "solara_textiles",
   "data": {
-    "clientId": "payfonte",
-    "reference": "ORDER-1001",
-    "externalReference": "ORDER-1001",
-    "platformReference": "644ec09c4c2604002fac9d17",
-    "amount": 10000,
-    "provider": "mtn-momo-nigeria",
+    "amount": 74250,
     "channel": "mobile-money",
+    "charge": 1856,
+    "clientId": "solara_textiles",
+    "completedAt": "2026-05-08T09:24:51.127Z",
+    "country": "SN",
+    "currency": "XOF",
+    "externalReference": "ord_8473926150",
+    "id": "7f24c91a6b8e45d2f1309c7a",
+    "locale": "en",
+    "metadata": {},
+    "paidAt": 1778232291,
+    "paymentReference": "PF20260508092451QZRM4",
+    "platformReference": "7f24c91a6b8e45d2f1309c7a",
+    "provider": "wave-senegal",
+    "reference": "PF20260508092451QZRM4",
     "status": "success",
-    "charge": 0,
-    "chargeFee": 0,
+    "statusDescription": "succeeded",
     "user": {
-      "name": "John Doe",
-      "email": "john@example.com"
-    },
-    "paidAt": 1682883430,
-    "metadata": {
-      "trafficType": "CLOTHING",
-      "merchantName": "Sample Name",
-      "bankName": "CAPITEC BANK",
-      "bankCode": "4700"
+      "phoneNumber": "221771234589"
     }
-  }
+  },
+  "deliveryId": "7f24c923bb1d0e4a9c8156fd",
+  "event": "payment.completed",
+  "reference": "PF20260508092451QZRM4",
+  "webhook": "https://merchant.example.com/webhooks/payfonte?client_id=solara_textiles"
 }
 ```
 
