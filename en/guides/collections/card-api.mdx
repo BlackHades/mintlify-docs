@@ -1,0 +1,196 @@
+---
+title: "Collections - Card API"
+description: "Submit card details and continue card collections through PIN, OTP, 3DS redirect, or verification actions."
+icon: "credit-card"
+---
+
+Card payments may require more than one API call before Payfonte can confirm the final outcome. The first card request returns an `action` that tells your backend what to collect or do next.
+
+## Endpoints
+
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| `POST` | `/payments/v1/cards/process` | Submit card details and start the card payment |
+| `POST` | `/payments/v1/cards/pin` | Submit card PIN when the response action is `pin` |
+| `POST` | `/payments/v1/cards/otp` | Submit customer OTP when the response action is `otp` |
+| `GET` | `/payments/v1/payments/verify/{reference}` | Verify final transaction status when the response action is `verification` |
+
+## Integration Steps
+
+<Steps>
+  <Step title="Submit card details">
+    Call `/payments/v1/cards/process` with `provider`, `amount`, and `card`. Send your client identifier in the `client-id` header.
+  </Step>
+  <Step title="Read the action">
+    Use `data.action` to decide whether to collect PIN, collect OTP, redirect for 3DS, or verify the payment.
+  </Step>
+  <Step title="Continue the required step">
+    Submit PIN or OTP when requested, or redirect the customer to `data.data.redirectURL` for 3DS authentication.
+  </Step>
+  <Step title="Confirm final status">
+    When the action is `verification`, call `GET /payments/v1/payments/verify/{reference}` from your backend before fulfilling the order.
+  </Step>
+</Steps>
+
+## Submit Card Details
+
+```bash
+curl --request POST \
+  --url https://sandbox-api.payfonte.com/payments/v1/cards/process \
+  --header 'client-id: <client-id>' \
+  --header 'client-secret: <client-secret>' \
+  --header 'content-type: application/json' \
+  --data '{
+    "provider": "card-nigeria",
+    "amount": 50000,
+    "card": {
+      "pan": "5061 4604 1012 1111 102",
+      "expiry": {
+        "month": "12",
+        "year": "2050"
+      },
+      "cvv": "558",
+      "cardHolderName": "Emily Heidenreich-Kohler"
+    }
+  }'
+```
+
+## Submit PIN
+
+Use this endpoint when the previous response returns `data.action` as `pin`.
+
+```bash
+curl --request POST \
+  --url https://sandbox-api.payfonte.com/payments/v1/cards/pin \
+  --header 'client-id: <client-id>' \
+  --header 'client-secret: <client-secret>' \
+  --header 'content-type: application/json' \
+  --data '{
+    "reference": "DCD20260701144120NCDZW",
+    "provider": "card-nigeria",
+    "card": {
+      "pan": "5061 4604 1012 1111 106",
+      "expiry": {
+        "month": "12",
+        "year": "2050"
+      },
+      "cvv": "562",
+      "pin": "1106",
+      "cardHolderName": "Donna Flatley"
+    }
+  }'
+```
+
+## Submit OTP
+
+Use this endpoint when the previous response returns `data.action` as `otp`.
+
+```bash
+curl --request POST \
+  --url https://sandbox-api.payfonte.com/payments/v1/cards/otp \
+  --header 'client-id: <client-id>' \
+  --header 'client-secret: <client-secret>' \
+  --header 'content-type: application/json' \
+  --data '{
+    "reference": "DCD20260701144120NCDZW",
+    "otp": "543210"
+  }'
+```
+
+## Response Actions
+
+<AccordionGroup>
+  <Accordion title="pin" icon="key" defaultOpen>
+    Collect the customer's card PIN and call `POST /payments/v1/cards/pin` with the returned `reference`.
+
+```json
+{
+  "statusCode": 200,
+  "data": {
+    "reference": "DCD20260701133425EIQWF",
+    "action": "pin",
+    "data": {}
+  }
+}
+```
+  </Accordion>
+  <Accordion title="otp" icon="key">
+    Collect the OTP sent to the customer and call `POST /payments/v1/cards/otp` with the returned `reference`.
+
+```json
+{
+  "statusCode": 201,
+  "data": {
+    "reference": "DCD20260701133425EIQWF",
+    "action": "otp",
+    "data": {}
+  }
+}
+```
+  </Accordion>
+  <Accordion title="redirect" icon="arrow-up-right-from-square">
+    Redirect the customer to `data.data.redirectURL` to complete 3DS authentication. After the redirect flow, verify the payment server-side.
+
+```json
+{
+  "statusCode": 201,
+  "data": {
+    "reference": "DCD20260701144120NCDZW",
+    "action": "redirect",
+    "data": {
+      "redirectURL": "https://s.6bd.co/card-3ds/mce1aN"
+    }
+  }
+}
+```
+  </Accordion>
+  <Accordion title="verification" icon="shield-check">
+    Call `GET /payments/v1/payments/verify/{reference}` with the returned `reference` to confirm the final transaction status.
+
+```json
+{
+  "statusCode": 200,
+  "data": {
+    "reference": "DCD20260701133425EIQWF",
+    "action": "verification",
+    "data": {}
+  }
+}
+```
+  </Accordion>
+</AccordionGroup>
+
+## Flow Decision Summary
+
+| Action | Customer next step | Merchant next step |
+| --- | --- | --- |
+| `pin` | Enter card PIN | Call `POST /payments/v1/cards/pin` |
+| `otp` | Share OTP | Call `POST /payments/v1/cards/otp` |
+| `redirect` | Complete 3DS authentication | Redirect to `data.data.redirectURL`, then verify |
+| `verification` | No further customer input | Call `GET /payments/v1/payments/verify/{reference}` |
+
+## Important Rules
+
+<Warning>
+  Amount values must be integers in minor units. Decimals are not supported.
+</Warning>
+
+See [Amount Specification](/en/guides/introductions/amount-specification).
+
+<Warning>
+  Collect and submit card data only from secure, PCI-compliant environments. Do not log PAN, CVV, PIN, or OTP values.
+</Warning>
+
+## Related Docs
+
+<CardGroup cols={3}>
+  <Card title="API Reference" icon="file-code" href="/en/api-reference/introduction">
+    View card payment endpoint definitions and request schemas.
+  </Card>
+  <Card title="Webhooks" icon="bell" href="/en/guides/collections/webhook">
+    Confirm final transaction outcomes asynchronously.
+  </Card>
+  <Card title="Supported Providers" icon="globe-africa" href="/en/guides/introductions/supported-providers">
+    Confirm provider slugs and country coverage.
+  </Card>
+</CardGroup>

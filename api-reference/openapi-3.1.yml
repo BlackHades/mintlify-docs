@@ -24,6 +24,8 @@ tags:
     externalDocs:
       description: Find out more
       url: https://docs.payfonte.com/#/collections/inline
+  - name: Card Collections
+    description: Everything about your card payment collections with payfonte
   - name: Disbursements
     description: |
       Find full list of supported Disbursement providers here [Supported Providers](https://docs.payfonte.com/#/Disbursements/supported-Disbursements)
@@ -58,6 +60,216 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/DirectChargeAPIResponse'
+  /payments/v1/cards/process:
+    post:
+      tags:
+        - Card Collections
+      summary: Submit Card Details
+      description: Submit customer card details to start a card payment.
+      operationId: submitCardDetails
+      requestBody:
+        description: Card payment request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardPaymentProcessRequest'
+            example:
+              provider: "card-nigeria"
+              amount: 50000
+              card:
+                pan: "5061 4604 1012 1111 102"
+                expiry:
+                  month: "12"
+                  year: "2050"
+                cvv: "558"
+                cardHolderName: "Emily Heidenreich-Kohler"
+        required: true
+      responses:
+        '200':
+          description: Card payment requires the customer PIN or verification.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardPaymentActionEnvelope'
+              examples:
+                pin:
+                  summary: PIN required
+                  value:
+                    statusCode: 200
+                    data:
+                      reference: "DCD20260701133425EIQWF"
+                      action: "pin"
+                      data: {}
+                verification:
+                  summary: Verification required
+                  value:
+                    statusCode: 200
+                    data:
+                      reference: "DCD20260701133425EIQWF"
+                      action: "verification"
+                      data: {}
+        '201':
+          description: Card payment requires OTP or 3DS redirect.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardPaymentActionEnvelope'
+              examples:
+                otp:
+                  summary: OTP required
+                  value:
+                    statusCode: 201
+                    data:
+                      reference: "DCD20260701133425EIQWF"
+                      action: "otp"
+                      data: {}
+                redirect:
+                  summary: 3DS redirect required
+                  value:
+                    statusCode: 201
+                    data:
+                      reference: "DCD20260701144120NCDZW"
+                      action: "redirect"
+                      data:
+                        redirectURL: "https://s.6bd.co/card-3ds/mce1aN"
+  /payments/v1/cards/pin:
+    post:
+      tags:
+        - Card Collections
+      summary: Submit Card PIN
+      description: Submit the card PIN when a card payment response returns `action` as `pin`.
+      operationId: submitCardPin
+      requestBody:
+        description: Card PIN request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardPaymentPinRequest'
+            example:
+              reference: "DCD20260701144120NCDZW"
+              provider: "card-nigeria"
+              card:
+                pan: "5061 4604 1012 1111 106"
+                expiry:
+                  month: "12"
+                  year: "2050"
+                cvv: "562"
+                pin: "1106"
+                cardHolderName: "Donna Flatley"
+        required: true
+      responses:
+        '200':
+          description: Card payment requires the next customer action or verification.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardPaymentActionEnvelope'
+              examples:
+                pin:
+                  summary: PIN required
+                  value:
+                    statusCode: 200
+                    data:
+                      reference: "DCD20260701133425EIQWF"
+                      action: "pin"
+                      data: {}
+                verification:
+                  summary: Verification required
+                  value:
+                    statusCode: 200
+                    data:
+                      reference: "DCD20260701133425EIQWF"
+                      action: "verification"
+                      data: {}
+        '201':
+          description: Card payment requires the next customer action.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardPaymentActionEnvelope'
+              examples:
+                otp:
+                  summary: OTP required
+                  value:
+                    statusCode: 201
+                    data:
+                      reference: "DCD20260701133425EIQWF"
+                      action: "otp"
+                      data: {}
+                redirect:
+                  summary: 3DS redirect required
+                  value:
+                    statusCode: 201
+                    data:
+                      reference: "DCD20260701144120NCDZW"
+                      action: "redirect"
+                      data:
+                        redirectURL: "https://s.6bd.co/card-3ds/mce1aN"
+  /payments/v1/cards/otp:
+    post:
+      tags:
+        - Card Collections
+      summary: Submit Card OTP
+      description: Submit the customer OTP when a card payment response returns `action` as `otp`.
+      operationId: submitCardOtp
+      requestBody:
+        description: Card OTP request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardPaymentOtpRequest'
+            example:
+              reference: "DCD20260701144120NCDZW"
+              otp: "543210"
+        required: true
+      responses:
+        '200':
+          description: Card payment requires the next customer action or verification.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardPaymentActionEnvelope'
+              examples:
+                pin:
+                  summary: PIN required
+                  value:
+                    statusCode: 200
+                    data:
+                      reference: "DCD20260701133425EIQWF"
+                      action: "pin"
+                      data: {}
+                verification:
+                  summary: Verification required
+                  value:
+                    statusCode: 200
+                    data:
+                      reference: "DCD20260701133425EIQWF"
+                      action: "verification"
+                      data: {}
+        '201':
+          description: Card payment requires the next customer action.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardPaymentActionEnvelope'
+              examples:
+                otp:
+                  summary: OTP required
+                  value:
+                    statusCode: 201
+                    data:
+                      reference: "DCD20260701133425EIQWF"
+                      action: "otp"
+                      data: {}
+                redirect:
+                  summary: 3DS redirect required
+                  value:
+                    statusCode: 201
+                    data:
+                      reference: "DCD20260701144120NCDZW"
+                      action: "redirect"
+                      data:
+                        redirectURL: "https://s.6bd.co/card-3ds/mce1aN"
   /payments/v1/payments/verify/{reference}:
     get:
       tags:
@@ -521,6 +733,144 @@ components:
             - 'https://example.com/webhook'
         metadata:
           $ref: '#/components/schemas/Metadata'
+
+    CardPaymentExpiry:
+      required:
+        - month
+        - year
+      type: object
+      properties:
+        month:
+          type: string
+          description: Two-digit card expiry month.
+          example: "12"
+        year:
+          type: string
+          description: Four-digit card expiry year.
+          example: "2050"
+    CardPaymentCard:
+      required:
+        - pan
+        - expiry
+        - cvv
+        - cardHolderName
+      type: object
+      properties:
+        pan:
+          type: string
+          description: Card primary account number.
+          example: "5061 4604 1012 1111 102"
+        expiry:
+          $ref: '#/components/schemas/CardPaymentExpiry'
+        cvv:
+          type: string
+          description: Card security code.
+          example: "558"
+        cardHolderName:
+          type: string
+          description: Name printed on the card.
+          example: "Emily Heidenreich-Kohler"
+    CardPaymentPinCard:
+      allOf:
+        - $ref: '#/components/schemas/CardPaymentCard'
+        - required:
+            - pin
+          type: object
+          properties:
+            pin:
+              type: string
+              description: Card PIN required to continue the transaction.
+              example: "1106"
+    CardPaymentProcessRequest:
+      required:
+        - provider
+        - amount
+        - card
+      type: object
+      properties:
+        provider:
+          type: string
+          description: Card provider slug.
+          example: "card-nigeria"
+        amount:
+          $ref: '#/components/schemas/Amount'
+          description: Amount should be sent in the lowest denomination.
+          example: 50000
+        card:
+          $ref: '#/components/schemas/CardPaymentCard'
+    CardPaymentPinRequest:
+      required:
+        - reference
+        - provider
+        - card
+      type: object
+      properties:
+        reference:
+          type: string
+          description: Card payment reference returned by the previous card payment step.
+          example: "DCD20260701144120NCDZW"
+        provider:
+          type: string
+          description: Card provider slug.
+          example: "card-nigeria"
+        card:
+          $ref: '#/components/schemas/CardPaymentPinCard'
+    CardPaymentOtpRequest:
+      required:
+        - reference
+        - otp
+      type: object
+      properties:
+        reference:
+          type: string
+          description: Card payment reference returned by the previous card payment step.
+          example: "DCD20260701144120NCDZW"
+        otp:
+          type: string
+          description: One-time password collected from the customer.
+          example: "543210"
+    CardPaymentActionData:
+      type: object
+      properties:
+        redirectURL:
+          type: string
+          format: uri
+          description: URL where the customer should complete 3DS authentication when `action` is `redirect`.
+          example: "https://s.6bd.co/card-3ds/mce1aN"
+    CardPaymentActionResponse:
+      required:
+        - reference
+        - action
+        - data
+      type: object
+      properties:
+        reference:
+          type: string
+          description: Card payment reference to use in the next card step or verification request.
+          example: "DCD20260701133425EIQWF"
+        action:
+          type: string
+          description: Next action required to continue or verify the card payment.
+          enum:
+            - pin
+            - otp
+            - redirect
+            - verification
+          example: "pin"
+        data:
+          $ref: '#/components/schemas/CardPaymentActionData'
+    CardPaymentActionEnvelope:
+      required:
+        - statusCode
+        - data
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          description: Application status code returned in the response body.
+          example: 200
+        data:
+          $ref: '#/components/schemas/CardPaymentActionResponse'
 
     GenerateCheckoutURLResponse:
       type: object

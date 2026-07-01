@@ -1,0 +1,196 @@
+---
+title: "API de collecte - Carte"
+description: "Soumettez les détails de carte et continuez les collectes par carte via PIN, OTP, redirection 3DS ou vérification."
+icon: "credit-card"
+---
+
+Les paiements par carte peuvent nécessiter plusieurs appels API avant que Payfonte puisse confirmer le résultat final. La première requête carte renvoie une `action` qui indique à votre backend quoi collecter ou faire ensuite.
+
+## Endpoints
+
+| Méthode | Endpoint | Objet |
+| --- | --- | --- |
+| `POST` | `/payments/v1/cards/process` | Soumettre les détails de carte et démarrer le paiement par carte |
+| `POST` | `/payments/v1/cards/pin` | Soumettre le PIN de carte quand l'action de réponse est `pin` |
+| `POST` | `/payments/v1/cards/otp` | Soumettre l'OTP client quand l'action de réponse est `otp` |
+| `GET` | `/payments/v1/payments/verify/{reference}` | Vérifier le statut final de la transaction quand l'action de réponse est `verification` |
+
+## Étapes d'intégration
+
+<Steps>
+  <Step title="Soumettre les détails de carte">
+    Appelez `/payments/v1/cards/process` avec `provider`, `amount` et `card`. Envoyez votre identifiant client dans l'en-tête `client-id`.
+  </Step>
+  <Step title="Lire l'action">
+    Utilisez `data.action` pour déterminer s'il faut collecter le PIN, collecter l'OTP, rediriger pour la 3DS ou vérifier le paiement.
+  </Step>
+  <Step title="Continuer l'étape requise">
+    Soumettez le PIN ou l'OTP quand il est demandé, ou redirigez le client vers `data.data.redirectURL` pour l'authentification 3DS.
+  </Step>
+  <Step title="Confirmer le statut final">
+    Quand l'action est `verification`, appelez `GET /payments/v1/payments/verify/{reference}` depuis votre backend avant de livrer la commande.
+  </Step>
+</Steps>
+
+## Soumettre les détails de carte
+
+```bash
+curl --request POST \
+  --url https://sandbox-api.payfonte.com/payments/v1/cards/process \
+  --header 'client-id: <client-id>' \
+  --header 'client-secret: <client-secret>' \
+  --header 'content-type: application/json' \
+  --data '{
+    "provider": "card-nigeria",
+    "amount": 50000,
+    "card": {
+      "pan": "5061 4604 1012 1111 102",
+      "expiry": {
+        "month": "12",
+        "year": "2050"
+      },
+      "cvv": "558",
+      "cardHolderName": "Emily Heidenreich-Kohler"
+    }
+  }'
+```
+
+## Soumettre le PIN
+
+Utilisez cet endpoint quand la réponse précédente renvoie `data.action` avec la valeur `pin`.
+
+```bash
+curl --request POST \
+  --url https://sandbox-api.payfonte.com/payments/v1/cards/pin \
+  --header 'client-id: <client-id>' \
+  --header 'client-secret: <client-secret>' \
+  --header 'content-type: application/json' \
+  --data '{
+    "reference": "DCD20260701144120NCDZW",
+    "provider": "card-nigeria",
+    "card": {
+      "pan": "5061 4604 1012 1111 106",
+      "expiry": {
+        "month": "12",
+        "year": "2050"
+      },
+      "cvv": "562",
+      "pin": "1106",
+      "cardHolderName": "Donna Flatley"
+    }
+  }'
+```
+
+## Soumettre l'OTP
+
+Utilisez cet endpoint quand la réponse précédente renvoie `data.action` avec la valeur `otp`.
+
+```bash
+curl --request POST \
+  --url https://sandbox-api.payfonte.com/payments/v1/cards/otp \
+  --header 'client-id: <client-id>' \
+  --header 'client-secret: <client-secret>' \
+  --header 'content-type: application/json' \
+  --data '{
+    "reference": "DCD20260701144120NCDZW",
+    "otp": "543210"
+  }'
+```
+
+## Actions de réponse
+
+<AccordionGroup>
+  <Accordion title="pin" icon="key" defaultOpen>
+    Collectez le PIN de carte du client et appelez `POST /payments/v1/cards/pin` avec la `reference` renvoyée.
+
+```json
+{
+  "statusCode": 200,
+  "data": {
+    "reference": "DCD20260701133425EIQWF",
+    "action": "pin",
+    "data": {}
+  }
+}
+```
+  </Accordion>
+  <Accordion title="otp" icon="key">
+    Collectez l'OTP envoyé au client et appelez `POST /payments/v1/cards/otp` avec la `reference` renvoyée.
+
+```json
+{
+  "statusCode": 201,
+  "data": {
+    "reference": "DCD20260701133425EIQWF",
+    "action": "otp",
+    "data": {}
+  }
+}
+```
+  </Accordion>
+  <Accordion title="redirect" icon="arrow-up-right-from-square">
+    Redirigez le client vers `data.data.redirectURL` pour terminer l'authentification 3DS. Après le flux de redirection, vérifiez le paiement côté serveur.
+
+```json
+{
+  "statusCode": 201,
+  "data": {
+    "reference": "DCD20260701144120NCDZW",
+    "action": "redirect",
+    "data": {
+      "redirectURL": "https://s.6bd.co/card-3ds/mce1aN"
+    }
+  }
+}
+```
+  </Accordion>
+  <Accordion title="verification" icon="shield-check">
+    Appelez `GET /payments/v1/payments/verify/{reference}` avec la `reference` renvoyée pour confirmer le statut final de la transaction.
+
+```json
+{
+  "statusCode": 200,
+  "data": {
+    "reference": "DCD20260701133425EIQWF",
+    "action": "verification",
+    "data": {}
+  }
+}
+```
+  </Accordion>
+</AccordionGroup>
+
+## Résumé de décision des flux
+
+| Action | Étape suivante pour le client | Étape suivante pour le marchand |
+| --- | --- | --- |
+| `pin` | Saisir le PIN de carte | Appeler `POST /payments/v1/cards/pin` |
+| `otp` | Partager l'OTP | Appeler `POST /payments/v1/cards/otp` |
+| `redirect` | Terminer l'authentification 3DS | Rediriger vers `data.data.redirectURL`, puis vérifier |
+| `verification` | Aucune autre saisie client | Appeler `GET /payments/v1/payments/verify/{reference}` |
+
+## Règles importantes
+
+<Warning>
+  Les valeurs de montant doivent être des entiers en sous-unités. Les décimales ne sont pas prises en charge.
+</Warning>
+
+Voir [Spécification des montants](/fr/guides/introductions/amount-specification).
+
+<Warning>
+  Collectez et soumettez les données de carte uniquement depuis des environnements sécurisés et conformes PCI. Ne journalisez pas les valeurs PAN, CVV, PIN ou OTP.
+</Warning>
+
+## Documentation associée
+
+<CardGroup cols={3}>
+  <Card title="Référence API" icon="file-code" href="/fr/api-reference/introduction">
+    Consultez les définitions d'endpoints carte et les schémas de requête.
+  </Card>
+  <Card title="Webhooks" icon="bell" href="/fr/guides/collections/webhook">
+    Confirmez les résultats finaux des transactions de manière asynchrone.
+  </Card>
+  <Card title="Providers pris en charge" icon="globe-africa" href="/fr/guides/introductions/supported-providers">
+    Confirmez les slugs providers et la couverture pays.
+  </Card>
+</CardGroup>

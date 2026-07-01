@@ -70,6 +70,7 @@
                   "en/guides/collections/overview",
                   "en/guides/collections/inline",
                   "en/guides/collections/standard",
+                  "en/guides/collections/card-api",
                   "en/guides/collections/webhook",
                   {
                     "group": "Collections API - Direct",
@@ -158,6 +159,7 @@
                   "fr/guides/collections/overview",
                   "fr/guides/collections/inline",
                   "fr/guides/collections/standard",
+                  "fr/guides/collections/card-api",
                   "fr/guides/collections/webhook",
                   {
                     "group": "API de collecte - Direct",
