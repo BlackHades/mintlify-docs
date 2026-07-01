@@ -1,17 +1,17 @@
 ---
 title: "API de collecte - Carte"
-description: "Soumettez les détails de carte et continuez les collectes par carte via PIN, OTP, redirection 3DS ou vérification."
+description: "Soumettez les détails de carte et poursuivez les collectes par carte via code PIN, OTP, redirection 3DS ou vérification."
 icon: "credit-card"
 ---
 
-Les paiements par carte peuvent nécessiter plusieurs appels API avant que Payfonte puisse confirmer le résultat final. La première requête carte renvoie une `action` qui indique à votre backend quoi collecter ou faire ensuite.
+Les paiements par carte peuvent nécessiter plusieurs appels API avant que Payfonte puisse confirmer le résultat final. La première requête de carte renvoie une `action` qui indique à votre backend ce qu'il doit collecter ou faire ensuite.
 
 ## Endpoints
 
 | Méthode | Endpoint | Objet |
 | --- | --- | --- |
 | `POST` | `/payments/v1/cards/process` | Soumettre les détails de carte et démarrer le paiement par carte |
-| `POST` | `/payments/v1/cards/pin` | Soumettre le PIN de carte quand l'action de réponse est `pin` |
+| `POST` | `/payments/v1/cards/pin` | Soumettre le code PIN de carte quand l'action de réponse est `pin` |
 | `POST` | `/payments/v1/cards/otp` | Soumettre l'OTP client quand l'action de réponse est `otp` |
 | `GET` | `/payments/v1/payments/verify/{reference}` | Vérifier le statut final de la transaction quand l'action de réponse est `verification` |
 
@@ -22,10 +22,10 @@ Les paiements par carte peuvent nécessiter plusieurs appels API avant que Payfo
     Appelez `/payments/v1/cards/process` avec `provider`, `amount` et `card`. Envoyez votre identifiant client dans l'en-tête `client-id`.
   </Step>
   <Step title="Lire l'action">
-    Utilisez `data.action` pour déterminer s'il faut collecter le PIN, collecter l'OTP, rediriger pour la 3DS ou vérifier le paiement.
+    Utilisez `data.action` pour déterminer s'il faut collecter le code PIN, collecter l'OTP, rediriger pour la 3DS ou vérifier le paiement.
   </Step>
   <Step title="Continuer l'étape requise">
-    Soumettez le PIN ou l'OTP quand il est demandé, ou redirigez le client vers `data.data.redirectURL` pour l'authentification 3DS.
+    Soumettez le code PIN ou l'OTP quand il est demandé, ou redirigez le client vers `data.data.redirectURL` pour l'authentification 3DS.
   </Step>
   <Step title="Confirmer le statut final">
     Quand l'action est `verification`, appelez `GET /payments/v1/payments/verify/{reference}` depuis votre backend avant de livrer la commande.
@@ -55,7 +55,7 @@ curl --request POST \
   }'
 ```
 
-## Soumettre le PIN
+## Soumettre le code PIN
 
 Utilisez cet endpoint quand la réponse précédente renvoie `data.action` avec la valeur `pin`.
 
@@ -101,7 +101,7 @@ curl --request POST \
 
 <AccordionGroup>
   <Accordion title="pin" icon="key" defaultOpen>
-    Collectez le PIN de carte du client et appelez `POST /payments/v1/cards/pin` avec la `reference` renvoyée.
+    Collectez le code PIN de carte du client et appelez `POST /payments/v1/cards/pin` avec la `reference` renvoyée.
 
 ```json
 {
@@ -164,7 +164,7 @@ curl --request POST \
 
 | Action | Étape suivante pour le client | Étape suivante pour le marchand |
 | --- | --- | --- |
-| `pin` | Saisir le PIN de carte | Appeler `POST /payments/v1/cards/pin` |
+| `pin` | Saisir le code PIN de carte | Appeler `POST /payments/v1/cards/pin` |
 | `otp` | Partager l'OTP | Appeler `POST /payments/v1/cards/otp` |
 | `redirect` | Terminer l'authentification 3DS | Rediriger vers `data.data.redirectURL`, puis vérifier |
 | `verification` | Aucune autre saisie client | Appeler `GET /payments/v1/payments/verify/{reference}` |
