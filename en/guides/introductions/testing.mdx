@@ -67,6 +67,32 @@ For both collections and disbursements in sandbox, you can control the expected 
 
 When testing pending flows, do not treat the initial API response as final. Wait for webhook updates or verify the transaction status from your backend before marking the transaction as `success` or `failed`.
 
+## Card Test Details
+
+Use these sandbox card details to test card collection authentication paths and final outcomes.
+
+| Number | Expiry | CVV | PIN | OTP | Test Case | Status |
+| --- | --- | --- | --- | --- | --- | --- |
+| `5061 4604 1012 1111 101` | `12/50` | `557` | `1102` | `543210` | Pin | PENDING |
+| `5061 4604 1012 1111 102` | `12/50` | `558` | `1103` | `543210` | Pin+OTP | PENDING |
+| `5061 4604 1012 1111 103` | `12/50` | `559` | `1107` | `543210` | Pin+3DS | PENDING |
+| `5061 4604 1012 1111 104` | `12/50` | `560` | `1104` | `543210` | Pin | SUCCESS |
+| `5061 4604 1012 1111 105` | `12/50` | `561` | `1105` | `543210` | Pin+OTP | SUCCESS |
+| `5061 4604 1012 1111 106` | `12/50` | `562` | `1106` | `543210` | Pin+3DS | SUCCESS |
+| `5061 4604 1012 1111 107` | `12/50` | `563` | `1107` | `123456` | Pin | FAIL |
+| `5061 4604 1012 1111 108` | `12/50` | `564` | `1108` | `245678` | Pin+OTP | FAIL |
+| `5061 4604 1012 1111 109` | `12/50` | `565` | `1109` | `456789` | Pin+3ds | FAIL |
+| `5061 4604 1012 1111 110` | `12/50` | `566` | `1110` | `234567` | No auth |  |
+| `5061 4604 1012 1111 111` | `12/50` | `567` | `1111` | `334455` | Insufficient balance |  |
+| `5061 4604 1012 1111 112` | `3/50` | `568` | `1111` | `334455` | Expired card |  |
+| `4508 7500 15741 019(USD)` | `12/50` | `100` |  |  | 3DS | SUCCESS |
+| `4012 0000 3333 0026(USD)` | `12/50` | `100` |  |  | 3DS | SUCCESS |
+| `5123 4500 0000 0008(USD)` | `12/50` | `100` |  |  | 3DS | SUCCESS |
+| `2223 0000 0000 0007(USD)` | `12/50` | `100` |  |  | 3DS | FAIL |
+| `5111 1111 1111 1118(USD)` | `12/50` | `100` |  |  | 3DS | FAIL |
+| `2223 0000 0000 0007(USD)` | `12/50` | `100` |  |  | 3DS | FAIL |
+| `5061 4604 1012 1111 103(USD)` | `12/50` | `100` | `1107` |  | 3DS | PENDING |
+
 ## Provider-Specific Test Data
 
 <AccordionGroup>
