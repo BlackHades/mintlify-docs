@@ -3,7 +3,6 @@
 ## Project Overview
 
 This repository contains the Payfonte Mintlify documentation site.
-
 - `en/` contains English documentation pages.
 - `fr/` contains French documentation pages.
 - `api-reference/` contains shared OpenAPI assets.
