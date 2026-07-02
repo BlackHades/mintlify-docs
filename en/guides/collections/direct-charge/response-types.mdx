@@ -1,6 +1,6 @@
 ---
 title: "Direct Charge Processing Flows"
-description: "Understand Direct Charge response types across processing, redirect, bankTransfer, and pre-OTP provider flows."
+description: "Understand Direct Charge response types across processing, redirect, bankTransfer, pre-OTP, and OTP provider flows."
 icon: "bolt"
 ---
 
@@ -10,6 +10,7 @@ When you call the Direct Charge API, the initial response tells you how the cust
 - `redirect` (provider-hosted completion flow)
 - `bankTransfer` (customer must transfer to returned account details)
 - `pre-otp` (customer code required before request)
+- `otp` (customer must enter an OTP returned after request initiation)
 
 ## 1) Processing Flow (USSD/STK Prompt)
 
@@ -181,6 +182,91 @@ Some providers require customer to generate a provider code/OTP before you send 
 - Validate format before API call.
 - Continue with normal webhook/verification completion flow.
 
+## 5) OTP Flow
+
+Some providers send an OTP to the customer after you initiate the Direct Charge request. Your application must collect that OTP from the customer and submit it to the confirmation API.
+
+### What happens
+
+1. You initiate direct charge.
+2. API responds with `action` as `otp`.
+3. Customer receives an OTP by SMS or provider channel.
+4. You display an interface where the customer can enter the OTP.
+5. Your backend submits the OTP with the transaction `reference`.
+6. Transaction remains pending until provider final response.
+
+### How to detect
+
+`data.action` is `otp`. OTP instructions are returned in `data.data.message`, and `data.data.numberOfDigits` may tell you the expected OTP length.
+
+```json
+{
+  "data": {
+    "action": "otp",
+    "sessionId": "DDC20260702112401ZIWGF",
+    "provider": "qmoney-gambia",
+    "reference": "DDC20260702112401ZIWGF",
+    "amount": 1000,
+    "currency": "GMD",
+    "totalAmount": 1000,
+    "status": "pending",
+    "charge": 0,
+    "data": {
+      "message": "You will receive an OTP via SMS on your phone number 3141106. Please provide the OTP to continue this payment.",
+      "numberOfDigits": 6
+    },
+    "statusDescription": "Awaiting Customer Input"
+  },
+  "statusCode": 201
+}
+```
+
+### Submit customer OTP
+
+```bash
+curl --request POST \
+  --url https://sandbox-api.payfonte.com/payments/v1/payments/confirm \
+  --header 'client-id: <client-id>' \
+  --header 'client-secret: <client-secret>' \
+  --header 'content-type: application/json' \
+  --data '{
+    "reference": "DDC20260702112401ZIWGF",
+    "customerInput": {
+      "otp": "445985"
+    }
+  }'
+```
+
+### Confirmation response
+
+```json
+{
+  "statusCode": 201,
+  "data": {
+    "action": "processing",
+    "sessionId": "cos-1z3x983b01300",
+    "provider": "qmoney-gambia",
+    "reference": "DDC20260702115234PTIFG",
+    "providersReference": "PIX_44241170102532681668",
+    "amount": 1000,
+    "totalAmount": 1000,
+    "charge": 0,
+    "status": "pending",
+    "data": {
+      "message": "OTP submitted successfully. Payment confirmation is processing."
+    },
+    "statusDescription": "Awaiting Provider's Feedback"
+  }
+}
+```
+
+### Merchant handling
+
+- Build a customer-facing OTP entry interface when `data.action` is `otp`.
+- Use `data.data.numberOfDigits` to guide validation when it is present.
+- Submit the OTP from your backend to `POST /payments/v1/payments/confirm`.
+- Keep the payment pending until webhook or verification confirms final status.
+
 ## Flow Decision Summary
 
 | Action | Customer next step | Merchant next step |
@@ -189,6 +275,7 @@ Some providers require customer to generate a provider code/OTP before you send 
 | `redirect` | Complete payment on provider page | Redirect + wait for webhook/verify |
 | `bankTransfer` | Transfer to the returned account details | Display account details + wait for webhook/verify |
 | `pre-otp` request pattern | Generate and share code first | Send code in `customerInput.customerCode` |
+| `otp` | Enter OTP received by SMS/provider channel | Collect OTP + submit confirmation request |
 
 ## Important Rules
 

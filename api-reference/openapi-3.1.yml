@@ -60,6 +60,46 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/DirectChargeAPIResponse'
+  /payments/v1/payments/confirm:
+    post:
+      tags:
+        - Collections
+      summary: Confirm Direct Charge Customer Input
+      description: Submit customer input, such as an OTP, when a Direct Charge response returns `action` as `otp`.
+      operationId: confirmDirectChargeCustomerInput
+      requestBody:
+        description: Direct Charge customer input confirmation request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DirectChargeConfirmRequest'
+            example:
+              reference: "DDC20260702112401ZIWGF"
+              customerInput:
+                otp: "445985"
+        required: true
+      responses:
+        '201':
+          description: Customer input accepted and payment confirmation is processing.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectChargeConfirmEnvelope'
+              example:
+                statusCode: 201
+                data:
+                  action: "processing"
+                  sessionId: "cos-1z3x983b01300"
+                  provider: "qmoney-gambia"
+                  reference: "DDC20260702115234PTIFG"
+                  providersReference: "PIX_44241170102532681668"
+                  amount: 1000
+                  totalAmount: 1000
+                  charge: 0
+                  status: "pending"
+                  data:
+                    message: "OTP submitted successfully. Payment confirmation is processing."
+                  statusDescription: "Awaiting Provider's Feedback"
   /payments/v1/cards/process:
     post:
       tags:
@@ -908,6 +948,84 @@ components:
           description: Transaction Session ID. This is from the provider.
         amount:
           $ref: '#/components/schemas/Amount'
+    DirectChargeConfirmRequest:
+      required:
+        - reference
+        - customerInput
+      type: object
+      properties:
+        reference:
+          type: string
+          description: Direct Charge transaction reference returned by the initial request.
+          example: "DDC20260702112401ZIWGF"
+        customerInput:
+          type: object
+          required:
+            - otp
+          properties:
+            otp:
+              type: string
+              description: One-time password collected from the customer.
+              example: "445985"
+    DirectChargeConfirmResponse:
+      type: object
+      properties:
+        action:
+          type: string
+          description: Next action required after customer input is submitted.
+          example: "processing"
+        sessionId:
+          type: string
+          description: Transaction session ID.
+          example: "cos-1z3x983b01300"
+        provider:
+          type: string
+          description: Provider slug processing the transaction.
+          example: "qmoney-gambia"
+        reference:
+          type: string
+          description: Transaction reference.
+          example: "DDC20260702115234PTIFG"
+        providersReference:
+          type: string
+          description: Provider-side transaction reference, when available.
+          example: "PIX_44241170102532681668"
+        amount:
+          $ref: '#/components/schemas/Amount'
+          example: 1000
+        totalAmount:
+          type: integer
+          description: Total amount after charges.
+          example: 1000
+        charge:
+          type: integer
+          description: Transaction charge.
+          example: 0
+        status:
+          type: string
+          description: Transaction status after customer input is submitted.
+          example: "pending"
+        data:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "OTP submitted successfully. Payment confirmation is processing."
+        statusDescription:
+          type: string
+          example: "Awaiting Provider's Feedback"
+    DirectChargeConfirmEnvelope:
+      required:
+        - statusCode
+        - data
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          description: Application status code returned in the response body.
+          example: 201
+        data:
+          $ref: '#/components/schemas/DirectChargeConfirmResponse'
     VerifyTransactionResponse:
       type: object
       properties:
