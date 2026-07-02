@@ -15,6 +15,10 @@ Card payments may require more than one API call before Payfonte can confirm the
 | `POST` | `/payments/v1/cards/otp` | Submit customer OTP when the response action is `otp` |
 | `GET` | `/payments/v1/payments/verify/{reference}` | Verify final transaction status when the response action is `verification` |
 
+## Testing
+
+Sandbox card test data is available in [Testing](/en/guides/introductions/testing#card-test-details).
+
 ## Integration Steps
 
 <Steps>
@@ -190,7 +194,7 @@ See [Amount Specification](/en/guides/introductions/amount-specification).
   <Card title="Webhooks" icon="bell" href="/en/guides/collections/webhook">
     Confirm final transaction outcomes asynchronously.
   </Card>
-  <Card title="Supported Providers" icon="globe-africa" href="/en/guides/introductions/supported-providers">
-    Confirm provider slugs and country coverage.
+  <Card title="Testing" icon="flask" href="/en/guides/introductions/testing#card-test-details">
+    Use sandbox card data for PIN, OTP, 3DS, success, failed, and pending scenarios.
   </Card>
 </CardGroup>

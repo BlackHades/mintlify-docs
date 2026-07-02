@@ -65,7 +65,7 @@ paths:
       tags:
         - Card Collections
       summary: Submit Card Details
-      description: Submit customer card details to start a card payment.
+      description: Submit customer card details to start a card payment. Sandbox card test data is available in [Testing](https://docs.payfonte.com/en/guides/introductions/testing#card-test-details).
       operationId: submitCardDetails
       requestBody:
         description: Card payment request
@@ -137,7 +137,7 @@ paths:
       tags:
         - Card Collections
       summary: Submit Card PIN
-      description: Submit the card PIN when a card payment response returns `action` as `pin`.
+      description: Submit the card PIN when a card payment response returns `action` as `pin`. Sandbox card test data is available in [Testing](https://docs.payfonte.com/en/guides/introductions/testing#card-test-details).
       operationId: submitCardPin
       requestBody:
         description: Card PIN request
@@ -210,7 +210,7 @@ paths:
       tags:
         - Card Collections
       summary: Submit Card OTP
-      description: Submit the customer OTP when a card payment response returns `action` as `otp`.
+      description: Submit the customer OTP when a card payment response returns `action` as `otp`. Sandbox card test data is available in [Testing](https://docs.payfonte.com/en/guides/introductions/testing#card-test-details).
       operationId: submitCardOtp
       requestBody:
         description: Card OTP request

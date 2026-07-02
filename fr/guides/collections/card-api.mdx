@@ -15,6 +15,10 @@ Les paiements par carte peuvent nécessiter plusieurs appels API avant que Payfo
 | `POST` | `/payments/v1/cards/otp` | Soumettre l'OTP client quand l'action de réponse est `otp` |
 | `GET` | `/payments/v1/payments/verify/{reference}` | Vérifier le statut final de la transaction quand l'action de réponse est `verification` |
 
+## Tests
+
+Les données de test des cartes sandbox sont disponibles dans [Tests](/fr/guides/introductions/testing#details-de-test-des-cartes).
+
 ## Étapes d'intégration
 
 <Steps>
@@ -190,7 +194,7 @@ Voir [Spécification des montants](/fr/guides/introductions/amount-specification
   <Card title="Webhooks" icon="bell" href="/fr/guides/collections/webhook">
     Confirmez les résultats finaux des transactions de manière asynchrone.
   </Card>
-  <Card title="Providers pris en charge" icon="globe-africa" href="/fr/guides/introductions/supported-providers">
-    Confirmez les slugs providers et la couverture pays.
+  <Card title="Tests" icon="flask" href="/fr/guides/introductions/testing#details-de-test-des-cartes">
+    Utilisez les données de carte sandbox pour les scénarios PIN, OTP, 3DS, success, failed et pending.
   </Card>
 </CardGroup>
