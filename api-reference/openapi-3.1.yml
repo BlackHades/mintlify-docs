@@ -114,8 +114,11 @@ paths:
             schema:
               $ref: '#/components/schemas/CardPaymentProcessRequest'
             example:
+              reference: "ORDER-1001"
               provider: "card-nigeria"
               amount: 50000
+              redirectURL: "https://yourapp.com/payment/complete"
+              webhook: "https://yourapp.com/webhooks/payfonte"
               card:
                 pan: "5061 4604 1012 1111 102"
                 expiry:
@@ -618,7 +621,7 @@ components:
   schemas:
     Amount:
       type: integer
-      description: Amount should be in the subunit of the supported currency i.e value * 100 [Amount Specification](https://docs.payfonte.com/guides/introductions/amount-specification)
+      description: Amount should be in the subunit of the supported currency i.e value * 100. See [Amount Specification](https://docs.payfonte.com/en/guides/introductions/amount-specification).
       format: int64
       example: 100000
       examples:
@@ -704,7 +707,7 @@ components:
             - NGN
         amount:
           $ref: '#/components/schemas/Amount'
-          description: This is the amount to charge the customer. Amount should be sent in the lowest denomination e.g for 100 USD you should send 100 * 100 = 10000
+          description: This is the amount to charge the customer. Amount should be sent in the lowest denomination e.g for 100 USD you should send 100 * 100 = 10000. See [Amount Specification](https://docs.payfonte.com/en/guides/introductions/amount-specification).
           examples:
             - 10000
         user:
@@ -752,7 +755,7 @@ components:
             - mtn-momo-ivory-coast
         amount:
           $ref: '#/components/schemas/Amount'
-          description: Amount should be sent in the lowest denomination e.g for 100 USD you should send 100 * 100 = 10000
+          description: Amount should be sent in the lowest denomination e.g for 100 USD you should send 100 * 100 = 10000. See [Amount Specification](https://docs.payfonte.com/en/guides/introductions/amount-specification).
         reference:
           type: string
           description: A reference code you'll generate to identify this transaction. This must be unique for every transaction. If you don't pass one, we will generate one for you.
@@ -857,14 +860,28 @@ components:
         - card
       type: object
       properties:
+        reference:
+          type: string
+          description: A reference code you'll generate to identify this transaction. This must be unique for every transaction. If you don't pass one, we will generate one for you.
+          example: "ORDER-1001"
         provider:
           type: string
           description: Card provider slug.
           example: "card-nigeria"
         amount:
           $ref: '#/components/schemas/Amount'
-          description: Amount should be sent in the lowest denomination.
+          description: Amount should be sent in the lowest denomination. See [Amount Specification](https://docs.payfonte.com/en/guides/introductions/amount-specification).
           example: 50000
+        redirectURL:
+          type: string
+          format: uri
+          description: Fully qualified URL to which the customer should be redirected after the payment is completed.
+          example: "https://yourapp.com/payment/complete"
+        webhook:
+          type: string
+          format: uri
+          description: This is a URL, if this is passed we will send the event webhook payload to this endpoint. Use this to override the webhook url provided on the dashboard for this transaction.
+          example: "https://yourapp.com/webhooks/payfonte"
         card:
           $ref: '#/components/schemas/CardPaymentCard'
     CardPaymentPinRequest:
@@ -1024,7 +1041,7 @@ components:
           example: 1000
         totalAmount:
           type: integer
-          description: Total amount after charges.
+          description: Total amount after charges. See [Amount Specification](https://docs.payfonte.com/en/guides/introductions/amount-specification).
           example: 1000
         charge:
           type: integer
@@ -1321,7 +1338,7 @@ components:
           $ref: "#/components/schemas/Amount"
         amountPayable:
           $ref: "#/components/schemas/Amount"
-          description: This signifies the actual amount sent to the recipient
+          description: This signifies the actual amount sent to the recipient. See [Amount Specification](https://docs.payfonte.com/en/guides/introductions/amount-specification).
         provider:
           $ref: "#/components/schemas/Provider"
         currency:
@@ -1375,7 +1392,7 @@ components:
             - deposit
         amount:
           $ref: "#/components/schemas/Amount"
-          description: This signifies the actual amount in your wallet. This is in the lowest denomination
+          description: This signifies the actual amount in your wallet. This is in the lowest denomination. See [Amount Specification](https://docs.payfonte.com/en/guides/introductions/amount-specification).
         currency:
           $ref: "#/components/schemas/Currency"
         country:

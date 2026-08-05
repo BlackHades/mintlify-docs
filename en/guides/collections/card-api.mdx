@@ -23,7 +23,7 @@ Sandbox card test data is available in [Testing](/en/guides/introductions/testin
 
 <Steps>
   <Step title="Submit card details">
-    Call `/payments/v1/cards/process` with `provider`, `amount`, and `card`. Send your client identifier in the `client-id` header.
+    Call `/payments/v1/cards/process` with `provider`, `amount`, and `card`. You can also pass root-level `reference`, `redirectURL`, and `webhook` values for transaction tracking, customer return, and webhook override behavior. Send your client identifier in the `client-id` header.
   </Step>
   <Step title="Read the action">
     Use `data.action` to decide whether to collect PIN, collect OTP, redirect for 3DS, or verify the payment.
@@ -45,8 +45,11 @@ curl --request POST \
   --header 'client-secret: <client-secret>' \
   --header 'content-type: application/json' \
   --data '{
+    "reference": "ORDER-1001",
     "provider": "card-nigeria",
     "amount": 50000,
+    "redirectURL": "https://yourapp.com/payment/complete",
+    "webhook": "https://yourapp.com/webhooks/payfonte",
     "card": {
       "pan": "5061 4604 1012 1111 102",
       "expiry": {
@@ -62,6 +65,17 @@ curl --request POST \
     }
   }'
 ```
+
+## Request Fields
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `provider` | string | Yes | Card provider slug, for example `card-nigeria` |
+| `amount` | integer | Yes | Amount in minor units |
+| `card` | object | Yes | Card and customer billing details |
+| `reference` | string | Recommended | Unique transaction identifier from your system |
+| `redirectURL` | string | No | Customer return URL after payment |
+| `webhook` | string | No | Per-transaction webhook override URL |
 
 ## Submit PIN
 
