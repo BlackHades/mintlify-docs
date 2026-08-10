@@ -1,0 +1,300 @@
+---
+title: "Flux de traitement Direct Charge"
+description: "Comprenez les types de réponse Direct Charge pour les flux processing, redirect, bankTransfer, pre-OTP et OTP."
+icon: "bolt"
+---
+
+Quand vous appelez l'API Direct Charge, la réponse initiale indique comment le client doit continuer ou ce que votre backend doit attendre. La plupart des flux Direct Charge suivent l'un de ces types de réponse :
+
+- `processing` : flux de prompt USSD ou STK
+- `redirect` : flux de finalisation hébergé par le provider
+- `bankTransfer` : le client doit faire un virement vers les détails de compte renvoyés
+- `pre-otp` : code client requis avant la requete
+- `otp` : le client doit saisir un OTP renvoyé après l'initiation de la requête
+
+## 1) Flux processing, prompt USSD ou STK
+
+Le client reçoit une demande d'autorisation sur son appareil mobile et confirme avec son PIN.
+
+### Ce qui se passe
+
+1. Vous initiez le direct charge.
+2. Le provider envoie un STK push ou un prompt USSD au client.
+3. Le client autorise sur son appareil.
+4. La transaction reste en attente jusqu'à la réponse finale du provider.
+
+### Comment le détecter
+
+`data.action` vaut `processing`.
+
+```json
+{
+  "data": {
+    "action": "processing",
+    "sessionId": "1031-4120-a98f-9357692945",
+    "provider": "safaricom-kenya",
+    "channel": "mobile-money",
+    "reference": "DDC20250812042317DIFMW",
+    "amount": 1000,
+    "status": "pending",
+    "charge": 5,
+    "statusDescription": "Awaiting Provider's Feedback"
+  },
+  "statusCode": 201
+}
+```
+
+### Traitement côté marchand
+
+- Affichez un état en attente au client.
+- Ne livrez pas sur la reponse initiale.
+- Attendez le webhook ou vérifiez par référence.
+
+## 2) Flux redirect
+
+Le provider renvoie un lien ; le client doit terminer le paiement sur la page ou l'application du provider.
+
+### Ce qui se passe
+
+1. Vous initiez le direct charge.
+2. L'API répond avec une URL de redirection.
+3. Le client finalise le paiement sur le canal du provider.
+4. Le client peut ensuite revenir vers votre application ou votre site.
+
+### Comment le détecter
+
+`data.action` vaut `redirect` et l'URL se trouve généralement dans `data.data.link`.
+
+```json
+{
+  "data": {
+    "action": "redirect",
+    "sessionId": "v1nadjww8lwfxxd7giumi3dyik7pzaxrxqmyvdeuunvixo25jhqf4o6wzuxhjdzg",
+    "provider": "orange-ivory-coast",
+    "channel": "mobile-money",
+    "reference": "DDC20250812042546ICXFC",
+    "amount": 10000,
+    "status": "pending",
+    "charge": 150,
+    "statusDescription": "Awaiting Provider's Feedback",
+    "data": {
+      "link": "https://mpayment.orange-money.com/sx/mpayment/abstract/...",
+      "message": "Click link to complete your payment",
+      "reference": "DDC20250812042546ICXFC"
+    }
+  },
+  "statusCode": 201
+}
+```
+
+### Traitement côté marchand
+
+- Redirigez l'utilisateur vers `data.data.link`.
+- Au retour, vérifiez toujours le statut final côté serveur.
+- Ne marquez jamais le paiement comme réussi uniquement sur la redirection.
+
+## 3) Flux bank transfer
+
+Payfonte renvoie les détails d'un compte bancaire ; le client doit effectuer un virement bancaire pour finaliser le paiement.
+
+### Ce qui se passe
+
+1. Vous initiez le direct charge avec un provider bank transfer.
+2. L'API répond avec les détails du compte pour le paiement client.
+3. Vous affichez les détails du compte au client.
+4. Le client envoie le virement depuis son application bancaire ou son canal bancaire.
+5. La transaction reste en attente jusqu'à la confirmation du provider.
+
+### Comment le détecter
+
+`data.action` vaut `bankTransfer`. Les détails de compte sont renvoyés dans `data.data`.
+
+```json
+{
+  "data": {
+    "action": "bankTransfer",
+    "sessionId": "BT-20250812043010-9D7M2",
+    "provider": "bank-transfer-nigeria",
+    "channel": "bank-transfer",
+    "reference": "ORDER-1002",
+    "amount": 10000,
+    "status": "pending",
+    "charge": 100,
+    "statusDescription": "Awaiting customer bank transfer",
+    "data": {
+      "accountName": "PAYFONTE / Karis Clothing",
+      "accountNumber": "0123456789",
+      "bankName": "Wema Bank",
+      "bankCode": "035",
+      "amount": 10000,
+      "reference": "ORDER-1002",
+      "expiresAt": "2025-08-12T04:45:10.000Z"
+    }
+  },
+  "statusCode": 201
+}
+```
+
+### Traitement côté marchand
+
+- Affichez clairement les détails de compte renvoyés au client.
+- Incluez le nom de la banque, le numero de compte, le nom du compte, le montant, la reference et l'expiration quand ils sont presents.
+- Gardez le paiement en attente jusqu'à confirmation du statut final par webhook ou vérification.
+- Ne livrez pas uniquement sur la base d'une preuve de virement.
+
+## 4) Flux pre-OTP
+
+Certains providers demandent au client de générer un code provider ou OTP avant l'envoi de la requête de débit.
+
+### Ce qui se passe
+
+1. Le client génère un code via l'USSD du provider.
+2. Le client partage ce code avec le marchand.
+3. Le marchand envoie `customerInput.customerCode`.
+4. Le provider traite le debit.
+
+### Codes USSD fréquents
+
+- Orange Ivory Coast : `#144*82#`
+- Orange Senegal : `#144#391#`
+- Orange Burkina Faso : `*144*4*6*Amount*PIN#`
+- Orange Mali : `#144#37#`
+
+### Exemple de requête
+
+```json
+{
+  "reference": "ORDER-1002",
+  "amount": 50000,
+  "provider": "orange-senegal",
+  "webhook": "https://yourapp.com/webhooks/payfonte",
+  "narration": "Direct charge test",
+  "customerInput": {
+    "phoneNumber": "786175702",
+    "customerCode": "758610"
+  }
+}
+```
+
+### Traitement côté marchand
+
+- Collectez explicitement l'OTP ou le code client.
+- Validez son format avant l'appel API.
+- Continuez ensuite avec le flux normal de finalisation via webhook ou vérification.
+
+## 5) Flux OTP
+
+Certains providers envoient un OTP au client après l'initiation de la requête Direct Charge. Votre application doit collecter cet OTP auprès du client et l'envoyer à l'API de confirmation.
+
+### Ce qui se passe
+
+1. Vous initiez le direct charge.
+2. L'API répond avec `action` égal à `otp`.
+3. Le client reçoit un OTP par SMS ou via le canal du provider.
+4. Vous affichez une interface où le client peut saisir l'OTP.
+5. Votre backend soumet l'OTP avec la `reference` de la transaction.
+6. La transaction reste en attente jusqu'à la réponse finale du provider.
+
+### Comment le détecter
+
+`data.action` vaut `otp`. Les instructions OTP sont renvoyées dans `data.data.message`, et `data.data.numberOfDigits` peut indiquer la longueur attendue de l'OTP.
+
+```json
+{
+  "data": {
+    "action": "otp",
+    "sessionId": "DDC20260702112401ZIWGF",
+    "provider": "qmoney-gambia",
+    "reference": "DDC20260702112401ZIWGF",
+    "amount": 1000,
+    "currency": "GMD",
+    "totalAmount": 1000,
+    "status": "pending",
+    "charge": 0,
+    "data": {
+      "message": "You will receive an OTP via SMS on your phone number 3141106. Please provide the OTP to continue this payment.",
+      "numberOfDigits": 6
+    },
+    "statusDescription": "Awaiting Customer Input"
+  },
+  "statusCode": 201
+}
+```
+
+### Soumettre l'OTP client
+
+```bash
+curl --request POST \
+  --url https://sandbox-api.payfonte.com/payments/v1/payments/confirm \
+  --header 'client-id: <client-id>' \
+  --header 'client-secret: <client-secret>' \
+  --header 'content-type: application/json' \
+  --data '{
+    "reference": "DDC20260702112401ZIWGF",
+    "customerInput": {
+      "otp": "445985"
+    }
+  }'
+```
+
+### Réponse de confirmation
+
+```json
+{
+  "statusCode": 201,
+  "data": {
+    "action": "processing",
+    "sessionId": "cos-1z3x983b01300",
+    "provider": "qmoney-gambia",
+    "reference": "DDC20260702115234PTIFG",
+    "providersReference": "PIX_44241170102532681668",
+    "amount": 1000,
+    "totalAmount": 1000,
+    "charge": 0,
+    "status": "pending",
+    "data": {
+      "message": "OTP submitted successfully. Payment confirmation is processing."
+    },
+    "statusDescription": "Awaiting Provider's Feedback"
+  }
+}
+```
+
+### Traitement côté marchand
+
+- Créez une interface de saisie OTP côté client lorsque `data.action` vaut `otp`.
+- Utilisez `data.data.numberOfDigits` pour guider la validation quand ce champ est présent.
+- Soumettez l'OTP depuis votre backend à `POST /payments/v1/payments/confirm`.
+- Gardez le paiement en attente jusqu'à confirmation du statut final par webhook ou vérification.
+
+## Résumé de décision des flux
+
+| Action | Etape suivante pour le client | Etape suivante pour le marchand |
+| --- | --- | --- |
+| `processing` | Approuver sur l'appareil, USSD ou STK | Attendre le webhook ou la vérification |
+| `redirect` | Finaliser le paiement sur la page provider | Rediriger puis attendre le webhook ou la vérification |
+| `bankTransfer` | Virer le montant vers les détails de compte renvoyés | Afficher les détails de compte puis attendre le webhook ou la vérification |
+| Mode de requête `pre-otp` | Générer et partager le code d'abord | Envoyer le code dans `customerInput.customerCode` |
+| `otp` | Saisir l'OTP reçu par SMS ou canal provider | Collecter l'OTP puis envoyer la requête de confirmation |
+
+## Règles importantes
+
+<Warning>
+  Les valeurs de montant doivent être des entiers en sous-unités. Les décimales ne sont pas prises en charge.
+</Warning>
+
+Voir [Spécification des montants](/fr/guides/introductions/amount-specification).
+
+## Documentation associée
+
+<CardGroup cols={3}>
+  <Card title="API Direct Charge" icon="bolt" href="/fr/guides/collections/direct-charge-api">
+    Utilisation des endpoints et définition des champs de requête.
+  </Card>
+  <Card title="Exemples de payloads" icon="code" href="/fr/guides/collections/direct-charge/examples">
+    Modèles de payloads spécifiques aux providers.
+  </Card>
+  <Card title="Webhooks" icon="bell" href="/fr/guides/collections/webhook">
+    Confirmez le resultat final de la transaction de maniere asynchrone.
+  </Card>
+</CardGroup>

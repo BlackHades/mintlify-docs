@@ -1,0 +1,87 @@
+---
+title: "Bonnes pratiques de décaissement"
+description: "Bonnes pratiques de production pour un traitement des décaissements sûr, fiable et auditable."
+icon: "list-check"
+---
+
+# Bonnes pratiques de décaissement
+
+Utilisez ces pratiques pour améliorer le taux de succès des décaissements, réduire le risque de fraude et conserver un rapprochement exact.
+
+## Contrôles à fort impact
+
+| Contrôle | Pourquoi c'est important | Action |
+| --- | --- | --- |
+| Valider d'abord le bénéficiaire | Évite les échecs liés à des comptes invalides | Appelez toujours la validation avant un premier décaissement |
+| Utiliser des références uniques | Évite les erreurs de doublon | Générez une référence unique par décaissement |
+| Forcer les montants entiers | Évite les erreurs de validation ou de provider | Envoyez uniquement des entiers en sous-unités |
+| Vérifier le statut final | Empêche une finalisation prématurée | Utilisez webhook + endpoint verify avant la comptabilisation finale |
+| Protéger les identifiants d'autorisation | Empêche les décaissements non autorisés | Gardez PIN et secrets d'autorisation uniquement côté backend |
+
+## Schéma de sécurité transactionnelle
+
+<Steps>
+  <Step title="Réserver ou déduire d'abord le solde interne">
+    Pour les flux B2C, réservez ou déduisez le solde du portefeuille client avant la demande de décaissement.
+  </Step>
+  <Step title="Demander le décaissement">
+    Soumettez le décaissement avec une référence unique et le mode d'autorisation requis.
+  </Step>
+  <Step title="Traiter le webhook puis vérifier">
+    Attendez la mise à jour asynchrone et vérifiez le statut final pour les transactions critiques.
+  </Step>
+  <Step title="Rapprocher puis annuler si échec">
+    Si le décaissement échoue, annulez ou remboursez le mouvement interne après confirmation finale.
+  </Step>
+</Steps>
+
+## Fiabilité et gestion des erreurs
+
+<AccordionGroup>
+  <Accordion title="Traiter statusDescription comme un contexte provider" icon="circle-info" defaultOpen>
+    Utilisez `statusDescription` dans les réponses webhook et verify afin de comprendre la cause provider d'un échec.
+  </Accordion>
+  <Accordion title="Implémenter des retries idempotents" icon="repeat">
+    Relancez les échecs transitoires sans dupliquer les décaissements ni les écritures comptables.
+  </Accordion>
+  <Accordion title="Surveiller le solde du portefeuille de décaissement" icon="wallet">
+    Déclenchez des alertes lorsque le portefeuille de décaissement est bas afin d'éviter les erreurs `InsufficientBalance`.
+  </Accordion>
+  <Accordion title="Gérer les doublons webhook" icon="bell">
+    Traitez chaque transition `reference` + `status` une seule fois et ignorez les livraisons répétées.
+  </Accordion>
+</AccordionGroup>
+
+## Recommandations de sécurité
+
+- Ne stockez jamais le PIN de décaissement dans du code côté client.
+- Restreignez l'initiation des décaissements de production aux seuls services backend de confiance.
+- Journalisez qui a initié chaque décaissement et pourquoi.
+- Faites tourner immédiatement les identifiants si une compromission est suspectée.
+
+## Règle de montant
+
+<Warning>
+  Payfonte ne prend pas en charge les montants API décimaux. Envoyez uniquement des valeurs entières en sous-unités.
+</Warning>
+
+Exemples :
+
+- `1000.00 NGN` -> `100000`
+- `250.75 NGN` -> `25075`
+
+Voir [Spécification des montants](/fr/guides/introductions/amount-specification).
+
+## Documentation associée
+
+<CardGroup cols={3}>
+  <Card title="Vue d'ensemble des décaissements" icon="money-bill-transfer" href="/fr/guides/disbursements/overview">
+    Flux de décaissement complet et séquence des endpoints.
+  </Card>
+  <Card title="Codes d'erreur" icon="triangle-exclamation" href="/fr/guides/introductions/error-codes">
+    Dépannez les erreurs courantes de décaissement.
+  </Card>
+  <Card title="Webhooks de décaissement" icon="bell" href="/fr/guides/disbursements/webhook">
+    Traitez les mises à jour finales de manière asynchrone.
+  </Card>
+</CardGroup>

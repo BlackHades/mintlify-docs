@@ -1,0 +1,165 @@
+---
+title: "Vue d'ensemble"
+description: "Débitez des clients directement depuis votre backend en utilisant des slugs provider et les données client, sans créer de session de checkout hébergée."
+icon: "bolt"
+---
+
+Le Direct Charge permet à votre backend d'initier un paiement directement avec un provider, sans créer d'abord une URL de checkout.
+
+## Quand utiliser Direct Charge
+
+<CardGroup cols={3}>
+  <Card title="Flux pilotes par le backend" icon="server">
+    Idéal pour une initiation de paiement serveur à serveur, quand vous contrôlez tout le cycle de vie de la transaction.
+  </Card>
+  <Card title="Champs specifiques au provider" icon="sliders">
+    À utiliser quand le paiement requiert des champs propres au provider, comme `network` ou des codes OTP client.
+  </Card>
+  <Card title="UX recurrente ou embarquee" icon="repeat">
+    Utile pour des expériences fortement intégrées où le checkout par redirection n'est pas souhaité.
+  </Card>
+</CardGroup>
+
+## Endpoints
+
+| Méthode | Endpoint | Objet |
+| --- | --- | --- |
+| `GET` | `/payments/v1/payments/direct-charge/{provider}/properties` | Récupérer les propriétés spécifiques au provider (optionnel pour certains providers) |
+| `POST` | `/payments/v1/payments/direct-charge` | Initier un direct charge |
+| `GET` | `/payments/v1/payments/verify/{reference}` | Vérifier le statut final de la transaction |
+
+## Étapes d'intégration
+
+<Steps>
+  <Step title="Choisir le slug provider">
+    Sélectionnez un provider valide depuis [Providers pris en charge](/fr/guides/introductions/supported-providers).
+  </Step>
+  <Step title="Recuperer les proprietes du provider (optionnel)">
+    Pour des providers comme Bank Transfer (`bank-transfer-nigeria`), récupérez les propriétés requises, par exemple les valeurs `network`, avant de débiter.
+  </Step>
+  <Step title="Envoyer la requête de direct charge">
+    Appelez l'endpoint direct-charge avec `provider`, `amount` et `customerInput`.
+  </Step>
+  <Step title="Traiter l'action puis confirmer le statut final">
+    Utilisez l'action de la réponse (`processing`, `redirect`, `bankTransfer`) puis finalisez selon le webhook ou la vérification.
+  </Step>
+</Steps>
+
+## Récupérer les propriétés du provider (optionnel)
+
+```bash
+curl --location 'https://sandbox-api.payfonte.com/payments/v1/payments/direct-charge/{provider}/properties' \
+  --header 'client-id: <client-id>' \
+  --header 'client-secret: <client-secret>'
+```
+
+Exemple de réponse :
+
+```json
+{
+  "data": {
+    "networks": [
+      { "name": "Airtel", "value": "airtel" },
+      { "name": "MTN MoMo", "value": "mtn-momo" }
+    ]
+  }
+}
+```
+
+## Requête Direct Charge
+
+```bash
+curl --location 'https://sandbox-api.payfonte.com/payments/v1/payments/direct-charge' \
+  --header 'client-id: <client-id>' \
+  --header 'client-secret: <client-secret>' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "reference": "ORDER-1001",
+    "amount": 10000,
+    "provider": "mtn-momo-ivory-coast",
+    "webhook": "https://yourapp.com/webhooks/payfonte",
+    "narration": "Order payment",
+    "customerInput": {
+      "phoneNumber": "2250512345678"
+    }
+  }'
+```
+
+Exemple de réponse :
+
+```json
+{
+  "data": {
+    "action": "processing",
+    "sessionId": "1031-4120-a98f-9357692945",
+    "provider": "mtn-momo-ivory-coast",
+    "channel": "mobile-money",
+    "reference": "ORDER-1001",
+    "amount": 10000,
+    "status": "pending",
+    "statusDescription": "Awaiting Provider's Feedback"
+  },
+  "statusCode": 201
+}
+```
+
+## Champs de la requête
+
+| Champ | Type | Requis | Description |
+| --- | --- | --- | --- |
+| `provider` | string | Oui | Slug du provider (par exemple `mtn-momo-ivory-coast`) |
+| `amount` | integer | Oui | Montant en sous-unités, sans décimales |
+| `customerInput` | object | Oui | Champs provider/client, par exemple `phoneNumber` |
+| `reference` | string | Recommandé | Référence marchand unique |
+| `webhook` | string | Non | Webhook spécifique à cette transaction |
+| `narration` | string | Non | Description de la transaction |
+| `metadata` | object | Non | Métadonnées personnalisées renvoyées en aval |
+
+## Types d'action et traitement
+
+<AccordionGroup>
+  <Accordion title="processing" icon="clock" defaultOpen>
+    L'interaction client/provider est en cours, par exemple une autorisation USSD ou STK en attente.
+    Conservez l'état du paiement à pending et attendez le statut final via webhook ou vérification.
+  </Accordion>
+  <Accordion title="redirect" icon="arrow-up-right-from-square">
+    Redirigez le client vers l'URL du provider, souvent dans `data.data.link`.
+    Ne considerez jamais la simple fin de la redirection comme un succes de paiement.
+  </Accordion>
+  <Accordion title="bankTransfer" icon="building">
+    Affichez les instructions de virement renvoyées, comme le nom du compte, le numéro, le montant et l'expiration.
+    Attendez le webhook ou la vérification avant de marquer le paiement comme réussi.
+  </Accordion>
+</AccordionGroup>
+
+## Règle de montant importante
+
+<Warning>
+  Payfonte ne prend pas en charge les montants décimaux dans les requêtes API. Envoyez uniquement des valeurs entières en sous-unités.
+</Warning>
+
+- `100.00 NGN` -> `10000`
+- `2500.75 NGN` -> `250075`
+
+Voir [Spécification des montants](/fr/guides/introductions/amount-specification).
+
+## Confirmation du statut final
+
+Pour l'exécution de commande, appuyez-vous sur :
+
+1. [Les webhooks](/fr/guides/collections/webhook) pour les mises à jour asynchrones.
+2. `GET /payments/v1/payments/verify/{reference}` pour la vérification backend.
+
+## Documentation associée
+
+<CardGroup cols={3}>
+  <Card title="Flux de traitement" icon="bolt" href="/fr/guides/collections/direct-charge/response-types">
+    Comprendre les modèles `processing`, `redirect`, `bankTransfer` et pre-OTP.
+  </Card>
+  <Card title="Exemples de payloads" icon="code" href="/fr/guides/collections/direct-charge/examples">
+    Copier des exemples de requêtes spécifiques par provider.
+  </Card>
+  <Card title="Providers pris en charge" icon="globe-africa" href="/fr/guides/introductions/supported-providers">
+    Slugs providers, limites et couverture pays.
+  </Card>
+</CardGroup>

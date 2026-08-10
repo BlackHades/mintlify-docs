@@ -24,6 +24,10 @@ tags:
     externalDocs:
       description: Find out more
       url: https://docs.payfonte.com/#/collections/inline
+  - name: Card Collections
+    description: Everything about your card payment collections with payfonte
+  - name: Payment Links
+    description: Create and manage shareable payment links for hosted customer payments.
   - name: Disbursements
     description: |
       Find full list of supported Disbursement providers here [Supported Providers](https://docs.payfonte.com/#/Disbursements/supported-Disbursements)
@@ -58,6 +62,512 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/DirectChargeAPIResponse'
+  /payments/v1/payments/confirm:
+    post:
+      tags:
+        - Collections
+      summary: Confirm Direct Charge Customer Input
+      description: Submit customer input, such as an OTP, when a Direct Charge response returns `action` as `otp`.
+      operationId: confirmDirectChargeCustomerInput
+      requestBody:
+        description: Direct Charge customer input confirmation request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DirectChargeConfirmRequest'
+            example:
+              reference: "DDC20260702112401ZIWGF"
+              customerInput:
+                otp: "445985"
+        required: true
+      responses:
+        '201':
+          description: Customer input accepted and payment confirmation is processing.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectChargeConfirmEnvelope'
+              example:
+                statusCode: 201
+                data:
+                  action: "processing"
+                  sessionId: "cos-1z3x983b01300"
+                  provider: "qmoney-gambia"
+                  reference: "DDC20260702115234PTIFG"
+                  providersReference: "PIX_44241170102532681668"
+                  amount: 1000
+                  totalAmount: 1000
+                  charge: 0
+                  status: "pending"
+                  data:
+                    message: "OTP submitted successfully. Payment confirmation is processing."
+                  statusDescription: "Awaiting Provider's Feedback"
+  /payments/v1/cards/process:
+    post:
+      tags:
+        - Card Collections
+      summary: Submit Card Details
+      description: Submit customer card details to start a card payment. Sandbox card test data is available in [Testing](https://docs.payfonte.com/en/guides/introductions/testing#card-test-details).
+      operationId: submitCardDetails
+      requestBody:
+        description: Card payment request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardPaymentProcessRequest'
+            example:
+              reference: "ORDER-1001"
+              provider: "card-nigeria"
+              amount: 50000
+              redirectURL: "https://yourapp.com/payment/complete"
+              webhook: "https://yourapp.com/webhooks/payfonte"
+              card:
+                pan: "5061 4604 1012 1111 102"
+                expiry:
+                  month: "12"
+                  year: "2050"
+                cvv: "558"
+                cardHolderName: "Emily Heidenreich-Kohler"
+                email: "Darrick.OHara@hotmail.com"
+                phoneNumber: "(536) 393-0857"
+                address: "Address 1, Lokoja"
+                city: "my-city"
+        required: true
+      responses:
+        '200':
+          description: Card payment requires the customer PIN or verification.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardPaymentActionEnvelope'
+              examples:
+                pin:
+                  summary: PIN required
+                  value:
+                    statusCode: 200
+                    data:
+                      reference: "DCD20260701133425EIQWF"
+                      action: "pin"
+                      data: {}
+                verification:
+                  summary: Verification required
+                  value:
+                    statusCode: 200
+                    data:
+                      reference: "DCD20260701133425EIQWF"
+                      action: "verification"
+                      data: {}
+        '201':
+          description: Card payment requires OTP or 3DS redirect.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardPaymentActionEnvelope'
+              examples:
+                otp:
+                  summary: OTP required
+                  value:
+                    statusCode: 201
+                    data:
+                      reference: "DCD20260701133425EIQWF"
+                      action: "otp"
+                      data: {}
+                redirect:
+                  summary: 3DS redirect required
+                  value:
+                    statusCode: 201
+                    data:
+                      reference: "DCD20260701144120NCDZW"
+                      action: "redirect"
+                      data:
+                        redirectURL: "https://s.6bd.co/card-3ds/mce1aN"
+  /payments/v1/cards/pin:
+    post:
+      tags:
+        - Card Collections
+      summary: Submit Card PIN
+      description: Submit the card PIN when a card payment response returns `action` as `pin`. Sandbox card test data is available in [Testing](https://docs.payfonte.com/en/guides/introductions/testing#card-test-details).
+      operationId: submitCardPin
+      requestBody:
+        description: Card PIN request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardPaymentPinRequest'
+            example:
+              reference: "DCD20260701144120NCDZW"
+              provider: "card-nigeria"
+              card:
+                pan: "5061 4604 1012 1111 106"
+                expiry:
+                  month: "12"
+                  year: "2050"
+                cvv: "562"
+                pin: "1106"
+                cardHolderName: "Donna Flatley"
+                email: "Darrick.OHara@hotmail.com"
+                phoneNumber: "(536) 393-0857"
+                address: "Address 1, Lokoja"
+                city: "my-city"
+        required: true
+      responses:
+        '200':
+          description: Card payment requires the next customer action or verification.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardPaymentActionEnvelope'
+              examples:
+                pin:
+                  summary: PIN required
+                  value:
+                    statusCode: 200
+                    data:
+                      reference: "DCD20260701133425EIQWF"
+                      action: "pin"
+                      data: {}
+                verification:
+                  summary: Verification required
+                  value:
+                    statusCode: 200
+                    data:
+                      reference: "DCD20260701133425EIQWF"
+                      action: "verification"
+                      data: {}
+        '201':
+          description: Card payment requires the next customer action.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardPaymentActionEnvelope'
+              examples:
+                otp:
+                  summary: OTP required
+                  value:
+                    statusCode: 201
+                    data:
+                      reference: "DCD20260701133425EIQWF"
+                      action: "otp"
+                      data: {}
+                redirect:
+                  summary: 3DS redirect required
+                  value:
+                    statusCode: 201
+                    data:
+                      reference: "DCD20260701144120NCDZW"
+                      action: "redirect"
+                      data:
+                        redirectURL: "https://s.6bd.co/card-3ds/mce1aN"
+  /payments/v1/cards/otp:
+    post:
+      tags:
+        - Card Collections
+      summary: Submit Card OTP
+      description: Submit the customer OTP when a card payment response returns `action` as `otp`. Sandbox card test data is available in [Testing](https://docs.payfonte.com/en/guides/introductions/testing#card-test-details).
+      operationId: submitCardOtp
+      requestBody:
+        description: Card OTP request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardPaymentOtpRequest'
+            example:
+              reference: "DCD20260701144120NCDZW"
+              otp: "543210"
+        required: true
+      responses:
+        '200':
+          description: Card payment requires the next customer action or verification.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardPaymentActionEnvelope'
+              examples:
+                pin:
+                  summary: PIN required
+                  value:
+                    statusCode: 200
+                    data:
+                      reference: "DCD20260701133425EIQWF"
+                      action: "pin"
+                      data: {}
+                verification:
+                  summary: Verification required
+                  value:
+                    statusCode: 200
+                    data:
+                      reference: "DCD20260701133425EIQWF"
+                      action: "verification"
+                      data: {}
+        '201':
+          description: Card payment requires the next customer action.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardPaymentActionEnvelope'
+              examples:
+                otp:
+                  summary: OTP required
+                  value:
+                    statusCode: 201
+                    data:
+                      reference: "DCD20260701133425EIQWF"
+                      action: "otp"
+                      data: {}
+                redirect:
+                  summary: 3DS redirect required
+                  value:
+                    statusCode: 201
+                    data:
+                      reference: "DCD20260701144120NCDZW"
+                      action: "redirect"
+                      data:
+                        redirectURL: "https://s.6bd.co/card-3ds/mce1aN"
+  /payments/v1/payment-links:
+    post:
+      tags:
+        - Payment Links
+      summary: Create Payment Link
+      description: Create a shareable payment link that customers can use to complete payment through hosted checkout.
+      operationId: createPaymentLink
+      requestBody:
+        description: Payment link creation request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePaymentLinkRequest'
+            example:
+              isAmountFixed: false
+              title: "decimal test"
+              description: "demo"
+              redirectURL: ""
+              logo: "https://6thbridge-file-upload.s3.amazonaws.com/choosen-02.png"
+              customFields: []
+              maximumAmount: 100000000
+              minimumAmount: 0
+              amountLimit: 100000000
+              currency: "XOF"
+              country: "CI"
+        required: true
+      responses:
+        '201':
+          description: Payment link created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentLinkEnvelope'
+              example:
+                statusCode: 201
+                data:
+                  clientId: "6thbridge"
+                  locale: "en"
+                  logo: "https://6thbridge-file-upload.s3.amazonaws.com/choosen-02.png"
+                  currency: "XOF"
+                  country: "CI"
+                  title: "decimal test"
+                  description: "demo"
+                  isAmountFixed: false
+                  longURL: "https://checkout-staging.6thbridge.com/link/6a7a2093b9e24880f73a80b0"
+                  shortURL: "https://s.6bd.co/payment-link/1PIDcH"
+                  minimumAmount: 0
+                  maximumAmount: 100000000
+                  amountLimit: 100000000
+                  customFields: []
+                  redirectURL: ""
+                  expiresAt: null
+                  isActive: true
+                  status: "active"
+                  parentClientId: "6thbridge"
+                  createdAt: "2026-08-10T19:03:47.222Z"
+                  updatedAt: "2026-08-10T19:03:47.222Z"
+                  id: "6a7a2093b9e24880f73a80b0"
+    get:
+      tags:
+        - Payment Links
+      summary: Fetch All Payment Links
+      description: Retrieve a paginated list of payment links.
+      operationId: getPaymentLinks
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: Page number for pagination.
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 2
+          description: Number of records per page.
+        - in: query
+          name: country
+          schema:
+            type: string
+            minLength: 2
+            maxLength: 2
+            example: "NG"
+          required: false
+          description: Optional 2-letter ISO country code filter.
+        - in: query
+          name: currency
+          schema:
+            type: string
+            minLength: 3
+            maxLength: 3
+            example: "NGN"
+          required: false
+          description: Optional 3-letter ISO currency code filter.
+      responses:
+        '200':
+          description: Successfully retrieved payment links.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPaymentLinksResponse'
+              example:
+                statusCode: 200
+                total: 246
+                page: 1
+                pages: 123
+                limit: 2
+                data:
+                  - amount: 0
+                    isAnonymousPaymentEnabled: false
+                    clientId: "payfusion"
+                    locale: "en"
+                    logo: "https://files.6thbridge.xyz/public/v1/files/payfusion/content/6a2fc1603d18ca5a47adbe17"
+                    currency: "NGN"
+                    country: "NG"
+                    title: "kksk"
+                    description: "kksk"
+                    isAmountFixed: false
+                    longURL: "https://staging-checkout.payfusion.io/link/6a7204a536c2106e38fe8e01"
+                    shortURL: "https://s.6bd.co/payment-link/bN0ASZ"
+                    minimumAmount: 0
+                    maximumAmount: 200000
+                    amountLimit: 200000
+                    customFields: []
+                    redirectURL: "https://staging-checkout.payfusion.io/invoices/summary/6a7204a5580ef8976ef93da8"
+                    expiresAt: null
+                    isActive: true
+                    status: "completed"
+                    parentClientId: "payfusion"
+                    createdAt: "2026-08-04T15:26:29.757Z"
+                    updatedAt: "2026-08-05T21:38:39.453Z"
+                    id: "6a7204a536c2106e38fe8e01"
+                  - amount: 0
+                    isAnonymousPaymentEnabled: false
+                    clientId: "payfusion"
+                    locale: "en"
+                    logo: "https://files.6thbridge.xyz/public/v1/files/payfusion/content/6a2fc1603d18ca5a47adbe17"
+                    currency: "NGN"
+                    country: "NG"
+                    title: "none"
+                    description: "none"
+                    isAmountFixed: false
+                    longURL: "https://staging-checkout.payfusion.io/link/6a71d34936c2106e38fe8a4a"
+                    shortURL: "https://s.6bd.co/payment-link/G3H9z-"
+                    minimumAmount: 0
+                    maximumAmount: 200000
+                    amountLimit: 200000
+                    customFields: []
+                    redirectURL: "https://staging-checkout.payfusion.io/invoices/summary/6a71d3482b231e3051bba029"
+                    expiresAt: null
+                    isActive: true
+                    status: "active"
+                    parentClientId: "payfusion"
+                    createdAt: "2026-08-04T11:55:53.054Z"
+                    updatedAt: "2026-08-04T11:55:53.054Z"
+                    id: "6a71d34936c2106e38fe8a4a"
+  /payments/v1/payment-links/{id}:
+    get:
+      tags:
+        - Payment Links
+      summary: Fetch Payment Link By ID
+      description: Retrieve a payment link and its analytics by payment link ID.
+      operationId: getPaymentLinkById
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: Payment link ID.
+      responses:
+        '200':
+          description: Successfully retrieved the payment link.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentLinkWithAnalyticsEnvelope'
+              example:
+                statusCode: 200
+                data:
+                  amount: 0
+                  isAnonymousPaymentEnabled: false
+                  clientId: "payfusion"
+                  locale: "en"
+                  logo: "https://files.6thbridge.xyz/public/v1/files/payfusion/content/6a2fc1603d18ca5a47adbe17"
+                  currency: "NGN"
+                  country: "NG"
+                  title: "kksk"
+                  description: "kksk"
+                  isAmountFixed: false
+                  longURL: "https://staging-checkout.payfusion.io/link/6a7204a536c2106e38fe8e01"
+                  shortURL: "https://s.6bd.co/payment-link/bN0ASZ"
+                  minimumAmount: 0
+                  maximumAmount: 200000
+                  amountLimit: 200000
+                  customFields: []
+                  redirectURL: "https://staging-checkout.payfusion.io/invoices/summary/6a7204a5580ef8976ef93da8"
+                  expiresAt: null
+                  isActive: true
+                  status: "completed"
+                  parentClientId: "payfusion"
+                  createdAt: "2026-08-04T15:26:29.757Z"
+                  updatedAt: "2026-08-05T21:38:39.453Z"
+                  id: "6a7204a536c2106e38fe8e01"
+                  analytics:
+                    totalTransactionAmount: 200000
+                    totalTransactionCount: 11
+                    groupByChannel:
+                      - revenue: 10000
+                        count: 1
+                        channel: "bank_transfer"
+                      - revenue: 190000
+                        count: 10
+                        channel: null
+                    groupByRevenueAndCount:
+                      - week: "2026-06-29"
+                        revenue: 0
+                        count: 0
+                      - week: "2026-07-06"
+                        revenue: 0
+                        count: 0
+                      - week: "2026-07-13"
+                        revenue: 0
+                        count: 0
+                      - week: "2026-07-20"
+                        revenue: 0
+                        count: 0
+                      - week: "2026-07-27"
+                        revenue: 0
+                        count: 0
+                      - week: "2026-08-03"
+                        revenue: 200000
+                        count: 11
+                      - week: "2026-08-10"
+                        revenue: 0
+                        count: 0
+                    clientProviders:
+                      - provider: "bank-transfer-nigeria"
+                      - provider: "paystack"
+                    clientChannels:
+                      - channel: "bank_transfer"
   /payments/v1/payments/verify/{reference}:
     get:
       tags:
@@ -82,30 +592,7 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/VerifyTransactionResponse'
-  /payments/v1/checkouts:
-    post:
-      tags:
-        - Collections
-      summary: Collections API - Generate Checkout
-      description: Generate a Payment Checkout URL for customers to make payment
-      operationId: generateCheckoutURL
-      requestBody:
-        description: Generate A Payment Checkout URL
-        content:
-          application/json:
-            schema:
-              $ref:  '#/components/schemas/GenerateCheckoutURLRequest'
-        required: true
-      responses:
-        '201':
-          description: "Checkout URL Successfully Generated"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    $ref: '#/components/schemas/GenerateCheckoutURLResponse'
+  /payments/v1/payments:
     get:
       tags:
         - Collections
@@ -152,6 +639,31 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetAllCheckoutResponse'
+
+  /payments/v1/checkouts:
+    post:
+      tags:
+        - Collections
+      summary: Collections API - Generate Checkout
+      description: Generate a Payment Checkout URL for customers to make payment
+      operationId: generateCheckoutURL
+      requestBody:
+        description: Generate A Payment Checkout URL
+        content:
+          application/json:
+            schema:
+              $ref:  '#/components/schemas/GenerateCheckoutURLRequest'
+        required: true
+      responses:
+        '201':
+          description: "Checkout URL Successfully Generated"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/GenerateCheckoutURLResponse'
   /payments/v1/payments/direct-charge/{provider}/properties:
     get:
       tags:
@@ -356,7 +868,7 @@ components:
   schemas:
     Amount:
       type: integer
-      description: Amount should be in the subunit of the supported currency i.e value * 100 [Amount Specification](https://docs.payfonte.com/guides/introductions/amount-specification)
+      description: Amount should be in the subunit of the supported currency i.e value * 100. See [Amount Specification](https://docs.payfonte.com/en/guides/introductions/amount-specification).
       format: int64
       example: 100000
       examples:
@@ -442,7 +954,7 @@ components:
             - NGN
         amount:
           $ref: '#/components/schemas/Amount'
-          description: This is the amount to charge the customer. Amount should be sent in the lowest denomination e.g for 100 USD you should send 100 * 100 = 10000
+          description: This is the amount to charge the customer. Amount should be sent in the lowest denomination e.g for 100 USD you should send 100 * 100 = 10000. See [Amount Specification](https://docs.payfonte.com/en/guides/introductions/amount-specification).
           examples:
             - 10000
         user:
@@ -490,7 +1002,7 @@ components:
             - mtn-momo-ivory-coast
         amount:
           $ref: '#/components/schemas/Amount'
-          description: Amount should be sent in the lowest denomination e.g for 100 USD you should send 100 * 100 = 10000
+          description: Amount should be sent in the lowest denomination e.g for 100 USD you should send 100 * 100 = 10000. See [Amount Specification](https://docs.payfonte.com/en/guides/introductions/amount-specification).
         reference:
           type: string
           description: A reference code you'll generate to identify this transaction. This must be unique for every transaction. If you don't pass one, we will generate one for you.
@@ -503,7 +1015,13 @@ components:
               example: "2347012345678"
               examples:
                 - "2347012345678"
-
+        redirectURL:
+          type: string
+          format: uri
+          description: "Fully qualified URL to which the customer should be redirected after the payment is completed"
+          example: 'https://example.com/redirect/success'
+          examples:
+            - 'https://example.com/redirect/success'
         webhook:
           type: string
           format: uri
@@ -513,6 +1031,540 @@ components:
             - 'https://example.com/webhook'
         metadata:
           $ref: '#/components/schemas/Metadata'
+
+    CardPaymentExpiry:
+      required:
+        - month
+        - year
+      type: object
+      properties:
+        month:
+          type: string
+          description: Two-digit card expiry month.
+          example: "12"
+        year:
+          type: string
+          description: Four-digit card expiry year.
+          example: "2050"
+    CardPaymentCard:
+      required:
+        - pan
+        - expiry
+        - cvv
+        - cardHolderName
+        - email
+        - phoneNumber
+        - address
+        - city
+      type: object
+      properties:
+        pan:
+          type: string
+          description: Card primary account number.
+          example: "5061 4604 1012 1111 102"
+        expiry:
+          $ref: '#/components/schemas/CardPaymentExpiry'
+        cvv:
+          type: string
+          description: Card security code.
+          example: "558"
+        cardHolderName:
+          type: string
+          description: Name printed on the card.
+          example: "Emily Heidenreich-Kohler"
+        email:
+          type: string
+          format: email
+          description: Customer email address.
+          example: "Darrick.OHara@hotmail.com"
+        phoneNumber:
+          type: string
+          description: Customer phone number.
+          example: "(536) 393-0857"
+        address:
+          type: string
+          description: Customer billing address.
+          example: "Address 1, Lokoja"
+        city:
+          type: string
+          description: Customer city.
+          example: "my-city"
+    CardPaymentPinCard:
+      allOf:
+        - $ref: '#/components/schemas/CardPaymentCard'
+        - required:
+            - pin
+          type: object
+          properties:
+            pin:
+              type: string
+              description: Card PIN required to continue the transaction.
+              example: "1106"
+    CardPaymentProcessRequest:
+      required:
+        - provider
+        - amount
+        - card
+      type: object
+      properties:
+        reference:
+          type: string
+          description: A reference code you'll generate to identify this transaction. This must be unique for every transaction. If you don't pass one, we will generate one for you.
+          example: "ORDER-1001"
+        provider:
+          type: string
+          description: Card provider slug.
+          example: "card-nigeria"
+        amount:
+          $ref: '#/components/schemas/Amount'
+          description: Amount should be sent in the lowest denomination. See [Amount Specification](https://docs.payfonte.com/en/guides/introductions/amount-specification).
+          example: 50000
+        redirectURL:
+          type: string
+          format: uri
+          description: Fully qualified URL to which the customer should be redirected after the payment is completed.
+          example: "https://yourapp.com/payment/complete"
+        webhook:
+          type: string
+          format: uri
+          description: This is a URL, if this is passed we will send the event webhook payload to this endpoint. Use this to override the webhook url provided on the dashboard for this transaction.
+          example: "https://yourapp.com/webhooks/payfonte"
+        card:
+          $ref: '#/components/schemas/CardPaymentCard'
+    CardPaymentPinRequest:
+      required:
+        - reference
+        - provider
+        - card
+      type: object
+      properties:
+        reference:
+          type: string
+          description: Card payment reference returned by the previous card payment step.
+          example: "DCD20260701144120NCDZW"
+        provider:
+          type: string
+          description: Card provider slug.
+          example: "card-nigeria"
+        card:
+          $ref: '#/components/schemas/CardPaymentPinCard'
+    CardPaymentOtpRequest:
+      required:
+        - reference
+        - otp
+      type: object
+      properties:
+        reference:
+          type: string
+          description: Card payment reference returned by the previous card payment step.
+          example: "DCD20260701144120NCDZW"
+        otp:
+          type: string
+          description: One-time password collected from the customer.
+          example: "543210"
+    CardPaymentActionData:
+      type: object
+      properties:
+        redirectURL:
+          type: string
+          format: uri
+          description: URL where the customer should complete 3DS authentication when `action` is `redirect`.
+          example: "https://s.6bd.co/card-3ds/mce1aN"
+    CardPaymentActionResponse:
+      required:
+        - reference
+        - action
+        - data
+      type: object
+      properties:
+        reference:
+          type: string
+          description: Card payment reference to use in the next card step or verification request.
+          example: "DCD20260701133425EIQWF"
+        action:
+          type: string
+          description: Next action required to continue or verify the card payment.
+          enum:
+            - pin
+            - otp
+            - redirect
+            - verification
+          example: "pin"
+        data:
+          $ref: '#/components/schemas/CardPaymentActionData'
+    CardPaymentActionEnvelope:
+      required:
+        - statusCode
+        - data
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          description: Application status code returned in the response body.
+          example: 200
+        data:
+          $ref: '#/components/schemas/CardPaymentActionResponse'
+
+    PaymentLinkCustomField:
+      type: object
+      description: Extra payer field to collect before creating checkout. Choice fields require `options`.
+      additionalProperties: true
+      properties:
+        label:
+          type: string
+          description: Payer-facing field label.
+          example: "Invoice number"
+        name:
+          type: string
+          description: Machine-readable field name.
+          example: "invoiceNumber"
+        type:
+          type: string
+          description: Field input type.
+          enum:
+            - text
+            - paragraph-text
+            - dropdown
+            - number
+            - date
+            - file-upload
+            - checkbox
+          example: "text"
+        required:
+          type: boolean
+          description: Whether the payer must complete this field.
+          example: false
+        options:
+          type: array
+          description: Available choices for choice fields.
+          items:
+            type: string
+          example:
+            - "Small"
+            - "Large"
+    CreatePaymentLinkRequest:
+      required:
+        - title
+        - description
+        - currency
+        - country
+      type: object
+      properties:
+        title:
+          type: string
+          description: Human-readable payment link title.
+          example: "decimal test"
+        description:
+          type: string
+          description: Human-readable payment link description.
+          example: "demo"
+        logo:
+          type: string
+          description: Logo URL or empty string. Defaults to the client or business logo.
+          example: "https://6thbridge-file-upload.s3.amazonaws.com/choosen-02.png"
+        locale:
+          type: string
+          description: Locale for payer-facing checkout. Defaults to the client or business locale.
+          example: "en"
+        currency:
+          type: string
+          minLength: 3
+          maxLength: 3
+          description: Required 3-letter ISO currency code.
+          example: "XOF"
+        country:
+          type: string
+          minLength: 2
+          maxLength: 2
+          description: Required 2-letter ISO country code used for active integration lookup.
+          example: "CI"
+        isAmountFixed:
+          type: boolean
+          description: Set to `true` when the payer cannot change the amount.
+          example: false
+        amount:
+          type: number
+          description: Fixed collection amount in minor currency units. Required when `isAmountFixed` is `true` and must be greater than zero. See [Amount Specification](https://docs.payfonte.com/en/guides/introductions/amount-specification).
+          example: 100000
+        minimumAmount:
+          type: number
+          description: Minimum payer-entered amount in minor currency units. Used when `isAmountFixed` is `false`. See [Amount Specification](https://docs.payfonte.com/en/guides/introductions/amount-specification).
+          example: 0
+        maximumAmount:
+          type: number
+          description: Maximum payer-entered amount in minor currency units. Used when `isAmountFixed` is `false`. See [Amount Specification](https://docs.payfonte.com/en/guides/introductions/amount-specification).
+          example: 100000000
+        amountLimit:
+          type: number
+          description: Total collectible amount limit across successful payments for this link in minor currency units. See [Amount Specification](https://docs.payfonte.com/en/guides/introductions/amount-specification).
+          example: 100000000
+        customFields:
+          type: array
+          description: Extra payer fields to collect before creating checkout.
+          items:
+            $ref: '#/components/schemas/PaymentLinkCustomField'
+          example: []
+        redirectURL:
+          type: string
+          description: URL to redirect the payer to after payment flow.
+          example: ""
+        isAnonymousPaymentEnabled:
+          type: boolean
+          description: Whether anonymous payments are allowed.
+          example: false
+        expiresAt:
+          type:
+            - string
+            - 'null'
+          format: date
+          description: Date on which the link expires.
+          example: "2026-12-31"
+    PaymentLink:
+      type: object
+      properties:
+        amount:
+          type: number
+          description: Fixed amount configured for the payment link in minor currency units, when applicable. See [Amount Specification](https://docs.payfonte.com/en/guides/introductions/amount-specification).
+          example: 0
+        isAnonymousPaymentEnabled:
+          type: boolean
+          description: Whether anonymous payments are allowed.
+          example: false
+        clientId:
+          type: string
+          description: Client identifier associated with the payment link.
+          example: "payfusion"
+        locale:
+          type: string
+          description: Locale for payer-facing checkout.
+          example: "en"
+        logo:
+          type: string
+          description: Logo URL displayed on the payment link checkout.
+          example: "https://files.6thbridge.xyz/public/v1/files/payfusion/content/6a2fc1603d18ca5a47adbe17"
+        currency:
+          type: string
+          minLength: 3
+          maxLength: 3
+          description: 3-letter ISO currency code.
+          example: "NGN"
+        country:
+          type: string
+          minLength: 2
+          maxLength: 2
+          description: 2-letter ISO country code used for active integration lookup.
+          example: "NG"
+        title:
+          type: string
+          description: Human-readable payment link title.
+          example: "kksk"
+        description:
+          type: string
+          description: Human-readable payment link description.
+          example: "kksk"
+        isAmountFixed:
+          type: boolean
+          description: Whether the payer can change the payment amount.
+          example: false
+        longURL:
+          type: string
+          format: uri
+          description: Full payment link URL.
+          example: "https://staging-checkout.payfusion.io/link/6a7204a536c2106e38fe8e01"
+        shortURL:
+          type: string
+          format: uri
+          description: Short payment link URL.
+          example: "https://s.6bd.co/payment-link/bN0ASZ"
+        minimumAmount:
+          type: number
+          description: Minimum payer-entered amount in minor currency units. Used when `isAmountFixed` is `false`. See [Amount Specification](https://docs.payfonte.com/en/guides/introductions/amount-specification).
+          example: 0
+        maximumAmount:
+          type: number
+          description: Maximum payer-entered amount in minor currency units. Used when `isAmountFixed` is `false`. See [Amount Specification](https://docs.payfonte.com/en/guides/introductions/amount-specification).
+          example: 200000
+        amountLimit:
+          type: number
+          description: Total collectible amount limit across successful payments for this link in minor currency units. See [Amount Specification](https://docs.payfonte.com/en/guides/introductions/amount-specification).
+          example: 200000
+        customFields:
+          type: array
+          description: Extra payer fields collected before creating checkout.
+          items:
+            $ref: '#/components/schemas/PaymentLinkCustomField'
+          example: []
+        redirectURL:
+          type: string
+          description: URL to redirect the payer to after payment flow.
+          example: "https://staging-checkout.payfusion.io/invoices/summary/6a7204a5580ef8976ef93da8"
+        expiresAt:
+          type:
+            - string
+            - 'null'
+          format: date
+          description: Date on which the link expires.
+          example: null
+        isActive:
+          type: boolean
+          description: Whether the payment link is currently active.
+          example: true
+        status:
+          type: string
+          description: Current payment link status.
+          enum:
+            - active
+            - completed
+            - inactive
+            - expired
+          example: "active"
+        parentClientId:
+          type: string
+          description: Parent client identifier associated with the payment link.
+          example: "payfusion"
+        createdAt:
+          type: string
+          format: date-time
+          description: Payment link creation timestamp.
+          example: "2026-08-04T11:55:53.054Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: Payment link update timestamp.
+          example: "2026-08-04T11:55:53.054Z"
+        id:
+          type: string
+          description: Payment link ID.
+          example: "6a71d34936c2106e38fe8a4a"
+    PaymentLinkAnalytics:
+      type: object
+      properties:
+        totalTransactionAmount:
+          type: number
+          description: Total successful transaction amount collected through the payment link in minor currency units. See [Amount Specification](https://docs.payfonte.com/en/guides/introductions/amount-specification).
+          example: 200000
+        totalTransactionCount:
+          type: integer
+          description: Total successful transaction count for the payment link.
+          example: 11
+        groupByChannel:
+          type: array
+          description: Revenue and count grouped by payment channel.
+          items:
+            type: object
+            properties:
+              revenue:
+                type: number
+                description: Revenue amount in minor currency units. See [Amount Specification](https://docs.payfonte.com/en/guides/introductions/amount-specification).
+                example: 10000
+              count:
+                type: integer
+                example: 1
+              channel:
+                type:
+                  - string
+                  - 'null'
+                example: "bank_transfer"
+        groupByRevenueAndCount:
+          type: array
+          description: Weekly revenue and count values for the payment link.
+          items:
+            type: object
+            properties:
+              week:
+                type: string
+                format: date
+                example: "2026-08-03"
+              revenue:
+                type: number
+                description: Revenue amount in minor currency units. See [Amount Specification](https://docs.payfonte.com/en/guides/introductions/amount-specification).
+                example: 200000
+              count:
+                type: integer
+                example: 11
+        clientProviders:
+          type: array
+          description: Client providers available for this payment link.
+          items:
+            type: object
+            properties:
+              provider:
+                type: string
+                example: "bank-transfer-nigeria"
+        clientChannels:
+          type: array
+          description: Client channels available for this payment link.
+          items:
+            type: object
+            properties:
+              channel:
+                type: string
+                example: "bank_transfer"
+    PaymentLinkWithAnalytics:
+      allOf:
+        - $ref: '#/components/schemas/PaymentLink'
+        - type: object
+          properties:
+            analytics:
+              $ref: '#/components/schemas/PaymentLinkAnalytics'
+    PaymentLinkEnvelope:
+      required:
+        - statusCode
+        - data
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          description: Application status code returned in the response body.
+          example: 201
+        data:
+          $ref: '#/components/schemas/PaymentLink'
+    PaymentLinkWithAnalyticsEnvelope:
+      required:
+        - statusCode
+        - data
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          description: Application status code returned in the response body.
+          example: 200
+        data:
+          $ref: '#/components/schemas/PaymentLinkWithAnalytics'
+    GetPaymentLinksResponse:
+      required:
+        - statusCode
+        - total
+        - page
+        - pages
+        - limit
+        - data
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          description: Application status code returned in the response body.
+          example: 200
+        total:
+          type: integer
+          description: Total number of records.
+          example: 246
+        page:
+          type: integer
+          description: Current page number.
+          example: 1
+        pages:
+          type: integer
+          description: Total number of pages.
+          example: 123
+        limit:
+          type: integer
+          description: Number of records per page.
+          example: 2
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentLink'
 
     GenerateCheckoutURLResponse:
       type: object
@@ -550,6 +1602,84 @@ components:
           description: Transaction Session ID. This is from the provider.
         amount:
           $ref: '#/components/schemas/Amount'
+    DirectChargeConfirmRequest:
+      required:
+        - reference
+        - customerInput
+      type: object
+      properties:
+        reference:
+          type: string
+          description: Direct Charge transaction reference returned by the initial request.
+          example: "DDC20260702112401ZIWGF"
+        customerInput:
+          type: object
+          required:
+            - otp
+          properties:
+            otp:
+              type: string
+              description: One-time password collected from the customer.
+              example: "445985"
+    DirectChargeConfirmResponse:
+      type: object
+      properties:
+        action:
+          type: string
+          description: Next action required after customer input is submitted.
+          example: "processing"
+        sessionId:
+          type: string
+          description: Transaction session ID.
+          example: "cos-1z3x983b01300"
+        provider:
+          type: string
+          description: Provider slug processing the transaction.
+          example: "qmoney-gambia"
+        reference:
+          type: string
+          description: Transaction reference.
+          example: "DDC20260702115234PTIFG"
+        providersReference:
+          type: string
+          description: Provider-side transaction reference, when available.
+          example: "PIX_44241170102532681668"
+        amount:
+          $ref: '#/components/schemas/Amount'
+          example: 1000
+        totalAmount:
+          type: integer
+          description: Total amount after charges. See [Amount Specification](https://docs.payfonte.com/en/guides/introductions/amount-specification).
+          example: 1000
+        charge:
+          type: integer
+          description: Transaction charge.
+          example: 0
+        status:
+          type: string
+          description: Transaction status after customer input is submitted.
+          example: "pending"
+        data:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "OTP submitted successfully. Payment confirmation is processing."
+        statusDescription:
+          type: string
+          example: "Awaiting Provider's Feedback"
+    DirectChargeConfirmEnvelope:
+      required:
+        - statusCode
+        - data
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          description: Application status code returned in the response body.
+          example: 201
+        data:
+          $ref: '#/components/schemas/DirectChargeConfirmResponse'
     VerifyTransactionResponse:
       type: object
       properties:
@@ -595,6 +1725,21 @@ components:
             phoneNumber:
               type: string
               example: "+221786836369"
+        metadata:
+          type: object
+          properties:
+            trafficType:
+              type: string
+              example: "CLOTHING"
+            merchantName:
+              type: string
+              example: "Sample Name"
+            bankName:
+              type: string
+              example: "CAPITEC BANK"
+            bankCode:
+              type: string
+              example: "4700"
         checkoutId:
           type: string
           example: "69651ca8bf1ff6b132d93a47"
@@ -801,7 +1946,7 @@ components:
           $ref: "#/components/schemas/Amount"
         amountPayable:
           $ref: "#/components/schemas/Amount"
-          description: This signifies the actual amount sent to the recipient
+          description: This signifies the actual amount sent to the recipient. See [Amount Specification](https://docs.payfonte.com/en/guides/introductions/amount-specification).
         provider:
           $ref: "#/components/schemas/Provider"
         currency:
@@ -855,7 +2000,7 @@ components:
             - deposit
         amount:
           $ref: "#/components/schemas/Amount"
-          description: This signifies the actual amount in your wallet. This is in the lowest denomination
+          description: This signifies the actual amount in your wallet. This is in the lowest denomination. See [Amount Specification](https://docs.payfonte.com/en/guides/introductions/amount-specification).
         currency:
           $ref: "#/components/schemas/Currency"
         country:

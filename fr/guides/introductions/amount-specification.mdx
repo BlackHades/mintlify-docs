@@ -1,0 +1,109 @@
+---
+title: "Spécification des montants"
+description: "Comment formater les montants pour les API Payfonte en utilisant la plus petite dénomination monétaire."
+icon: "hashtag"
+---
+
+Payfonte attend les valeurs `amount` dans la **plus petite dénomination** de la devise, c'est-à-dire la sous-unité.
+
+Utilisez la règle suivante :
+
+`amount_to_send = major_amount * 100`
+
+Exemple : `100.50 NGN` devient `10050`.
+
+<Warning>
+  N'envoyez pas de valeurs décimales dans les requêtes API. Envoyez toujours des montants entiers.
+</Warning>
+
+## Pourquoi ce format ?
+
+<CardGroup cols={3}>
+  <Card title="Précision" icon="bullseye">
+    Évite les problèmes d'arrondi à virgule flottante dans les calculs financiers.
+  </Card>
+  <Card title="Cohérence" icon="repeat">
+    Même format de montant pour les collectes, décaissements et portefeuilles.
+  </Card>
+  <Card title="Alignement provider" icon="link">
+    Correspond à la façon dont les providers de paiement traitent les valeurs en interne.
+  </Card>
+</CardGroup>
+
+## Tableau rapide de conversion
+
+| Devise | Unité principale | Sous-unité | Exemple |
+| --- | --- | --- | --- |
+| NGN | Naira | Kobo | `100.00 NGN -> 10000` |
+| GHS | Cedi | Pesewa | `50.00 GHS -> 5000` |
+| KES | Shilling | Cent | `100.00 KES -> 10000` |
+| XOF | Franc CFA | Sous-unité | `10.00 XOF -> 1000` |
+| USD | Dollar | Cent | `25.99 USD -> 2599` |
+
+## Exemples API
+
+Les exemples ci-dessous montrent la même règle dans des requêtes réelles :
+
+- `1250.75 NGN` s'envoie sous la forme `125075`, en kobo
+- `10000.00 NGN` s'envoie sous la forme `1000000`, en kobo
+
+<CodeGroup>
+```json Collectes
+{
+  "currency": "NGN",
+  "amount": 125075,
+  "reference": "ORDER-1001"
+}
+```
+
+```json Décaissements
+{
+  "transferRecipientId": "6659692f019f6a143f7f90db",
+  "amount": 1000000,
+  "reference": "disbursement-1001"
+}
+```
+</CodeGroup>
+
+## Erreurs fréquentes
+
+<AccordionGroup>
+  <Accordion title="Envoi de montants décimaux" icon="triangle-exclamation" defaultOpen>
+    - Incorrect : `"amount": 1250.75`
+    - Correct : `"amount": 125075`
+  </Accordion>
+  <Accordion title="Mélange d'unités principales et mineures" icon="shuffle">
+    N'envoyez pas certaines requêtes en unités principales et d'autres en sous-unités. Standardisez la conversion dans un utilitaire partagé.
+  </Accordion>
+  <Accordion title="Conversion uniquement côté frontend" icon="mobile-screen-button">
+    La logique de conversion doit s'exécuter côté backend pour rester contrôlée et cohérente.
+  </Accordion>
+</AccordionGroup>
+
+## Schéma d'implémentation recommandé
+
+<Steps>
+  <Step title="Stocker les montants métier comme décimaux ou chaînes">
+    Gardez vos montants lisibles pour l'affichage et la logique métier, par exemple `1250.75`.
+  </Step>
+  <Step title="Convertir juste avant la requête API">
+    Convertissez en entier de sous-unité, comme `125075`, à la frontière de votre service.
+  </Step>
+  <Step title="Journaliser les deux valeurs">
+    Loguez `displayAmount` et `apiAmount` pour simplifier le débogage et le rapprochement.
+  </Step>
+</Steps>
+
+## Documentation associée
+
+<CardGroup cols={3}>
+  <Card title="Autorisation" icon="key" href="/fr/guides/introductions/authorization">
+    Ajoutez les en-têtes d'authentification requis à vos requêtes.
+  </Card>
+  <Card title="Portefeuilles" icon="wallet" href="/fr/guides/introductions/wallets">
+    Comprendre les soldes et états de portefeuille.
+  </Card>
+  <Card title="Référence API" icon="file-code" href="/fr/api-reference/introduction">
+    Explorez les schémas de requête et de réponse.
+  </Card>
+</CardGroup>

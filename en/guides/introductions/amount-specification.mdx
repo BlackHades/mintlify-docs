@@ -1,0 +1,109 @@
+---
+title: "Amount Specification"
+description: "How to format amounts for Payfonte APIs using the smallest currency denomination."
+icon: "hashtag"
+---
+
+Payfonte expects `amount` values in the **smallest denomination** of the currency (minor unit).
+
+Use this rule:
+
+`amount_to_send = major_amount * 100`
+
+Example: `100.50 NGN` becomes `10050`.
+
+<Warning>
+  Do not send decimal values in API requests. Always send integer amounts.
+</Warning>
+
+## Why This Format?
+
+<CardGroup cols={3}>
+  <Card title="Precision" icon="bullseye">
+    Prevents floating-point rounding issues in financial calculations.
+  </Card>
+  <Card title="Consistency" icon="repeat">
+    Same amount format across collections, disbursements, and wallets.
+  </Card>
+  <Card title="Provider Alignment" icon="link">
+    Matches how payment providers process transaction values internally.
+  </Card>
+</CardGroup>
+
+## Quick Conversion Table
+
+| Currency | Major Unit | Minor Unit | Example |
+| --- | --- | --- | --- |
+| NGN | Naira | Kobo | `100.00 NGN -> 10000` |
+| GHS | Cedi | Pesewa | `50.00 GHS -> 5000` |
+| KES | Shilling | Cent | `100.00 KES -> 10000` |
+| XOF | CFA Franc | Minor unit | `10.00 XOF -> 1000` |
+| USD | Dollar | Cent | `25.99 USD -> 2599` |
+
+## API Examples
+
+The examples below show the same rule in real requests:
+
+- `1250.75 NGN` is sent as `125075` (`amount` in kobo)
+- `10000.00 NGN` is sent as `1000000` (`amount` in kobo)
+
+<CodeGroup>
+```json Collections
+{
+  "currency": "NGN",
+  "amount": 125075,
+  "reference": "ORDER-1001"
+}
+```
+
+```json Disbursements
+{
+  "transferRecipientId": "6659692f019f6a143f7f90db",
+  "amount": 1000000,
+  "reference": "disbursement-1001"
+}
+```
+</CodeGroup>
+
+## Common Mistakes
+
+<AccordionGroup>
+  <Accordion title="Sending decimal amounts" icon="triangle-exclamation" defaultOpen>
+    - Incorrect: `"amount": 1250.75`
+    - Correct: `"amount": 125075`
+  </Accordion>
+  <Accordion title="Mixing major and minor units" icon="shuffle">
+    Do not send some requests in major units and others in minor units. Standardize conversion in one shared utility.
+  </Accordion>
+  <Accordion title="Converting on frontend only" icon="mobile-screen-button">
+    Conversion logic should run on your backend so it stays controlled and consistent.
+  </Accordion>
+</AccordionGroup>
+
+## Recommended Implementation Pattern
+
+<Steps>
+  <Step title="Store business amounts as decimals or strings in your app">
+    Keep your display and business logic readable (for example `1250.75`).
+  </Step>
+  <Step title="Convert right before API request">
+    Convert to minor unit integer (`125075`) at your service boundary.
+  </Step>
+  <Step title="Log both values for debugging">
+    Log `displayAmount` and `apiAmount` so reconciliation is easier.
+  </Step>
+</Steps>
+
+## Related Docs
+
+<CardGroup cols={3}>
+  <Card title="Authorization" icon="key" href="/en/guides/introductions/authorization">
+    Add required auth headers to your requests.
+  </Card>
+  <Card title="Wallets" icon="wallet" href="/en/guides/introductions/wallets">
+    Understand wallet balances and wallet states.
+  </Card>
+  <Card title="API Reference" icon="file-code" href="/en/api-reference/introduction">
+    Explore request/response schemas.
+  </Card>
+</CardGroup>

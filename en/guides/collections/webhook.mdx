@@ -1,0 +1,178 @@
+---
+title: "Webhooks and Callbacks"
+description: "Receive and verify real-time collection payment updates from Payfonte."
+icon: "bell"
+---
+
+Payfonte sends webhook events to your configured endpoint when payment state changes.
+
+Use webhooks as your primary source of truth for asynchronous payment outcomes.
+
+## Webhook Source IPs
+
+If you restrict inbound traffic by IP address, allowlist the following Payfonte webhook source IPs for each environment.
+
+| Environment | Source IPs                                       |
+| ----------- | ------------------------------------------------ |
+| Production  | `49.13.133.127`, `49.13.229.61`, `194.32.79.135` |
+| Sandbox     | `49.12.224.228`, `49.13.224.113`                 |
+
+## Why Webhooks Matter
+
+<CardGroup cols={3}>
+  <Card title="Real-Time Updates" icon="bolt">
+    Get payment updates without polling every transaction.
+  </Card>
+  <Card title="Reliable Completion" icon="check-double">
+    Confirm final status (`success` or `failed`) before fulfilling orders.
+  </Card>
+  <Card title="Operational Safety" icon="repeat">
+    Handle retries with idempotent processing to avoid duplicate fulfillment.
+  </Card>
+</CardGroup>
+
+## Webhook Payload Fields
+
+| Field                    | Description                                                    |
+| ------------------------ | -------------------------------------------------------------- |
+| `event`                  | Event type (for example `payment.completed`)                   |
+| `clientId`               | Your Payfonte client identifier                                |
+| `data.status`            | Transaction status (`success`, `failed`, or `pending`)         |
+| `data.reference`         | Payfonte transaction reference                                 |
+| `data.externalReference` | Merchant-provided reference (if supplied)                      |
+| `data.amount`            | Transaction amount in minor units                              |
+| `data.charge`            | Applied transaction charge                                     |
+| `data.provider`          | Provider slug/name used for processing                         |
+| `data.channel`           | Payment channel (for example `card`, `mobile-money`)           |
+| `data.user`              | Customer metadata (name/email/phone when available)            |
+
+Sample payload:
+
+```json payment.completed
+{
+  "clientId": "solara_textiles",
+  "data": {
+    "amount": 74250,
+    "channel": "mobile-money",
+    "charge": 1856,
+    "clientId": "solara_textiles",
+    "completedAt": "2026-05-08T09:24:51.127Z",
+    "country": "SN",
+    "currency": "XOF",
+    "externalReference": "ord_8473926150",
+    "id": "7f24c91a6b8e45d2f1309c7a",
+    "locale": "en",
+    "metadata": {},
+    "paidAt": 1778232291,
+    "paymentReference": "PF20260508092451QZRM4",
+    "platformReference": "7f24c91a6b8e45d2f1309c7a",
+    "provider": "wave-senegal",
+    "reference": "PF20260508092451QZRM4",
+    "status": "success",
+    "statusDescription": "succeeded",
+    "user": {
+      "phoneNumber": "221771234589"
+    }
+  },
+  "deliveryId": "7f24c923bb1d0e4a9c8156fd",
+  "event": "payment.completed",
+  "reference": "PF20260508092451QZRM4",
+  "webhook": "https://merchant.example.com/webhooks/payfonte?client_id=solara_textiles"
+}
+```
+
+## Signature Verification (Required)
+
+Every webhook includes:
+
+- Header: `x-webhook-signature`
+- Value: `sha512` HMAC digest of raw request body, signed with your `client-secret`
+
+Use your `client-secret` from `Settings -> Security ->  API Keys and Webhooks`.
+
+```javascript
+const crypto = require("crypto");
+
+app.post("/payfonte/webhook", express.json({ type: "*/*" }), (req, res) => {
+  const secret = process.env.PAYFONTE_CLIENT_SECRET;
+  const payload = JSON.stringify(req.body);
+  const expected = crypto
+    .createHmac("sha512", secret)
+    .update(payload)
+    .digest("hex");
+  const received = req.headers["x-webhook-signature"];
+
+  if (expected !== received) {
+    return res.status(401).send("Invalid signature");
+  }
+
+  // Acknowledge quickly, then process asynchronously.
+  res.status(200).send("OK");
+  processWebhook(req.body);
+});
+```
+
+<Warning>If signature validation fails, do not process the event.</Warning>
+
+## Idempotent Processing Pattern
+
+<Steps>
+  <Step title="Acknowledge fast">
+    Return HTTP `200` quickly to prevent unnecessary retries.
+  </Step>
+  <Step title="Check duplicates">
+    Use `reference` + `status` (or a delivery identifier if available) to detect
+    already-processed events.
+  </Step>
+  <Step title="Verify transaction when needed">
+    For critical flows, verify payment status from your backend before final
+    fulfillment.
+  </Step>
+  <Step title="Apply state transition safely">
+    Ensure business actions (for example order fulfillment) run once per final
+    success.
+  </Step>
+</Steps>
+
+## Webhook URL Priority
+
+Payfonte uses webhook URLs in this order:
+
+1. Webhook URL passed in the checkout/direct-charge request (`webhook`)
+2. Webhook URL configured on the provider integration
+3. Webhook URL configured in dashboard settings
+
+## Common Issues
+
+| Issue                        | Likely Cause                       | Fix                                                          |
+| ---------------------------- | ---------------------------------- | ------------------------------------------------------------ |
+| Duplicate webhook processing | No idempotency guard               | Track processed `reference` + `status` and skip repeats      |
+| Signature mismatch           | Wrong secret or payload mutation   | Use correct `client-secret` and hash the exact received body |
+| Missed updates               | Endpoint timeout/non-200 responses | Return `200` quickly and move heavy work to async workers    |
+| Wrong environment events     | Mixed sandbox/production setup     | Use matching endpoint and credentials per environment        |
+
+## Related Docs
+
+<CardGroup cols={3}>
+  <Card
+    title="Standard Checkout"
+    icon="arrow-up-right-from-square"
+    href="/en/guides/collections/standard"
+  >
+    Redirect flow with webhook completion.
+  </Card>
+  <Card
+    title="Direct Charge API"
+    icon="bolt"
+    href="/en/guides/collections/direct-charge-api"
+  >
+    Direct charge flow and action handling.
+  </Card>
+  <Card
+    title="Authorization"
+    icon="key"
+    href="/en/guides/introductions/authorization"
+  >
+    Credential and header requirements.
+  </Card>
+</CardGroup>

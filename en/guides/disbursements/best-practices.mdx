@@ -1,0 +1,87 @@
+---
+title: "Disbursement Best Practices"
+description: "Production best practices for safe, reliable, and auditable disbursement processing."
+icon: "list-check"
+---
+
+# Disbursement Best Practices
+
+Use these practices to improve disbursement success rate, reduce fraud risk, and keep reconciliation accurate.
+
+## High-Impact Controls
+
+| Control | Why it matters | Action |
+| --- | --- | --- |
+| Validate recipient first | Prevent invalid-account disbursement failures | Always call recipient validation before first disbursement |
+| Use unique references | Avoid duplicate disbursement errors | Generate one unique reference per disbursement |
+| Enforce integer amounts | Prevent validation/provider failures | Send minor-unit integers only (no decimals) |
+| Verify final status | Avoid premature completion | Use webhook + verify endpoint before final accounting |
+| Protect authorization credentials | Prevent unauthorized disbursements | Keep PIN/authorization secrets backend-only |
+
+## Transaction Safety Pattern
+
+<Steps>
+  <Step title="Reserve or deduct internal balance first">
+    For B2C flows, reserve/deduct customer wallet balance before requesting disbursement.
+  </Step>
+  <Step title="Request disbursement">
+    Submit disbursement with unique reference and required authorization mode.
+  </Step>
+  <Step title="Process webhook + verify">
+    Wait for asynchronous update and verify final status for critical transactions.
+  </Step>
+  <Step title="Reconcile and reverse if failed">
+    If disbursement fails, reverse/refund internal ledger movement after final confirmation.
+  </Step>
+</Steps>
+
+## Reliability and Error Handling
+
+<AccordionGroup>
+  <Accordion title="Treat statusDescription as provider context" icon="circle-info" defaultOpen>
+    Use `statusDescription` from webhook/verification responses to understand provider-side failure reasons.
+  </Accordion>
+  <Accordion title="Implement idempotent retries" icon="repeat">
+    Retry transient failures safely without duplicating disbursements or ledger updates.
+  </Accordion>
+  <Accordion title="Monitor disbursement wallet balance" icon="wallet">
+    Alert when disbursement wallet is low to avoid `InsufficientBalance` failures.
+  </Accordion>
+  <Accordion title="Handle webhook duplicates" icon="bell">
+    Process each reference/status transition once and ignore duplicate deliveries.
+  </Accordion>
+</AccordionGroup>
+
+## Security Guidance
+
+- Never store disbursement PIN in client-side code.
+- Restrict production disbursement initiation to trusted backend services.
+- Log who initiated each disbursement and why.
+- Rotate credentials immediately if compromise is suspected.
+
+## Amount Rule
+
+<Warning>
+  Payfonte does not support decimal API amounts. Send integer minor-unit values only.
+</Warning>
+
+Examples:
+
+- `1000.00 NGN` -> `100000`
+- `250.75 NGN` -> `25075`
+
+See [Amount Specification](/en/guides/introductions/amount-specification).
+
+## Related Docs
+
+<CardGroup cols={3}>
+  <Card title="Disbursements Overview" icon="money-bill-transfer" href="/en/guides/disbursements/overview">
+    Full disbursement flow and endpoint sequence.
+  </Card>
+  <Card title="Error Codes" icon="triangle-exclamation" href="/en/guides/introductions/error-codes">
+    Troubleshoot common disbursement errors.
+  </Card>
+  <Card title="Disbursement Webhooks" icon="bell" href="/en/guides/disbursements/webhook">
+    Process final disbursement updates asynchronously.
+  </Card>
+</CardGroup>
