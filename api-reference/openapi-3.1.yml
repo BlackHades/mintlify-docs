@@ -403,6 +403,24 @@ paths:
             maximum: 100
             default: 2
           description: Number of records per page.
+        - in: query
+          name: country
+          schema:
+            type: string
+            minLength: 2
+            maxLength: 2
+            example: "NG"
+          required: false
+          description: Optional 2-letter ISO country code filter.
+        - in: query
+          name: currency
+          schema:
+            type: string
+            minLength: 3
+            maxLength: 3
+            example: "NGN"
+          required: false
+          description: Optional 3-letter ISO currency code filter.
       responses:
         '200':
           description: Successfully retrieved payment links.
