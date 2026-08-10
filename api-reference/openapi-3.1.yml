@@ -26,6 +26,8 @@ tags:
       url: https://docs.payfonte.com/#/collections/inline
   - name: Card Collections
     description: Everything about your card payment collections with payfonte
+  - name: Payment Links
+    description: Create and manage shareable payment links for hosted customer payments.
   - name: Disbursements
     description: |
       Find full list of supported Disbursement providers here [Supported Providers](https://docs.payfonte.com/#/Disbursements/supported-Disbursements)
@@ -321,6 +323,233 @@ paths:
                       action: "redirect"
                       data:
                         redirectURL: "https://s.6bd.co/card-3ds/mce1aN"
+  /payments/v1/payment-links:
+    post:
+      tags:
+        - Payment Links
+      summary: Create Payment Link
+      description: Create a shareable payment link that customers can use to complete payment through hosted checkout.
+      operationId: createPaymentLink
+      requestBody:
+        description: Payment link creation request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePaymentLinkRequest'
+            example:
+              isAmountFixed: false
+              title: "decimal test"
+              description: "demo"
+              redirectURL: ""
+              logo: "https://6thbridge-file-upload.s3.amazonaws.com/choosen-02.png"
+              customFields: []
+              maximumAmount: 100000000
+              minimumAmount: 0
+              amountLimit: 100000000
+              currency: "XOF"
+              country: "CI"
+        required: true
+      responses:
+        '201':
+          description: Payment link created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentLinkEnvelope'
+              example:
+                statusCode: 201
+                data:
+                  clientId: "6thbridge"
+                  locale: "en"
+                  logo: "https://6thbridge-file-upload.s3.amazonaws.com/choosen-02.png"
+                  currency: "XOF"
+                  country: "CI"
+                  title: "decimal test"
+                  description: "demo"
+                  isAmountFixed: false
+                  longURL: "https://checkout-staging.6thbridge.com/link/6a7a2093b9e24880f73a80b0"
+                  shortURL: "https://s.6bd.co/payment-link/1PIDcH"
+                  minimumAmount: 0
+                  maximumAmount: 100000000
+                  amountLimit: 100000000
+                  customFields: []
+                  redirectURL: ""
+                  expiresAt: null
+                  isActive: true
+                  status: "active"
+                  parentClientId: "6thbridge"
+                  createdAt: "2026-08-10T19:03:47.222Z"
+                  updatedAt: "2026-08-10T19:03:47.222Z"
+                  id: "6a7a2093b9e24880f73a80b0"
+    get:
+      tags:
+        - Payment Links
+      summary: Fetch All Payment Links
+      description: Retrieve a paginated list of payment links.
+      operationId: getPaymentLinks
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: Page number for pagination.
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 2
+          description: Number of records per page.
+      responses:
+        '200':
+          description: Successfully retrieved payment links.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPaymentLinksResponse'
+              example:
+                statusCode: 200
+                total: 246
+                page: 1
+                pages: 123
+                limit: 2
+                data:
+                  - amount: 0
+                    isAnonymousPaymentEnabled: false
+                    clientId: "payfusion"
+                    locale: "en"
+                    logo: "https://files.6thbridge.xyz/public/v1/files/payfusion/content/6a2fc1603d18ca5a47adbe17"
+                    currency: "NGN"
+                    country: "NG"
+                    title: "kksk"
+                    description: "kksk"
+                    isAmountFixed: false
+                    longURL: "https://staging-checkout.payfusion.io/link/6a7204a536c2106e38fe8e01"
+                    shortURL: "https://s.6bd.co/payment-link/bN0ASZ"
+                    minimumAmount: 0
+                    maximumAmount: 200000
+                    amountLimit: 200000
+                    customFields: []
+                    redirectURL: "https://staging-checkout.payfusion.io/invoices/summary/6a7204a5580ef8976ef93da8"
+                    expiresAt: null
+                    isActive: true
+                    status: "completed"
+                    parentClientId: "payfusion"
+                    createdAt: "2026-08-04T15:26:29.757Z"
+                    updatedAt: "2026-08-05T21:38:39.453Z"
+                    id: "6a7204a536c2106e38fe8e01"
+                  - amount: 0
+                    isAnonymousPaymentEnabled: false
+                    clientId: "payfusion"
+                    locale: "en"
+                    logo: "https://files.6thbridge.xyz/public/v1/files/payfusion/content/6a2fc1603d18ca5a47adbe17"
+                    currency: "NGN"
+                    country: "NG"
+                    title: "none"
+                    description: "none"
+                    isAmountFixed: false
+                    longURL: "https://staging-checkout.payfusion.io/link/6a71d34936c2106e38fe8a4a"
+                    shortURL: "https://s.6bd.co/payment-link/G3H9z-"
+                    minimumAmount: 0
+                    maximumAmount: 200000
+                    amountLimit: 200000
+                    customFields: []
+                    redirectURL: "https://staging-checkout.payfusion.io/invoices/summary/6a71d3482b231e3051bba029"
+                    expiresAt: null
+                    isActive: true
+                    status: "active"
+                    parentClientId: "payfusion"
+                    createdAt: "2026-08-04T11:55:53.054Z"
+                    updatedAt: "2026-08-04T11:55:53.054Z"
+                    id: "6a71d34936c2106e38fe8a4a"
+  /payments/v1/payment-links/{id}:
+    get:
+      tags:
+        - Payment Links
+      summary: Fetch Payment Link By ID
+      description: Retrieve a payment link and its analytics by payment link ID.
+      operationId: getPaymentLinkById
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: Payment link ID.
+      responses:
+        '200':
+          description: Successfully retrieved the payment link.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentLinkWithAnalyticsEnvelope'
+              example:
+                statusCode: 200
+                data:
+                  amount: 0
+                  isAnonymousPaymentEnabled: false
+                  clientId: "payfusion"
+                  locale: "en"
+                  logo: "https://files.6thbridge.xyz/public/v1/files/payfusion/content/6a2fc1603d18ca5a47adbe17"
+                  currency: "NGN"
+                  country: "NG"
+                  title: "kksk"
+                  description: "kksk"
+                  isAmountFixed: false
+                  longURL: "https://staging-checkout.payfusion.io/link/6a7204a536c2106e38fe8e01"
+                  shortURL: "https://s.6bd.co/payment-link/bN0ASZ"
+                  minimumAmount: 0
+                  maximumAmount: 200000
+                  amountLimit: 200000
+                  customFields: []
+                  redirectURL: "https://staging-checkout.payfusion.io/invoices/summary/6a7204a5580ef8976ef93da8"
+                  expiresAt: null
+                  isActive: true
+                  status: "completed"
+                  parentClientId: "payfusion"
+                  createdAt: "2026-08-04T15:26:29.757Z"
+                  updatedAt: "2026-08-05T21:38:39.453Z"
+                  id: "6a7204a536c2106e38fe8e01"
+                  analytics:
+                    totalTransactionAmount: 200000
+                    totalTransactionCount: 11
+                    groupByChannel:
+                      - revenue: 10000
+                        count: 1
+                        channel: "bank_transfer"
+                      - revenue: 190000
+                        count: 10
+                        channel: null
+                    groupByRevenueAndCount:
+                      - week: "2026-06-29"
+                        revenue: 0
+                        count: 0
+                      - week: "2026-07-06"
+                        revenue: 0
+                        count: 0
+                      - week: "2026-07-13"
+                        revenue: 0
+                        count: 0
+                      - week: "2026-07-20"
+                        revenue: 0
+                        count: 0
+                      - week: "2026-07-27"
+                        revenue: 0
+                        count: 0
+                      - week: "2026-08-03"
+                        revenue: 200000
+                        count: 11
+                      - week: "2026-08-10"
+                        revenue: 0
+                        count: 0
+                    clientProviders:
+                      - provider: "bank-transfer-nigeria"
+                      - provider: "paystack"
+                    clientChannels:
+                      - channel: "bank_transfer"
   /payments/v1/payments/verify/{reference}:
     get:
       tags:
@@ -957,6 +1186,367 @@ components:
           example: 200
         data:
           $ref: '#/components/schemas/CardPaymentActionResponse'
+
+    PaymentLinkCustomField:
+      type: object
+      description: Extra payer field to collect before creating checkout. Choice fields require `options`.
+      additionalProperties: true
+      properties:
+        label:
+          type: string
+          description: Payer-facing field label.
+          example: "Invoice number"
+        name:
+          type: string
+          description: Machine-readable field name.
+          example: "invoiceNumber"
+        type:
+          type: string
+          description: Field input type.
+          enum:
+            - text
+            - paragraph-text
+            - dropdown
+            - number
+            - date
+            - file-upload
+            - checkbox
+          example: "text"
+        required:
+          type: boolean
+          description: Whether the payer must complete this field.
+          example: false
+        options:
+          type: array
+          description: Available choices for choice fields.
+          items:
+            type: string
+          example:
+            - "Small"
+            - "Large"
+    CreatePaymentLinkRequest:
+      required:
+        - title
+        - description
+        - currency
+        - country
+      type: object
+      properties:
+        title:
+          type: string
+          description: Human-readable payment link title.
+          example: "decimal test"
+        description:
+          type: string
+          description: Human-readable payment link description.
+          example: "demo"
+        logo:
+          type: string
+          description: Logo URL or empty string. Defaults to the client or business logo.
+          example: "https://6thbridge-file-upload.s3.amazonaws.com/choosen-02.png"
+        locale:
+          type: string
+          description: Locale for payer-facing checkout. Defaults to the client or business locale.
+          example: "en"
+        currency:
+          type: string
+          minLength: 3
+          maxLength: 3
+          description: Required 3-letter ISO currency code.
+          example: "XOF"
+        country:
+          type: string
+          minLength: 2
+          maxLength: 2
+          description: Required 2-letter ISO country code used for active integration lookup.
+          example: "CI"
+        isAmountFixed:
+          type: boolean
+          description: Set to `true` when the payer cannot change the amount.
+          example: false
+        amount:
+          type: number
+          description: Fixed collection amount in minor currency units. Required when `isAmountFixed` is `true` and must be greater than zero. See [Amount Specification](https://docs.payfonte.com/en/guides/introductions/amount-specification).
+          example: 100000
+        minimumAmount:
+          type: number
+          description: Minimum payer-entered amount in minor currency units. Used when `isAmountFixed` is `false`. See [Amount Specification](https://docs.payfonte.com/en/guides/introductions/amount-specification).
+          example: 0
+        maximumAmount:
+          type: number
+          description: Maximum payer-entered amount in minor currency units. Used when `isAmountFixed` is `false`. See [Amount Specification](https://docs.payfonte.com/en/guides/introductions/amount-specification).
+          example: 100000000
+        amountLimit:
+          type: number
+          description: Total collectible amount limit across successful payments for this link in minor currency units. See [Amount Specification](https://docs.payfonte.com/en/guides/introductions/amount-specification).
+          example: 100000000
+        customFields:
+          type: array
+          description: Extra payer fields to collect before creating checkout.
+          items:
+            $ref: '#/components/schemas/PaymentLinkCustomField'
+          example: []
+        redirectURL:
+          type: string
+          description: URL to redirect the payer to after payment flow.
+          example: ""
+        isAnonymousPaymentEnabled:
+          type: boolean
+          description: Whether anonymous payments are allowed.
+          example: false
+        expiresAt:
+          type:
+            - string
+            - 'null'
+          format: date
+          description: Date on which the link expires.
+          example: "2026-12-31"
+    PaymentLink:
+      type: object
+      properties:
+        amount:
+          type: number
+          description: Fixed amount configured for the payment link in minor currency units, when applicable. See [Amount Specification](https://docs.payfonte.com/en/guides/introductions/amount-specification).
+          example: 0
+        isAnonymousPaymentEnabled:
+          type: boolean
+          description: Whether anonymous payments are allowed.
+          example: false
+        clientId:
+          type: string
+          description: Client identifier associated with the payment link.
+          example: "payfusion"
+        locale:
+          type: string
+          description: Locale for payer-facing checkout.
+          example: "en"
+        logo:
+          type: string
+          description: Logo URL displayed on the payment link checkout.
+          example: "https://files.6thbridge.xyz/public/v1/files/payfusion/content/6a2fc1603d18ca5a47adbe17"
+        currency:
+          type: string
+          minLength: 3
+          maxLength: 3
+          description: 3-letter ISO currency code.
+          example: "NGN"
+        country:
+          type: string
+          minLength: 2
+          maxLength: 2
+          description: 2-letter ISO country code used for active integration lookup.
+          example: "NG"
+        title:
+          type: string
+          description: Human-readable payment link title.
+          example: "kksk"
+        description:
+          type: string
+          description: Human-readable payment link description.
+          example: "kksk"
+        isAmountFixed:
+          type: boolean
+          description: Whether the payer can change the payment amount.
+          example: false
+        longURL:
+          type: string
+          format: uri
+          description: Full payment link URL.
+          example: "https://staging-checkout.payfusion.io/link/6a7204a536c2106e38fe8e01"
+        shortURL:
+          type: string
+          format: uri
+          description: Short payment link URL.
+          example: "https://s.6bd.co/payment-link/bN0ASZ"
+        minimumAmount:
+          type: number
+          description: Minimum payer-entered amount in minor currency units. Used when `isAmountFixed` is `false`. See [Amount Specification](https://docs.payfonte.com/en/guides/introductions/amount-specification).
+          example: 0
+        maximumAmount:
+          type: number
+          description: Maximum payer-entered amount in minor currency units. Used when `isAmountFixed` is `false`. See [Amount Specification](https://docs.payfonte.com/en/guides/introductions/amount-specification).
+          example: 200000
+        amountLimit:
+          type: number
+          description: Total collectible amount limit across successful payments for this link in minor currency units. See [Amount Specification](https://docs.payfonte.com/en/guides/introductions/amount-specification).
+          example: 200000
+        customFields:
+          type: array
+          description: Extra payer fields collected before creating checkout.
+          items:
+            $ref: '#/components/schemas/PaymentLinkCustomField'
+          example: []
+        redirectURL:
+          type: string
+          description: URL to redirect the payer to after payment flow.
+          example: "https://staging-checkout.payfusion.io/invoices/summary/6a7204a5580ef8976ef93da8"
+        expiresAt:
+          type:
+            - string
+            - 'null'
+          format: date
+          description: Date on which the link expires.
+          example: null
+        isActive:
+          type: boolean
+          description: Whether the payment link is currently active.
+          example: true
+        status:
+          type: string
+          description: Current payment link status.
+          enum:
+            - active
+            - completed
+            - inactive
+            - expired
+          example: "active"
+        parentClientId:
+          type: string
+          description: Parent client identifier associated with the payment link.
+          example: "payfusion"
+        createdAt:
+          type: string
+          format: date-time
+          description: Payment link creation timestamp.
+          example: "2026-08-04T11:55:53.054Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: Payment link update timestamp.
+          example: "2026-08-04T11:55:53.054Z"
+        id:
+          type: string
+          description: Payment link ID.
+          example: "6a71d34936c2106e38fe8a4a"
+    PaymentLinkAnalytics:
+      type: object
+      properties:
+        totalTransactionAmount:
+          type: number
+          description: Total successful transaction amount collected through the payment link in minor currency units. See [Amount Specification](https://docs.payfonte.com/en/guides/introductions/amount-specification).
+          example: 200000
+        totalTransactionCount:
+          type: integer
+          description: Total successful transaction count for the payment link.
+          example: 11
+        groupByChannel:
+          type: array
+          description: Revenue and count grouped by payment channel.
+          items:
+            type: object
+            properties:
+              revenue:
+                type: number
+                description: Revenue amount in minor currency units. See [Amount Specification](https://docs.payfonte.com/en/guides/introductions/amount-specification).
+                example: 10000
+              count:
+                type: integer
+                example: 1
+              channel:
+                type:
+                  - string
+                  - 'null'
+                example: "bank_transfer"
+        groupByRevenueAndCount:
+          type: array
+          description: Weekly revenue and count values for the payment link.
+          items:
+            type: object
+            properties:
+              week:
+                type: string
+                format: date
+                example: "2026-08-03"
+              revenue:
+                type: number
+                description: Revenue amount in minor currency units. See [Amount Specification](https://docs.payfonte.com/en/guides/introductions/amount-specification).
+                example: 200000
+              count:
+                type: integer
+                example: 11
+        clientProviders:
+          type: array
+          description: Client providers available for this payment link.
+          items:
+            type: object
+            properties:
+              provider:
+                type: string
+                example: "bank-transfer-nigeria"
+        clientChannels:
+          type: array
+          description: Client channels available for this payment link.
+          items:
+            type: object
+            properties:
+              channel:
+                type: string
+                example: "bank_transfer"
+    PaymentLinkWithAnalytics:
+      allOf:
+        - $ref: '#/components/schemas/PaymentLink'
+        - type: object
+          properties:
+            analytics:
+              $ref: '#/components/schemas/PaymentLinkAnalytics'
+    PaymentLinkEnvelope:
+      required:
+        - statusCode
+        - data
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          description: Application status code returned in the response body.
+          example: 201
+        data:
+          $ref: '#/components/schemas/PaymentLink'
+    PaymentLinkWithAnalyticsEnvelope:
+      required:
+        - statusCode
+        - data
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          description: Application status code returned in the response body.
+          example: 200
+        data:
+          $ref: '#/components/schemas/PaymentLinkWithAnalytics'
+    GetPaymentLinksResponse:
+      required:
+        - statusCode
+        - total
+        - page
+        - pages
+        - limit
+        - data
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          description: Application status code returned in the response body.
+          example: 200
+        total:
+          type: integer
+          description: Total number of records.
+          example: 246
+        page:
+          type: integer
+          description: Current page number.
+          example: 1
+        pages:
+          type: integer
+          description: Total number of pages.
+          example: 123
+        limit:
+          type: integer
+          description: Number of records per page.
+          example: 2
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentLink'
 
     GenerateCheckoutURLResponse:
       type: object

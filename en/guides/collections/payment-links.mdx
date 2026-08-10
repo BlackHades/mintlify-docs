@@ -1,0 +1,244 @@
+---
+title: "Collections - Payment Links"
+description: "Create and manage shareable payment links for hosted customer payments."
+icon: "link"
+---
+
+Payment Links let you create hosted checkout URLs that customers can open from invoices, messages, social media, or email campaigns. A link can collect a fixed amount or allow the customer to enter an amount within configured limits.
+
+<Warning>
+  When a customer completes payment through a payment link, Payfonte sends a payment webhook to your configured webhook endpoint. Use the webhook event as your source of truth before fulfilling the order or marking an invoice as paid.
+</Warning>
+
+See [Webhooks and Callbacks](/en/guides/collections/webhook) for the `payment.completed` payload, signature verification, retry handling, and webhook URL priority.
+
+## Endpoints
+
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| `POST` | `/payments/v1/payment-links` | Create a payment link |
+| `GET` | `/payments/v1/payment-links` | Fetch paginated payment links |
+| `GET` | `/payments/v1/payment-links/{id}` | Fetch a payment link and its analytics |
+
+## Integration Steps
+
+<Steps>
+  <Step title="Create the payment link">
+    Call `POST /payments/v1/payment-links` with `title`, `description`, currency, country, and amount settings. Send your client identifier in the `client-id` header.
+  </Step>
+  <Step title="Share the URL">
+    Use the returned `shortURL` or `longURL` in invoices, emails, chats, social posts, or payment reminders.
+  </Step>
+  <Step title="Receive the payment webhook">
+    After the customer pays, Payfonte sends a payment webhook to the configured endpoint. Verify the webhook signature and process the event idempotently.
+  </Step>
+  <Step title="Review link performance">
+    Use `GET /payments/v1/payment-links/{id}` to retrieve the link, collected totals, channel breakdown, and provider availability.
+  </Step>
+</Steps>
+
+## Create Payment Link
+
+```bash
+curl --request POST \
+  --url https://sandbox-api.payfonte.com/payments/v1/payment-links \
+  --header 'client-id: <client-id>' \
+  --header 'client-secret: <client-secret>' \
+  --header 'content-type: application/json' \
+  --data '{
+    "isAmountFixed": false,
+    "title": "decimal test",
+    "description": "demo",
+    "redirectURL": "",
+    "logo": "https://6thbridge-file-upload.s3.amazonaws.com/choosen-02.png",
+    "customFields": [],
+    "maximumAmount": 100000000,
+    "minimumAmount": 0,
+    "amountLimit": 100000000,
+    "currency": "XOF",
+    "country": "CI"
+  }'
+```
+
+Example response:
+
+```json
+{
+  "statusCode": 201,
+  "data": {
+    "clientId": "6thbridge",
+    "locale": "en",
+    "logo": "https://6thbridge-file-upload.s3.amazonaws.com/choosen-02.png",
+    "currency": "XOF",
+    "country": "CI",
+    "title": "decimal test",
+    "description": "demo",
+    "isAmountFixed": false,
+    "longURL": "https://checkout-staging.6thbridge.com/link/6a7a2093b9e24880f73a80b0",
+    "shortURL": "https://s.6bd.co/payment-link/1PIDcH",
+    "minimumAmount": 0,
+    "maximumAmount": 100000000,
+    "amountLimit": 100000000,
+    "customFields": [],
+    "redirectURL": "",
+    "expiresAt": null,
+    "isActive": true,
+    "status": "active",
+    "parentClientId": "6thbridge",
+    "createdAt": "2026-08-10T19:03:47.222Z",
+    "updatedAt": "2026-08-10T19:03:47.222Z",
+    "id": "6a7a2093b9e24880f73a80b0"
+  }
+}
+```
+
+## Request Fields
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `title` | string | Yes | Human-readable payment link title |
+| `description` | string | Yes | Human-readable payment link description |
+| `currency` | string | Yes | Required 3-letter ISO currency code |
+| `country` | string | Yes | Required 2-letter ISO country code used for active integration lookup |
+| `isAmountFixed` | boolean | No | Set to `true` when the payer cannot change the amount |
+| `amount` | number | Required when `isAmountFixed` is `true` | Fixed collection amount in minor units |
+| `minimumAmount` | number | Used when `isAmountFixed` is `false` | Minimum payer-entered amount in minor units |
+| `maximumAmount` | number | Used when `isAmountFixed` is `false` | Maximum payer-entered amount in minor units |
+| `amountLimit` | number | No | Total collectible amount limit across successful payments for this link, in minor units |
+| `customFields` | array | No | Extra payer fields to collect before creating checkout |
+| `redirectURL` | string | No | URL to redirect the payer to after payment flow |
+| `logo` | string | No | Logo URL or empty string. Defaults to the client or business logo |
+| `locale` | string | No | Locale for payer-facing checkout. Defaults to the client or business locale |
+| `isAnonymousPaymentEnabled` | boolean | No | Whether anonymous payments are allowed |
+| `expiresAt` | date | No | Date on which the link expires |
+
+## Amount Modes
+
+<AccordionGroup>
+  <Accordion title="Fixed amount" icon="lock" defaultOpen>
+    Use `isAmountFixed: true` when the customer must pay one exact amount. Send `amount` with a value greater than zero.
+
+```json
+{
+  "isAmountFixed": true,
+  "amount": 50000,
+  "currency": "NGN",
+  "country": "NG",
+  "title": "Invoice 1001",
+  "description": "Payment for invoice 1001"
+}
+```
+  </Accordion>
+  <Accordion title="Variable amount" icon="sliders-horizontal">
+    Use `isAmountFixed: false` when the customer can enter the payment amount. Send `minimumAmount` and `maximumAmount` to define the allowed range.
+
+```json
+{
+  "isAmountFixed": false,
+  "minimumAmount": 10000,
+  "maximumAmount": 200000,
+  "amountLimit": 1000000,
+  "currency": "NGN",
+  "country": "NG",
+  "title": "Donation",
+  "description": "Choose how much to pay"
+}
+```
+  </Accordion>
+</AccordionGroup>
+
+## Custom Fields
+
+Use `customFields` when you need extra payer information before checkout is created. Choice fields require `options`.
+
+Supported `customFields.type` values:
+
+| Type | Use case |
+| --- | --- |
+| `text` | Short free-text input |
+| `paragraph-text` | Longer free-text input |
+| `dropdown` | Single choice from predefined options |
+| `number` | Numeric input |
+| `date` | Date input |
+| `file-upload` | File attachment |
+| `checkbox` | Boolean confirmation |
+
+```json
+{
+  "customFields": [
+    {
+      "label": "Invoice number",
+      "name": "invoiceNumber",
+      "type": "text",
+      "required": true
+    },
+    {
+      "label": "Package",
+      "name": "package",
+      "type": "dropdown",
+      "required": true,
+      "options": ["Basic", "Premium"]
+    }
+  ]
+}
+```
+
+## Fetch Payment Links
+
+```bash
+curl --request GET \
+  --url 'https://sandbox-api.payfonte.com/payments/v1/payment-links?page=1&limit=2' \
+  --header 'client-id: <client-id>' \
+  --header 'client-secret: <client-secret>'
+```
+
+## Fetch Payment Link By ID
+
+```bash
+curl --request GET \
+  --url https://sandbox-api.payfonte.com/payments/v1/payment-links/6a7204a536c2106e38fe8e01 \
+  --header 'client-id: <client-id>' \
+  --header 'client-secret: <client-secret>'
+```
+
+The response includes the payment link fields and an `analytics` object with collected amount, transaction count, channel breakdown, revenue history, available providers, and available channels.
+
+## Webhook Completion
+
+Payment links use the same collection webhook flow documented in [Webhooks and Callbacks](/en/guides/collections/webhook). When a customer successfully completes a payment link checkout, Payfonte sends a payment webhook such as `payment.completed`.
+
+<Steps>
+  <Step title="Verify the signature">
+    Validate `x-webhook-signature` with your `client-secret` before processing the event.
+  </Step>
+  <Step title="Use idempotency">
+    Track processed `reference` and `status` values so retries do not trigger duplicate fulfillment.
+  </Step>
+  <Step title="Fulfill after final status">
+    Mark invoices, orders, or balances as paid only after receiving and validating a final webhook status such as `success`.
+  </Step>
+</Steps>
+
+## Important Rules
+
+<Warning>
+  Amount values are sent in minor units. See [Amount Specification](/en/guides/introductions/amount-specification).
+</Warning>
+
+<Warning>
+  Do not rely only on customer redirect behavior to confirm payment. Always process the payment webhook before fulfilling value.
+</Warning>
+
+## Related Docs
+
+<CardGroup cols={3}>
+  <Card title="API Reference" icon="file-code" href="/en/api-reference/introduction">
+    View payment link endpoint definitions and request schemas.
+  </Card>
+  <Card title="Webhooks" icon="bell" href="/en/guides/collections/webhook">
+    Receive and verify payment completion events.
+  </Card>
+  <Card title="Amount Specification" icon="coins" href="/en/guides/introductions/amount-specification">
+    Understand how to send amount values in minor units.
+  </Card>
+</CardGroup>

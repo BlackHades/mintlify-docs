@@ -1,0 +1,244 @@
+---
+title: "Collecte - Liens de paiement"
+description: "Creez et gerez des liens de paiement partageables pour des paiements client sur checkout heberge."
+icon: "link"
+---
+
+Les liens de paiement permettent de creer des URL de checkout heberge que les clients peuvent ouvrir depuis des factures, messages, reseaux sociaux ou campagnes e-mail. Un lien peut collecter un montant fixe ou laisser le client saisir un montant dans des limites configurees.
+
+<Warning>
+  Quand un client termine un paiement via un lien de paiement, Payfonte envoie un webhook de paiement vers votre endpoint webhook configure. Utilisez l'evenement webhook comme source de verite avant d'executer une commande ou de marquer une facture comme payee.
+</Warning>
+
+Voir [Webhooks et callbacks](/fr/guides/collections/webhook) pour le payload `payment.completed`, la verification de signature, la gestion des retries et la priorite des URL webhook.
+
+## Endpoints
+
+| Methode | Endpoint | Objet |
+| --- | --- | --- |
+| `POST` | `/payments/v1/payment-links` | Creer un lien de paiement |
+| `GET` | `/payments/v1/payment-links` | Recuperer les liens de paiement pagines |
+| `GET` | `/payments/v1/payment-links/{id}` | Recuperer un lien de paiement et ses analytics |
+
+## Etapes d'integration
+
+<Steps>
+  <Step title="Creer le lien de paiement">
+    Appelez `POST /payments/v1/payment-links` avec `title`, `description`, la devise, le pays et les parametres de montant. Envoyez votre identifiant client dans l'en-tete `client-id`.
+  </Step>
+  <Step title="Partager l'URL">
+    Utilisez le `shortURL` ou le `longURL` renvoye dans vos factures, e-mails, conversations, publications sociales ou relances de paiement.
+  </Step>
+  <Step title="Recevoir le webhook de paiement">
+    Apres le paiement du client, Payfonte envoie un webhook de paiement a l'endpoint configure. Verifiez la signature du webhook et traitez l'evenement de maniere idempotente.
+  </Step>
+  <Step title="Analyser les performances du lien">
+    Utilisez `GET /payments/v1/payment-links/{id}` pour recuperer le lien, les totaux collectes, la repartition par canal et les providers disponibles.
+  </Step>
+</Steps>
+
+## Creer un lien de paiement
+
+```bash
+curl --request POST \
+  --url https://sandbox-api.payfonte.com/payments/v1/payment-links \
+  --header 'client-id: <client-id>' \
+  --header 'client-secret: <client-secret>' \
+  --header 'content-type: application/json' \
+  --data '{
+    "isAmountFixed": false,
+    "title": "decimal test",
+    "description": "demo",
+    "redirectURL": "",
+    "logo": "https://6thbridge-file-upload.s3.amazonaws.com/choosen-02.png",
+    "customFields": [],
+    "maximumAmount": 100000000,
+    "minimumAmount": 0,
+    "amountLimit": 100000000,
+    "currency": "XOF",
+    "country": "CI"
+  }'
+```
+
+Exemple de reponse :
+
+```json
+{
+  "statusCode": 201,
+  "data": {
+    "clientId": "6thbridge",
+    "locale": "en",
+    "logo": "https://6thbridge-file-upload.s3.amazonaws.com/choosen-02.png",
+    "currency": "XOF",
+    "country": "CI",
+    "title": "decimal test",
+    "description": "demo",
+    "isAmountFixed": false,
+    "longURL": "https://checkout-staging.6thbridge.com/link/6a7a2093b9e24880f73a80b0",
+    "shortURL": "https://s.6bd.co/payment-link/1PIDcH",
+    "minimumAmount": 0,
+    "maximumAmount": 100000000,
+    "amountLimit": 100000000,
+    "customFields": [],
+    "redirectURL": "",
+    "expiresAt": null,
+    "isActive": true,
+    "status": "active",
+    "parentClientId": "6thbridge",
+    "createdAt": "2026-08-10T19:03:47.222Z",
+    "updatedAt": "2026-08-10T19:03:47.222Z",
+    "id": "6a7a2093b9e24880f73a80b0"
+  }
+}
+```
+
+## Champs de requete
+
+| Champ | Type | Requis | Description |
+| --- | --- | --- | --- |
+| `title` | string | Oui | Titre lisible du lien de paiement |
+| `description` | string | Oui | Description lisible du lien de paiement |
+| `currency` | string | Oui | Code devise ISO a 3 lettres obligatoire |
+| `country` | string | Oui | Code pays ISO a 2 lettres obligatoire utilise pour rechercher les integrations actives |
+| `isAmountFixed` | boolean | Non | Definissez `true` lorsque le payeur ne peut pas modifier le montant |
+| `amount` | number | Requis quand `isAmountFixed` vaut `true` | Montant fixe de collecte en sous-unites |
+| `minimumAmount` | number | Utilise quand `isAmountFixed` vaut `false` | Montant minimum saisi par le payeur en sous-unites |
+| `maximumAmount` | number | Utilise quand `isAmountFixed` vaut `false` | Montant maximum saisi par le payeur en sous-unites |
+| `amountLimit` | number | Non | Montant total collectable sur les paiements reussis de ce lien, en sous-unites |
+| `customFields` | array | Non | Champs supplementaires a collecter avant la creation du checkout |
+| `redirectURL` | string | Non | URL vers laquelle rediriger le payeur apres le flux de paiement |
+| `logo` | string | Non | URL du logo ou chaine vide. Par defaut, le logo du client ou de l'entreprise est utilise |
+| `locale` | string | Non | Locale du checkout visible par le payeur. Par defaut, la locale du client ou de l'entreprise est utilisee |
+| `isAnonymousPaymentEnabled` | boolean | Non | Indique si les paiements anonymes sont autorises |
+| `expiresAt` | date | Non | Date d'expiration du lien |
+
+## Modes de montant
+
+<AccordionGroup>
+  <Accordion title="Montant fixe" icon="lock" defaultOpen>
+    Utilisez `isAmountFixed: true` lorsque le client doit payer un montant exact. Envoyez `amount` avec une valeur superieure a zero.
+
+```json
+{
+  "isAmountFixed": true,
+  "amount": 50000,
+  "currency": "NGN",
+  "country": "NG",
+  "title": "Invoice 1001",
+  "description": "Payment for invoice 1001"
+}
+```
+  </Accordion>
+  <Accordion title="Montant variable" icon="sliders-horizontal">
+    Utilisez `isAmountFixed: false` lorsque le client peut saisir le montant du paiement. Envoyez `minimumAmount` et `maximumAmount` pour definir la plage autorisee.
+
+```json
+{
+  "isAmountFixed": false,
+  "minimumAmount": 10000,
+  "maximumAmount": 200000,
+  "amountLimit": 1000000,
+  "currency": "NGN",
+  "country": "NG",
+  "title": "Donation",
+  "description": "Choose how much to pay"
+}
+```
+  </Accordion>
+</AccordionGroup>
+
+## Champs personnalises
+
+Utilisez `customFields` lorsque vous devez collecter des informations supplementaires du payeur avant la creation du checkout. Les champs de choix requierent `options`.
+
+Valeurs `customFields.type` prises en charge :
+
+| Type | Cas d'usage |
+| --- | --- |
+| `text` | Saisie texte courte |
+| `paragraph-text` | Saisie texte longue |
+| `dropdown` | Choix unique parmi des options definies |
+| `number` | Saisie numerique |
+| `date` | Saisie de date |
+| `file-upload` | Piece jointe |
+| `checkbox` | Confirmation booleenne |
+
+```json
+{
+  "customFields": [
+    {
+      "label": "Invoice number",
+      "name": "invoiceNumber",
+      "type": "text",
+      "required": true
+    },
+    {
+      "label": "Package",
+      "name": "package",
+      "type": "dropdown",
+      "required": true,
+      "options": ["Basic", "Premium"]
+    }
+  ]
+}
+```
+
+## Recuperer les liens de paiement
+
+```bash
+curl --request GET \
+  --url 'https://sandbox-api.payfonte.com/payments/v1/payment-links?page=1&limit=2' \
+  --header 'client-id: <client-id>' \
+  --header 'client-secret: <client-secret>'
+```
+
+## Recuperer un lien de paiement par ID
+
+```bash
+curl --request GET \
+  --url https://sandbox-api.payfonte.com/payments/v1/payment-links/6a7204a536c2106e38fe8e01 \
+  --header 'client-id: <client-id>' \
+  --header 'client-secret: <client-secret>'
+```
+
+La reponse inclut les champs du lien de paiement et un objet `analytics` avec le montant collecte, le nombre de transactions, la repartition par canal, l'historique de revenu, les providers disponibles et les canaux disponibles.
+
+## Finalisation par webhook
+
+Les liens de paiement utilisent le meme flux de webhook de collecte que celui documente dans [Webhooks et callbacks](/fr/guides/collections/webhook). Quand un client termine avec succes un checkout de lien de paiement, Payfonte envoie un webhook de paiement tel que `payment.completed`.
+
+<Steps>
+  <Step title="Verifier la signature">
+    Validez `x-webhook-signature` avec votre `client-secret` avant de traiter l'evenement.
+  </Step>
+  <Step title="Utiliser l'idempotence">
+    Suivez les valeurs `reference` et `status` deja traitees afin que les retries ne declenchent pas de double execution.
+  </Step>
+  <Step title="Executer apres le statut final">
+    Marquez les factures, commandes ou soldes comme payes uniquement apres reception et validation d'un statut webhook final tel que `success`.
+  </Step>
+</Steps>
+
+## Regles importantes
+
+<Warning>
+  Les valeurs de montant sont envoyees en sous-unites. Voir [Specification des montants](/fr/guides/introductions/amount-specification).
+</Warning>
+
+<Warning>
+  Ne vous fiez pas uniquement au comportement de redirection client pour confirmer le paiement. Traitez toujours le webhook de paiement avant d'executer une valeur.
+</Warning>
+
+## Documentation associee
+
+<CardGroup cols={3}>
+  <Card title="Reference API" icon="file-code" href="/fr/api-reference/introduction">
+    Consultez les definitions d'endpoints de liens de paiement et les schemas de requete.
+  </Card>
+  <Card title="Webhooks" icon="bell" href="/fr/guides/collections/webhook">
+    Recevez et verifiez les evenements de finalisation de paiement.
+  </Card>
+  <Card title="Specification des montants" icon="coins" href="/fr/guides/introductions/amount-specification">
+    Comprenez comment envoyer les montants en sous-unites.
+  </Card>
+</CardGroup>
