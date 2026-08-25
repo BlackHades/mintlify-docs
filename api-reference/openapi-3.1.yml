@@ -28,6 +28,8 @@ tags:
     description: Everything about your card payment collections with payfonte
   - name: Payment Links
     description: Create and manage shareable payment links for hosted customer payments.
+  - name: Integrations
+    description: Fetch activated payment providers available to your business.
   - name: Disbursements
     description: |
       Find full list of supported Disbursement providers here [Supported Providers](https://docs.payfonte.com/#/Disbursements/supported-Disbursements)
@@ -664,6 +666,141 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/GenerateCheckoutURLResponse'
+  /integrations/v1/integrations:
+    get:
+      tags:
+        - Integrations
+      summary: Fetch Activated Integrations
+      description: Retrieve payment providers that have been activated for your business. Filter the response by country, currency, and integration type.
+      operationId: fetchActivatedIntegrations
+      parameters:
+        - in: query
+          name: country
+          schema:
+            $ref: "#/components/schemas/Country"
+          required: false
+          description: 2 character country code used to filter integrations.
+        - in: query
+          name: currency
+          schema:
+            $ref: "#/components/schemas/Currency"
+          required: false
+          description: 3 character currency code used to filter integrations.
+        - in: query
+          name: type
+          schema:
+            type: string
+            enum:
+              - payment
+              - collection
+            example: payment
+          required: false
+          description: Integration type used to filter activated providers.
+      responses:
+        '200':
+          description: Successfully retrieved activated integrations.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetIntegrationsResponse'
+              example:
+                statusCode: 200
+                data:
+                  - id: "6a68b195fa51e96ab2120d45"
+                    clientId: "6thbridge"
+                    label: "MPesa"
+                    provider: "mpesa-tanzania"
+                    type: "payment"
+                    status: "active"
+                    logo: "https://files.6thbridge.xyz/public/v1/files/payfusion/content/67dc6a5e0abc90dcd853e993"
+                    description: "Send money, pay bills, access loans & more, all with your phone. M-Pesa is for everyone, fast, safe, affordable, and empowering."
+                    isOwnKeys: false
+                    channels:
+                      - "mobile-money"
+                    currencies:
+                      - "TZS"
+                    currency: "TZS"
+                    country: "TZ"
+                    chargeVersion: 1
+                    charge: null
+                    charges: []
+                    ownKeys: false
+                  - id: "6a68b195fa51e96ab2120d44"
+                    clientId: "6thbridge"
+                    label: "Halopesa"
+                    provider: "halopesa-tanzania"
+                    type: "payment"
+                    status: "active"
+                    logo: "https://files.6thbridge.xyz/public/v1/files/payfusion/content/67dc6a5e0abc90dcd853e991"
+                    description: "Make digital transactions easily and fast transactions anywhere and at any time, quickly, safely with affordably and conveniently 24/7"
+                    isOwnKeys: false
+                    channels:
+                      - "mobile-money"
+                    currencies:
+                      - "TZS"
+                    currency: "TZS"
+                    country: "TZ"
+                    chargeVersion: 1
+                    charge: null
+                    charges: []
+                    ownKeys: false
+                  - id: "6a427dfee884314a5fc5cd5c"
+                    clientId: "6thbridge"
+                    label: "Ezy Pesa"
+                    provider: "ezy-pesa-tanzania"
+                    type: "payment"
+                    status: "active"
+                    logo: "https://mintlify.s3.us-west-1.amazonaws.com/shortstack/images/zeepaylogo.png"
+                    description: "Mobile Money"
+                    isOwnKeys: false
+                    channels:
+                      - "mobile-money"
+                    currencies:
+                      - "TZS"
+                    currency: "TZS"
+                    country: "TZ"
+                    chargeVersion: 1
+                    charge: null
+                    charges: []
+                    ownKeys: false
+                  - id: "6931b532710ac03f78a6d64b"
+                    clientId: "6thbridge"
+                    label: "Airtel"
+                    provider: "airtel-tanzania"
+                    type: "payment"
+                    status: "active"
+                    logo: "https://s3-ap-southeast-1.amazonaws.com/bsy/iportal/images/airtel-logo-white-text-vertical.jpg"
+                    description: "Run a better connected business with our enterprise solutions at Airtel."
+                    isOwnKeys: false
+                    channels:
+                      - "mobile-money"
+                    currencies:
+                      - "TZS"
+                    currency: "TZS"
+                    country: "TZ"
+                    chargeVersion: 1
+                    charge: null
+                    charges: []
+                    ownKeys: false
+                  - id: "6699e58d7a36e0f743d04c55"
+                    clientId: "6thbridge"
+                    label: "DigiCash"
+                    provider: "digicash-tanzania"
+                    type: "payment"
+                    status: "active"
+                    logo: "https://static.wixstatic.com/media/5244b5_7ecdb373a1954c59a18291f32ba0c087~mv2.png"
+                    description: "Simplify your customer's payment experience in one integration"
+                    isOwnKeys: true
+                    channels:
+                      - "mobile-money"
+                    currencies:
+                      - "TZS"
+                    currency: "TZS"
+                    country: "TZ"
+                    chargeVersion: 1
+                    charge: null
+                    charges: []
+                    ownKeys: true
   /payments/v1/payments/direct-charge/{provider}/properties:
     get:
       tags:
@@ -899,6 +1036,87 @@ components:
       description: This is the provider we are validating the account against. Find full list of providers here [Supported Providers](https://docs.payfonte.com/#/Disbursements/supported-Disbursements)
       examples:
         - provider-slug
+    IntegrationType:
+      type: string
+      description: Type of integration available for the provider.
+      enum:
+        - payment
+        - collection
+      example: payment
+    Integration:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "6a68b195fa51e96ab2120d45"
+        clientId:
+          type: string
+          example: "6thbridge"
+        label:
+          type: string
+          example: "MPesa"
+        provider:
+          type: string
+          description: Provider slug for the activated integration.
+          example: "mpesa-tanzania"
+        type:
+          $ref: "#/components/schemas/IntegrationType"
+        status:
+          type: string
+          example: "active"
+        logo:
+          type: string
+          format: uri
+          example: "https://files.6thbridge.xyz/public/v1/files/payfusion/content/67dc6a5e0abc90dcd853e993"
+        description:
+          type: string
+          example: "Send money, pay bills, access loans & more, all with your phone. M-Pesa is for everyone, fast, safe, affordable, and empowering."
+        isOwnKeys:
+          type: boolean
+          example: false
+        channels:
+          type: array
+          items:
+            type: string
+          example:
+            - "mobile-money"
+        currencies:
+          type: array
+          items:
+            $ref: "#/components/schemas/Currency"
+          example:
+            - "TZS"
+        currency:
+          $ref: "#/components/schemas/Currency"
+        country:
+          $ref: "#/components/schemas/Country"
+        chargeVersion:
+          type: integer
+          example: 1
+        charge:
+          type: object
+          nullable: true
+          additionalProperties: true
+          example: null
+        charges:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          example: []
+        ownKeys:
+          type: boolean
+          example: false
+    GetIntegrationsResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 200
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Integration"
     User:
       type: object
       properties:
