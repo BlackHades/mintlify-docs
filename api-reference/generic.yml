@@ -683,16 +683,10 @@ components:
             - "044"
     ValidateTransferRecipientRequest:
       required:
-        - currency
-        - country
         - provider
         - account
       type: object
       properties:
-        currency:
-          $ref: '#/components/schemas/Currency'
-        country:
-          $ref: "#/components/schemas/Country"
         provider:
           $ref: "#/components/schemas/Provider"
         account:
