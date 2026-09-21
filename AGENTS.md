@@ -32,6 +32,9 @@ This repository contains the Payfonte Mintlify documentation site.
 7. Use localized prose, not localized structure.
    Translate explanatory text into French, but keep tables, limits, counts, and provider coverage synchronized with the English source unless the user explicitly requests otherwise.
 
+8. Keep the supported-providers update date current.
+   Whenever `en/guides/introductions/supported-providers.mdx` is updated, refresh its `Last updated` badge to the current date.
+
 ## Validation Guidelines
 
 1. For page edits, verify internal links, jump links, and heading anchors still match the rendered section names.

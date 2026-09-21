@@ -8,7 +8,7 @@ seo:
   keywords: 'Payfonte supported providers, provider slug, Africa mobile money providers, collection providers, disbursement providers, provider limits, provider coverage by country'
 ---
 
-<Badge color="green" icon="circle">Last updated: June 18, 2026</Badge>
+<Badge color="green" icon="circle">Last updated: September 21, 2026</Badge>
 
 Use this page to choose the right provider slug for your integration by country, supported flow, and currency.
 
@@ -22,10 +22,10 @@ Use this page to choose the right provider slug for your integration by country,
   <Card title="32 Markets" icon="globe-africa">
     Provider coverage is currently published for 32 countries across West, East, Central, and Southern Africa.
   </Card>
-  <Card title="71 Provider Slugs" icon="fingerprint">
+  <Card title="72 Provider Slugs" icon="fingerprint">
     Send the exact `Slug` value in your API payloads when specifying the `provider` field.
   </Card>
-  <Card title="71 Dual-Flow Slugs" icon="right-left">
+  <Card title="72 Dual-Flow Slugs" icon="right-left">
     Every listed provider slug on this page currently supports both `Collection` and `Disbursement`.
   </Card>
   <Card title="1 Fetch Required" icon="sliders">
@@ -61,7 +61,7 @@ Use this page to choose the right provider slug for your integration by country,
   <Tab title="Overview">
     | Market | Currency | Collection Providers | Disbursement Providers | Notes |
     | :--- | :--- | :--- | :--- | :--- |
-    | [Angola](#angola) | `AOA` | Bank Transfer, Multicaixa | Bank Transfer, Multicaixa | 2 providers support both flows |
+    | [Angola](#angola) | `AOA` | Bank Transfer, Multicaixa Express, PayPay | Bank Transfer, Multicaixa Express, PayPay | 3 providers support both flows |
     | [Burkina Faso](#burkina-faso) | `XOF` | Moov, Orange | Moov, Orange | 2 providers support both flows |
     | [Benin](#benin) | `XOF` | MTN MoMo, Moov | MTN MoMo, Moov | 2 providers support both flows |
     | [DR Congo](#dr-congo) | `CDF` | AfriMoney, Airtel, MPesa, Orange | AfriMoney, Airtel, MPesa, Orange | 4 providers support both flows |
@@ -98,7 +98,7 @@ Use this page to choose the right provider slug for your integration by country,
   <Tab title="Provider Slugs">
     | Market | Currency | Dual-Flow Slugs | Collection-Only Slugs | Disbursement-Only Slugs |
     | :--- | :--- | :--- | :--- | :--- |
-    | Angola | `AOA` | `bank-transfer-angola`, `multicaixa-angola` | `—` | `—` |
+    | Angola | `AOA` | `bank-transfer-angola`, `multicaixa-angola`, `paypay-angola` | `—` | `—` |
     | Burkina Faso | `XOF` | `moov-burkina-faso`, `orange-burkina-faso` | `—` | `—` |
     | Benin | `XOF` | `mtn-momo-benin`, `moov-benin` | `—` | `—` |
     | DR Congo | `CDF` | `afrimoney-dr-congo`, `airtel-dr-congo`, `mpesa-dr-congo`, `orange-dr-congo` | `—` | `—` |
@@ -178,13 +178,14 @@ Hover a market heading to copy a direct link to that section.
 ### Angola
 
 <AccordionGroup>
-  <Accordion title="🇦🇴 Angola - 2 providers" defaultOpen>
-    2 provider slugs are available. Both support collection and disbursement. Currency: `AOA`.
+  <Accordion title="🇦🇴 Angola - 3 providers" defaultOpen>
+    3 provider slugs are available. All 3 support collection and disbursement. Currency: `AOA`.
 
     | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Collection Processing Type** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
     | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
     | Bank Transfer | bank-transfer-angola | AOA | Collection | processing (USSD/STK_PUSH) | No | — | — | — | — |
-    | Multicaixa | multicaixa-angola | AOA | Collection | processing (USSD/STK_PUSH) | No | — | — | — | — |
+    | Multicaixa Express | multicaixa-angola | AOA | Collection | processing (USSD/STK_PUSH) | No | — | — | — | — |
+    | PayPay | paypay-angola | AOA | Collection, Disbursement | redirect | No | — | — | — | — |
   </Accordion>
 </AccordionGroup>
 
