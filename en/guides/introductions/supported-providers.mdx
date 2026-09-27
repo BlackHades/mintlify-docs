@@ -8,7 +8,7 @@ seo:
   keywords: 'Payfonte supported providers, provider slug, Africa mobile money providers, collection providers, disbursement providers, provider limits, provider coverage by country'
 ---
 
-<Badge color="green" icon="circle">Last updated: September 21, 2026</Badge>
+<Badge color="green" icon="circle">Last updated: September 27, 2026</Badge>
 
 Use this page to choose the right provider slug for your integration by country, supported flow, and currency.
 
@@ -22,10 +22,10 @@ Use this page to choose the right provider slug for your integration by country,
   <Card title="32 Markets" icon="globe-africa">
     Provider coverage is currently published for 32 countries across West, East, Central, and Southern Africa.
   </Card>
-  <Card title="72 Provider Slugs" icon="fingerprint">
+  <Card title="69 Provider Slugs" icon="fingerprint">
     Send the exact `Slug` value in your API payloads when specifying the `provider` field.
   </Card>
-  <Card title="72 Dual-Flow Slugs" icon="right-left">
+  <Card title="69 Dual-Flow Slugs" icon="right-left">
     Every listed provider slug on this page currently supports both `Collection` and `Disbursement`.
   </Card>
   <Card title="1 Fetch Required" icon="sliders">
@@ -80,7 +80,7 @@ Use this page to choose the right provider slug for your integration by country,
     | [Mozambique](#mozambique) | `MZN` | Movitel e-Mola, Vodacom M-Pesa | Movitel e-Mola, Vodacom M-Pesa | 2 providers support both flows |
     | [Namibia](#namibia) | `NAD` | MTN MoMo | MTN MoMo | 1 provider supports both flows |
     | [Niger](#niger) | `XOF` | Airtel | Airtel | 1 provider supports both flows |
-    | [Nigeria](#nigeria) | `NGN` | flutterwave, interswitch, paystack, Airtel, Bank Transfer, CoralPay, MTN MoMo, Opay, PalmPay, card-nigeria | flutterwave, interswitch, paystack, Airtel, Bank Transfer, CoralPay, MTN MoMo, Opay, PalmPay, card-nigeria | 10 providers support both flows; `bank-transfer-nigeria` requires fetch properties |
+    | [Nigeria](#nigeria) | `NGN` | Airtel, Bank Transfer, CoralPay, MTN MoMo, Opay, PalmPay, card-nigeria | Airtel, Bank Transfer, CoralPay, MTN MoMo, Opay, PalmPay, card-nigeria | 7 providers support both flows; `bank-transfer-nigeria` requires fetch properties |
     | [Rwanda](#rwanda) | `RWF` | Airtel, MTN MoMo | Airtel, MTN MoMo | 2 providers support both flows |
     | [Seychelles](#seychelles) | `SCR` | Airtel | Airtel | 1 provider supports both flows |
     | [Sierra Leone](#sierra-leone) | `SLE` | Orange | Orange | 1 provider supports both flows |
@@ -117,7 +117,7 @@ Use this page to choose the right provider slug for your integration by country,
     | Mozambique | `MZN` | `emola-mozambique`, `mpesa-mozambique` | `—` | `—` |
     | Namibia | `NAD` | `mtn-momo-namibia` | `—` | `—` |
     | Niger | `XOF` | `airtel-niger` | `—` | `—` |
-    | Nigeria | `NGN` | `flutterwave`, `interswitch`, `paystack`, `airtel-smartcash-ng`, `bank-transfer-nigeria`, `coralpay`, `mtn-momo-nigeria`, `opay-nigeria`, `palmpay-nigeria`, `card-nigeria` | `—` | `—` |
+    | Nigeria | `NGN` | `airtel-smartcash-ng`, `bank-transfer-nigeria`, `coralpay`, `mtn-momo-nigeria`, `opay-nigeria`, `palmpay-nigeria`, `card-nigeria` | `—` | `—` |
     | Rwanda | `RWF` | `airtel-rwanda`, `mtn-momo-rwanda` | `—` | `—` |
     | Seychelles | `SCR` | `airtel-seychelles` | `—` | `—` |
     | Sierra Leone | `SLE` | `orange-sierra-leone` | `—` | `—` |
@@ -464,14 +464,11 @@ Hover a market heading to copy a direct link to that section.
 ### Nigeria
 
 <AccordionGroup>
-  <Accordion title="🇳🇬 Nigeria - 10 providers">
-    10 provider slugs are available. All 10 support collection and disbursement, and `bank-transfer-nigeria` requires fetch properties. Currency: `NGN`.
+  <Accordion title="🇳🇬 Nigeria - 7 providers">
+    7 provider slugs are available. All 7 support collection and disbursement, and `bank-transfer-nigeria` requires fetch properties. Currency: `NGN`.
 
     | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Collection Processing Type** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
     | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | flutterwave | flutterwave | NGN | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
-    | interswitch | interswitch | NGN | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
-    | paystack | paystack | NGN | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
     | Airtel | airtel-smartcash-ng | NGN | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
     | Bank Transfer | bank-transfer-nigeria | NGN | Collection, Disbursement | processing (USSD/STK_PUSH) | Yes | — | — | — | — |
     | CoralPay | coralpay | NGN | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |

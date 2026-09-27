@@ -8,7 +8,7 @@ seo:
   keywords: "providers pris en charge Payfonte, slug provider, providers mobile money Afrique, providers collecte, providers décaissement, limites provider, couverture provider par pays"
 ---
 
-<Badge color="green" icon="circle">Dernière mise à jour : 21 septembre 2026</Badge>
+<Badge color="green" icon="circle">Dernière mise à jour : 27 septembre 2026</Badge>
 
 Utilisez cette page pour choisir le bon slug provider selon le pays, le flux pris en charge et la devise de votre intégration.
 
@@ -22,10 +22,10 @@ Utilisez cette page pour choisir le bon slug provider selon le pays, le flux pri
   <Card title="32 marchés" icon="globe-africa">
     La couverture provider est actuellement publiée pour 32 pays d'Afrique de l'Ouest, de l'Est, centrale et australe.
   </Card>
-  <Card title="72 slugs provider" icon="fingerprint">
+  <Card title="69 slugs provider" icon="fingerprint">
     Envoyez la valeur exacte du `Slug` dans vos payloads API lorsque vous renseignez le champ `provider`.
   </Card>
-  <Card title="72 slugs double flux" icon="right-left">
+  <Card title="69 slugs double flux" icon="right-left">
     Chaque slug provider listé sur cette page prend actuellement en charge à la fois la `Collecte` et le `Décaissement`.
   </Card>
   <Card title="1 fetch requis" icon="sliders">
@@ -80,7 +80,7 @@ Utilisez cette page pour choisir le bon slug provider selon le pays, le flux pri
     | [Mozambique](#mozambique) | `MZN` | Movitel e-Mola, Vodacom M-Pesa | Movitel e-Mola, Vodacom M-Pesa | 2 providers prennent en charge les deux flux |
     | [Namibie](#namibia) | `NAD` | MTN MoMo | MTN MoMo | 1 provider prend en charge les deux flux |
     | [Niger](#niger) | `XOF` | Airtel | Airtel | 1 provider prend en charge les deux flux |
-    | [Nigeria](#nigeria) | `NGN` | flutterwave, interswitch, paystack, Airtel, Bank Transfer, CoralPay, MTN MoMo, Opay, PalmPay, card-nigeria | flutterwave, interswitch, paystack, Airtel, Bank Transfer, CoralPay, MTN MoMo, Opay, PalmPay, card-nigeria | 10 providers prennent en charge les deux flux ; `bank-transfer-nigeria` requiert fetch-properties |
+    | [Nigeria](#nigeria) | `NGN` | Airtel, Bank Transfer, CoralPay, MTN MoMo, Opay, PalmPay, card-nigeria | Airtel, Bank Transfer, CoralPay, MTN MoMo, Opay, PalmPay, card-nigeria | 7 providers prennent en charge les deux flux ; `bank-transfer-nigeria` requiert fetch-properties |
     | [Rwanda](#rwanda) | `RWF` | Airtel, MTN MoMo | Airtel, MTN MoMo | 2 providers prennent en charge les deux flux |
     | [Seychelles](#seychelles) | `SCR` | Airtel | Airtel | 1 provider prend en charge les deux flux |
     | [Sierra Leone](#sierra-leone) | `SLE` | Orange | Orange | 1 provider prend en charge les deux flux |
@@ -117,7 +117,7 @@ Utilisez cette page pour choisir le bon slug provider selon le pays, le flux pri
     | Mozambique | `MZN` | `emola-mozambique`, `mpesa-mozambique` | `—` | `—` |
     | Namibie | `NAD` | `mtn-momo-namibia` | `—` | `—` |
     | Niger | `XOF` | `airtel-niger` | `—` | `—` |
-    | Nigeria | `NGN` | `flutterwave`, `interswitch`, `paystack`, `airtel-smartcash-ng`, `bank-transfer-nigeria`, `coralpay`, `mtn-momo-nigeria`, `opay-nigeria`, `palmpay-nigeria`, `card-nigeria` | `—` | `—` |
+    | Nigeria | `NGN` | `airtel-smartcash-ng`, `bank-transfer-nigeria`, `coralpay`, `mtn-momo-nigeria`, `opay-nigeria`, `palmpay-nigeria`, `card-nigeria` | `—` | `—` |
     | Rwanda | `RWF` | `airtel-rwanda`, `mtn-momo-rwanda` | `—` | `—` |
     | Seychelles | `SCR` | `airtel-seychelles` | `—` | `—` |
     | Sierra Leone | `SLE` | `orange-sierra-leone` | `—` | `—` |
@@ -461,14 +461,11 @@ Survolez un titre de marché pour copier un lien direct vers cette section.
 ### Nigeria
 
 <AccordionGroup>
-  <Accordion title="🇳🇬 Nigeria - 10 providers">
-    10 slugs provider sont disponibles. Les 10 prennent en charge la collecte et le décaissement, et `bank-transfer-nigeria` requiert fetch-properties. Devise : `NGN`.
+  <Accordion title="🇳🇬 Nigeria - 7 providers">
+    7 slugs provider sont disponibles. Les 7 prennent en charge la collecte et le décaissement, et `bank-transfer-nigeria` requiert fetch-properties. Devise : `NGN`.
 
     | **Provider** | **Slug** | **Devise** | **Flux pris en charge** | **Type de traitement collecte** | **Fetch Properties** | **Min collecte** | **Max collecte** | **Min décaissement** | **Max décaissement** |
     | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | flutterwave | flutterwave | NGN | Collecte, Décaissement | processing (USSD/STK_PUSH) | No | — | — | — | — |
-    | interswitch | interswitch | NGN | Collecte, Décaissement | processing (USSD/STK_PUSH) | No | — | — | — | — |
-    | paystack | paystack | NGN | Collecte, Décaissement | processing (USSD/STK_PUSH) | No | — | — | — | — |
     | Airtel | airtel-smartcash-ng | NGN | Collecte, Décaissement | processing (USSD/STK_PUSH) | No | — | — | — | — |
     | Bank Transfer | bank-transfer-nigeria | NGN | Collecte, Décaissement | processing (USSD/STK_PUSH) | Yes | — | — | — | — |
     | CoralPay | coralpay | NGN | Collecte, Décaissement | processing (USSD/STK_PUSH) | No | — | — | — | — |
