@@ -25,8 +25,8 @@ Use this page to choose the right provider slug for your integration by country,
   <Card title="69 Provider Slugs" icon="fingerprint">
     Send the exact `Slug` value in your API payloads when specifying the `provider` field.
   </Card>
-  <Card title="69 Dual-Flow Slugs" icon="right-left">
-    Every listed provider slug on this page currently supports both `Collection` and `Disbursement`.
+  <Card title="67 Dual-Flow Slugs" icon="right-left">
+    67 provider slugs support both `Collection` and `Disbursement`. The remaining 2 support collection only.
   </Card>
   <Card title="1 Fetch Required" icon="sliders">
     `bank-transfer-nigeria` is the only listed provider that currently requires fetch-properties support.
@@ -51,7 +51,7 @@ Use this page to choose the right provider slug for your integration by country,
     The `Slug` column contains the machine-readable provider value your API request should send.
   </Card>
   <Card title="Validate Limits" icon="scale-balanced">
-    Every listed provider supports collection and disbursement, but published limits still vary by slug.
+    Confirm the supported flows and published limits for your provider slug.
   </Card>
 </CardGroup>
 
@@ -61,7 +61,7 @@ Use this page to choose the right provider slug for your integration by country,
   <Tab title="Overview">
     | Market | Currency | Collection Providers | Disbursement Providers | Notes |
     | :--- | :--- | :--- | :--- | :--- |
-    | [Angola](#angola) | `AOA` | Bank Transfer, Multicaixa Express, PayPay | Bank Transfer, Multicaixa Express, PayPay | 3 providers support both flows |
+    | [Angola](#angola) | `AOA` | Bank Transfer, Multicaixa Express, PayPay | PayPay | 1 provider supports both flows; 2 support collection only |
     | [Burkina Faso](#burkina-faso) | `XOF` | Moov, Orange | Moov, Orange | 2 providers support both flows |
     | [Benin](#benin) | `XOF` | MTN MoMo, Moov | MTN MoMo, Moov | 2 providers support both flows |
     | [DR Congo](#dr-congo) | `CDF` | AfriMoney, Airtel, MPesa, Orange | AfriMoney, Airtel, MPesa, Orange | 4 providers support both flows |
@@ -98,7 +98,7 @@ Use this page to choose the right provider slug for your integration by country,
   <Tab title="Provider Slugs">
     | Market | Currency | Dual-Flow Slugs | Collection-Only Slugs | Disbursement-Only Slugs |
     | :--- | :--- | :--- | :--- | :--- |
-    | Angola | `AOA` | `bank-transfer-angola`, `multicaixa-angola`, `paypay-angola` | `—` | `—` |
+    | Angola | `AOA` | `paypay-angola` | `bank-transfer-angola`, `multicaixa-angola` | `—` |
     | Burkina Faso | `XOF` | `moov-burkina-faso`, `orange-burkina-faso` | `—` | `—` |
     | Benin | `XOF` | `mtn-momo-benin`, `moov-benin` | `—` | `—` |
     | DR Congo | `CDF` | `afrimoney-dr-congo`, `airtel-dr-congo`, `mpesa-dr-congo`, `orange-dr-congo` | `—` | `—` |
@@ -150,7 +150,7 @@ Use this page to choose the right provider slug for your integration by country,
     - `Disbursement`: payout or transfer flow only
     - `Collection, Disbursement`: the same slug supports both flows
 
-    Every provider row currently listed on this page uses `Collection, Disbursement`.
+    67 provider slugs support both flows. `bank-transfer-angola` and `multicaixa-angola` support collection only.
   </Accordion>
   <Accordion title="Collection Processing Type" icon="route">
     Indicates whether collections use direct processing such as `USSD/STK_PUSH`, redirect, or both.
@@ -179,7 +179,7 @@ Hover a market heading to copy a direct link to that section.
 
 <AccordionGroup>
   <Accordion title="🇦🇴 Angola - 3 providers" defaultOpen>
-    3 provider slugs are available. All 3 support collection and disbursement. Currency: `AOA`.
+    3 provider slugs are available. All 3 support collection; only PayPay supports disbursement. Currency: `AOA`.
 
     | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Collection Processing Type** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
     | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |

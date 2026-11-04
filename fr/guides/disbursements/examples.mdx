@@ -123,48 +123,7 @@ Exemple de réponse :
 
 ### Virement bancaire (Angola)
 
-Endpoint : `POST /billing/v1/transfer-recipients/validate`
-
-```json
-{
-  "provider": "bank-transfer-angola",
-  "account": {
-    "accountName": "John Doe",
-    "accountNumber": "0123456789"
-  }
-}
-```
-
-Exemple de réponse :
-
-```json
-{
-  "statusCode": 200,
-  "data": {
-    "clientId": "6thbridge",
-    "parentClientId": "payfusion",
-    "ownerType": "client",
-    "ownerId": "6thbridge",
-    "provider": "bank-transfer-angola",
-    "providerLabel": "Bank Transfer",
-    "providerLogo": "https://app-tst.appypay.co.ao/images/payment-methods/ref.png",
-    "source": "disbursement",
-    "channel": "bank-transfer",
-    "currency": "AOA",
-    "country": "AO",
-    "tags": [],
-    "accountLabel": "Bank Transfer  | Miss Billie Friesen | 2215381176",
-    "account": {
-      "accountNumber": "2215381176",
-      "accountName": "Miss Billie Friesen"
-    },
-    "status": "pending",
-    "createdAt": "2026-04-20T12:40:56.084Z",
-    "updatedAt": "2026-04-20T12:40:56.084Z",
-    "id": "69e61ed8c5938efd8ef63e1b"
-  }
-}
-```
+Bank Transfer (`bank-transfer-angola`) et Multicaixa Express (`multicaixa-angola`) prennent uniquement en charge la collecte et ne peuvent pas être utilisés pour les décaissements. PayPay (`paypay-angola`) prend en charge les décaissements en Angola. Voir [Providers pris en charge](/fr/guides/introductions/supported-providers#angola) pour la couverture.
 
 ## 2) Demander le décaissement
 

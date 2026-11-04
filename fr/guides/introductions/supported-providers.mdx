@@ -25,8 +25,8 @@ Utilisez cette page pour choisir le bon slug provider selon le pays, le flux pri
   <Card title="69 slugs provider" icon="fingerprint">
     Envoyez la valeur exacte du `Slug` dans vos payloads API lorsque vous renseignez le champ `provider`.
   </Card>
-  <Card title="69 slugs double flux" icon="right-left">
-    Chaque slug provider listé sur cette page prend actuellement en charge à la fois la `Collecte` et le `Décaissement`.
+  <Card title="67 slugs double flux" icon="right-left">
+    67 slugs provider prennent en charge à la fois la `Collecte` et le `Décaissement`. Les 2 autres prennent uniquement en charge la collecte.
   </Card>
   <Card title="1 fetch requis" icon="sliders">
     `bank-transfer-nigeria` est actuellement le seul provider listé qui requiert la prise en charge de fetch-properties.
@@ -51,7 +51,7 @@ Utilisez cette page pour choisir le bon slug provider selon le pays, le flux pri
     La colonne `Slug` contient la valeur lisible par machine que votre requête API doit envoyer.
   </Card>
   <Card title="Valider les limites" icon="scale-balanced">
-    Chaque provider listé prend en charge la collecte et le décaissement, mais les limites publiées varient encore selon le slug.
+    Vérifiez les flux pris en charge et les limites publiées pour votre slug provider.
   </Card>
 </CardGroup>
 
@@ -61,7 +61,7 @@ Utilisez cette page pour choisir le bon slug provider selon le pays, le flux pri
   <Tab title="Vue d'ensemble">
     | Marché | Devise | Providers collecte | Providers décaissement | Notes |
     | :--- | :--- | :--- | :--- | :--- |
-    | [Angola](#angola) | `AOA` | Bank Transfer, Multicaixa Express, PayPay | Bank Transfer, Multicaixa Express, PayPay | 3 providers prennent en charge les deux flux |
+    | [Angola](#angola) | `AOA` | Bank Transfer, Multicaixa Express, PayPay | PayPay | 1 provider prend en charge les deux flux ; 2 prennent uniquement en charge la collecte |
     | [Burkina Faso](#burkina-faso) | `XOF` | Moov, Orange | Moov, Orange | 2 providers prennent en charge les deux flux |
     | [Bénin](#benin) | `XOF` | MTN MoMo, Moov | MTN MoMo, Moov | 2 providers prennent en charge les deux flux |
     | [RDC](#dr-congo) | `CDF` | AfriMoney, Airtel, MPesa, Orange | AfriMoney, Airtel, MPesa, Orange | 4 providers prennent en charge les deux flux |
@@ -98,7 +98,7 @@ Utilisez cette page pour choisir le bon slug provider selon le pays, le flux pri
   <Tab title="Slugs provider">
     | Marché | Devise | Slugs double flux | Slugs collecte uniquement | Slugs décaissement uniquement |
     | :--- | :--- | :--- | :--- | :--- |
-    | Angola | `AOA` | `bank-transfer-angola`, `multicaixa-angola`, `paypay-angola` | `—` | `—` |
+    | Angola | `AOA` | `paypay-angola` | `bank-transfer-angola`, `multicaixa-angola` | `—` |
     | Burkina Faso | `XOF` | `moov-burkina-faso`, `orange-burkina-faso` | `—` | `—` |
     | Bénin | `XOF` | `mtn-momo-benin`, `moov-benin` | `—` | `—` |
     | RDC | `CDF` | `afrimoney-dr-congo`, `airtel-dr-congo`, `mpesa-dr-congo`, `orange-dr-congo` | `—` | `—` |
@@ -150,7 +150,7 @@ Utilisez cette page pour choisir le bon slug provider selon le pays, le flux pri
     - `Décaissement` : flux de payout ou de transfert uniquement
     - `Collecte, Décaissement` : le même slug provider prend en charge les deux flux
 
-    Chaque ligne provider actuellement listée sur cette page utilise `Collecte, Décaissement`.
+    67 slugs provider prennent en charge les deux flux. `bank-transfer-angola` et `multicaixa-angola` prennent uniquement en charge la collecte.
   </Accordion>
   <Accordion title="Fetch Properties" icon="sliders">
     `Yes` signifie qu'il peut être nécessaire d'appeler un endpoint provider-properties avant d'initier la requête.
@@ -176,12 +176,12 @@ Survolez un titre de marché pour copier un lien direct vers cette section.
 
 <AccordionGroup>
   <Accordion title="🇦🇴 Angola - 3 providers" defaultOpen>
-    3 slugs provider sont disponibles. Les 3 prennent en charge la collecte et le décaissement. Devise : `AOA`.
+    3 slugs provider sont disponibles. Les 3 prennent en charge la collecte ; seul PayPay prend en charge le décaissement. Devise : `AOA`.
 
     | **Provider** | **Slug** | **Devise** | **Flux pris en charge** | **Type de traitement collecte** | **Fetch Properties** | **Min collecte** | **Max collecte** | **Min décaissement** | **Max décaissement** |
     | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | Bank Transfer | bank-transfer-angola | AOA | Collecte, Décaissement | processing (USSD/STK_PUSH) | No | — | — | — | — |
-    | Multicaixa Express | multicaixa-angola | AOA | Collecte, Décaissement | processing (USSD/STK_PUSH) | No | — | — | — | — |
+    | Bank Transfer | bank-transfer-angola | AOA | Collecte | processing (USSD/STK_PUSH) | No | — | — | — | — |
+    | Multicaixa Express | multicaixa-angola | AOA | Collecte | processing (USSD/STK_PUSH) | No | — | — | — | — |
     | PayPay | paypay-angola | AOA | Collecte, Décaissement | redirect | No | — | — | — | — |
   </Accordion>
 </AccordionGroup>

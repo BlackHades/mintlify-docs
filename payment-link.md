@@ -1,4 +1,5 @@
 1. Create Payment Link
+   ```bash
    curl --request POST \
    --url /payments/v1/payment-links \
    --header 'Content-Type: application/json' \
@@ -16,6 +17,8 @@
    "country": "CI",
    "clientId": "6thbridge"
    }'
+   ```
+
    | Field | Type | Required | Description |
    | --- | --- | --- | --- |
    | `title` | string | Yes | Human-readable payment link title. |
@@ -35,6 +38,7 @@
    | `expiresAt` | number | No | Unix timestamp at which the link expires. |
 
 Response:
+```json
 {
 "statusCode": 201,
 "data": {
@@ -62,16 +66,21 @@ Response:
 "id": "6a7a2093b9e24880f73a80b0"
 }
 }
+```
 
 
 Fetch All Payment links
+```bash
 curl --request GET \
 --url 'https://staging-api.6thbridge.xyz/payments/v1/payment-links?page=1&limit=2' \
 --header 'Authorization: Bearer b516080920b89ddcd6ab8e8248a2dba02fa817f52b46c8179aeeaad57aa5cf13' \
 --header 'Content-Type: application/json' \
 --header 'client-id: payfusion'
+```
+
 
 Response
+```json
 {
 "statusCode": 200,
 "total": 246,
@@ -133,15 +142,20 @@ Response
 }
 ]
 }
+```
 
 
 3. Fetch Payment By ID
+   ```bash
    curl --request GET \
    --url https://staging-api.6thbridge.xyz/payments/v1/payment-links/6a7204a536c2106e38fe8e01 \
    --header 'Authorization: Bearer b516080920b89ddcd6ab8e8248a2dba02fa817f52b46c8179aeeaad57aa5cf13' \
    --header 'Content-Type: application/json' \
    --header 'client-id: payfusion'
+   ```
 
+
+```json
 {
 "statusCode": 200,
 "data": {
@@ -237,4 +251,5 @@ Response
 }
 }
 }
+```
 
