@@ -8,7 +8,7 @@ seo:
   keywords: 'Payfonte supported providers, provider slug, Africa mobile money providers, collection providers, disbursement providers, provider limits, provider coverage by country'
 ---
 
-<Badge color="green" icon="circle">Last updated: September 21, 2026</Badge>
+<Badge color="green" icon="circle">Last updated: November 4, 2026</Badge>
 
 Use this page to choose the right provider slug for your integration by country, supported flow, and currency.
 
@@ -34,7 +34,7 @@ Use this page to choose the right provider slug for your integration by country,
 </CardGroup>
 
 <Warning>
-  Payfonte does not support decimal amounts. Send integer amounts only in minor units. For example, `100.50 NGN` becomes `10050`. See [Amount Specification](/en/guides/introductions/amount-specification).
+  All minimum and maximum limits on this page are shown in major currency units. When sending API requests, convert amounts to integer minor units. For example, `100.50 NGN` becomes `10050`. See [Amount Specification](/en/guides/introductions/amount-specification).
 </Warning>
 
 <Note>
@@ -69,7 +69,7 @@ Use this page to choose the right provider slug for your integration by country,
     | [Ivory Coast](#ivory-coast) | `XOF` | MTN MoMo, Moov, Orange, Wave | MTN MoMo, Moov, Orange, Wave | 4 providers support both flows |
     | [Cameroon](#cameroon) | `XAF` | MTN MoMo, Orange | MTN MoMo, Orange | Published min/max limits are available |
     | [Gabon](#gabon) | `XAF` | Airtel | Airtel | 1 provider supports both flows |
-    | [Ghana](#ghana) | `GHS` | AT, MTN MoMo, Telecel | AT, MTN MoMo, Telecel | 3 providers support both flows |
+    | [Ghana](#ghana) | `GHS` | AT, MTN MoMo, Telecel | AT, MTN MoMo, Telecel | 3 providers support both flows; published min/max limits are available |
     | [Gambia](#gambia) | `GMD` | AfriMoney, Airtel, Wave | AfriMoney, Airtel, Wave | 3 providers support both flows |
     | [Guinea](#guinea) | `GNF` | MTN MoMo, Orange | MTN MoMo, Orange | 2 providers support both flows |
     | [Kenya](#kenya) | `KES` | Airtel, M-Pesa | Airtel, M-Pesa | 2 providers support both flows |
@@ -159,7 +159,7 @@ Use this page to choose the right provider slug for your integration by country,
     `Yes` means you may need to call a provider-properties endpoint before initiating a request.
   </Accordion>
   <Accordion title="Flow Limits" icon="hashtag">
-    Collection and disbursement limits are shown in separate columns so each provider slug only appears once. Amount values follow the currency minor-unit rules in [Amount Specification](/en/guides/introductions/amount-specification).
+    Collection and disbursement limits are shown in separate columns so each provider slug only appears once. All minimum and maximum values are expressed in major units of the listed currency. For API request formatting, see [Amount Specification](/en/guides/introductions/amount-specification).
   </Accordion>
 </AccordionGroup>
 
@@ -305,11 +305,13 @@ Hover a market heading to copy a direct link to that section.
   <Accordion title="🇬🇭 Ghana - 3 providers">
     3 provider slugs are available. All 3 support collection and disbursement. Currency: `GHS`.
 
+    For all 3 providers, collection and disbursement limits are GHS 10 minimum and GHS 10,000 maximum. The table shows these amounts in major units (GHS).
+
     | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Collection Processing Type** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
     | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    | AT | airtel-ghana | GHS | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
-    | MTN MoMo | mtn-momo-ghana | GHS | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
-    | Telecel | telecel-ghana | GHS | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
+    | AT | airtel-ghana | GHS | Collection, Disbursement | processing (USSD/STK_PUSH) | No | 10 | 10,000 | 10 | 10,000 |
+    | MTN MoMo | mtn-momo-ghana | GHS | Collection, Disbursement | processing (USSD/STK_PUSH) | No | 10 | 10,000 | 10 | 10,000 |
+    | Telecel | telecel-ghana | GHS | Collection, Disbursement | processing (USSD/STK_PUSH) | No | 10 | 10,000 | 10 | 10,000 |
   </Accordion>
 </AccordionGroup>
 
