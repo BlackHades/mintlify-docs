@@ -8,7 +8,7 @@ seo:
   keywords: 'Payfonte supported providers, provider slug, Africa mobile money providers, collection providers, disbursement providers, provider limits, provider coverage by country'
 ---
 
-<Badge color="green" icon="circle">Last updated: November 4, 2026</Badge>
+<Badge color="green" icon="circle">Last updated: November 5, 2026</Badge>
 
 Use this page to choose the right provider slug for your integration by country, supported flow, and currency.
 
@@ -19,14 +19,14 @@ Use this page to choose the right provider slug for your integration by country,
 ## At a Glance
 
 <CardGroup cols={2}>
-  <Card title="32 Markets" icon="globe-africa">
-    Provider coverage is currently published for 32 countries across West, East, Central, and Southern Africa.
+  <Card title="33 Markets" icon="globe-africa">
+    Provider coverage is currently published for 33 countries across West, East, Central, and Southern Africa.
   </Card>
-  <Card title="69 Provider Slugs" icon="fingerprint">
+  <Card title="71 Provider Slugs" icon="fingerprint">
     Send the exact `Slug` value in your API payloads when specifying the `provider` field.
   </Card>
-  <Card title="67 Dual-Flow Slugs" icon="right-left">
-    67 provider slugs support both `Collection` and `Disbursement`. The remaining 2 support collection only.
+  <Card title="69 Dual-Flow Slugs" icon="right-left">
+    69 provider slugs support both `Collection` and `Disbursement`. The remaining 2 support collection only.
   </Card>
   <Card title="1 Fetch Required" icon="sliders">
     `bank-transfer-nigeria` is the only listed provider that currently requires fetch-properties support.
@@ -76,6 +76,7 @@ Use this page to choose the right provider slug for your integration by country,
     | [Liberia](#liberia) | `LRD` | MTN MoMo | MTN MoMo | 1 provider supports both flows |
     | [Lesotho](#lesotho) | `LSL` | MTN MoMo | MTN MoMo | 1 provider supports both flows |
     | [Madagascar](#madagascar) | `MGA` | Airtel | Airtel | 1 provider supports both flows |
+    | [Malawi](#malawi) | `MWK` | Airtel, TNM | Airtel, TNM | 2 providers support both flows |
     | [Mali](#mali) | `XOF` | Moov, Orange | Moov, Orange | 2 providers support both flows |
     | [Mozambique](#mozambique) | `MZN` | Movitel e-Mola, Vodacom M-Pesa | Movitel e-Mola, Vodacom M-Pesa | 2 providers support both flows |
     | [Namibia](#namibia) | `NAD` | MTN MoMo | MTN MoMo | 1 provider supports both flows |
@@ -113,6 +114,7 @@ Use this page to choose the right provider slug for your integration by country,
     | Liberia | `LRD` | `mtn-momo-liberia` | `—` | `—` |
     | Lesotho | `LSL` | `mtn-momo-lesotho` | `—` | `—` |
     | Madagascar | `MGA` | `airtel-madagascar` | `—` | `—` |
+    | Malawi | `MWK` | `airtel-malawi`, `tnm-malawi` | `—` | `—` |
     | Mali | `XOF` | `moov-mali`, `orange-mali` | `—` | `—` |
     | Mozambique | `MZN` | `emola-mozambique`, `mpesa-mozambique` | `—` | `—` |
     | Namibia | `NAD` | `mtn-momo-namibia` | `—` | `—` |
@@ -150,7 +152,7 @@ Use this page to choose the right provider slug for your integration by country,
     - `Disbursement`: payout or transfer flow only
     - `Collection, Disbursement`: the same slug supports both flows
 
-    67 provider slugs support both flows. `bank-transfer-angola` and `multicaixa-angola` support collection only.
+    69 provider slugs support both flows. `bank-transfer-angola` and `multicaixa-angola` support collection only.
   </Accordion>
   <Accordion title="Collection Processing Type" icon="route">
     Indicates whether collections use direct processing such as `USSD/STK_PUSH`, redirect, or both.
@@ -169,7 +171,7 @@ Use this page to choose the right provider slug for your integration by country,
 
 ## Detailed Coverage
 
-Jump to: [Angola](#angola) | [Burkina Faso](#burkina-faso) | [Benin](#benin) | [DR Congo](#dr-congo) | [Congo](#congo) | [Ivory Coast](#ivory-coast) | [Cameroon](#cameroon) | [Gabon](#gabon) | [Ghana](#ghana) | [Gambia](#gambia) | [Guinea](#guinea) | [Kenya](#kenya) | [Liberia](#liberia) | [Lesotho](#lesotho) | [Madagascar](#madagascar) | [Mali](#mali) | [Mozambique](#mozambique) | [Namibia](#namibia) | [Niger](#niger) | [Nigeria](#nigeria) | [Rwanda](#rwanda) | [Seychelles](#seychelles) | [Sierra Leone](#sierra-leone) | [Senegal](#senegal) | [South Sudan](#south-sudan) | [Eswatini](#eswatini) | [Chad](#chad) | [Togo](#togo) | [Tanzania](#tanzania) | [Uganda](#uganda) | [South Africa](#south-africa) | [Zambia](#zambia)
+Jump to: [Angola](#angola) | [Burkina Faso](#burkina-faso) | [Benin](#benin) | [DR Congo](#dr-congo) | [Congo](#congo) | [Ivory Coast](#ivory-coast) | [Cameroon](#cameroon) | [Gabon](#gabon) | [Ghana](#ghana) | [Gambia](#gambia) | [Guinea](#guinea) | [Kenya](#kenya) | [Liberia](#liberia) | [Lesotho](#lesotho) | [Madagascar](#madagascar) | [Malawi](#malawi) | [Mali](#mali) | [Mozambique](#mozambique) | [Namibia](#namibia) | [Niger](#niger) | [Nigeria](#nigeria) | [Rwanda](#rwanda) | [Seychelles](#seychelles) | [Sierra Leone](#sierra-leone) | [Senegal](#senegal) | [South Sudan](#south-sudan) | [Eswatini](#eswatini) | [Chad](#chad) | [Togo](#togo) | [Tanzania](#tanzania) | [Uganda](#uganda) | [South Africa](#south-africa) | [Zambia](#zambia)
 
 Hover a market heading to copy a direct link to that section.
 
@@ -400,6 +402,21 @@ Hover a market heading to copy a direct link to that section.
     | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Collection Processing Type** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
     | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
     | Airtel | airtel-madagascar | MGA | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
+  </Accordion>
+</AccordionGroup>
+
+<div id="malawi"></div>
+
+### Malawi
+
+<AccordionGroup>
+  <Accordion title="🇲🇼 Malawi - 2 providers">
+    2 provider slugs are available. Both support collection and disbursement. Currency: `MWK`.
+
+    | **Provider** | **Slug** | **Currency** | **Supported Flows** | **Collection Processing Type** | **Fetch Properties** | **Collection Min** | **Collection Max** | **Disbursement Min** | **Disbursement Max** |
+    | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | Airtel | airtel-malawi | MWK | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
+    | TNM | tnm-malawi | MWK | Collection, Disbursement | processing (USSD/STK_PUSH) | No | — | — | — | — |
   </Accordion>
 </AccordionGroup>
 
